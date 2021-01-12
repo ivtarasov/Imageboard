@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Imageboard.Data.Enteties;
 
-namespace Imageboard.Web.Models
+namespace Imageboard.Web.ViewModels
 {
     public class PostModel
     {

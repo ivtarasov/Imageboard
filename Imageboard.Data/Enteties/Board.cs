@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Imageboard.Web.Models
+namespace Imageboard.Data.Enteties
 {
     public class Board
     {

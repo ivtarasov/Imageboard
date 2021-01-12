@@ -8,7 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Imageboard.Web.Models;
+using Imageboard.Web.ViewModels;
+using Imageboard.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Imageboard.Web
@@ -25,7 +26,7 @@ namespace Imageboard.Web
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<BoardsContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connection));
             services.AddControllersWithViews();
         }

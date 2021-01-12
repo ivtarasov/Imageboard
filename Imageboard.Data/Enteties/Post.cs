@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Imageboard.Web.Models
+namespace Imageboard.Data.Enteties
 {
+    [Table("Post")]
     public class Post
     {
         public int Id { get; set; }

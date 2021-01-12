@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Imageboard.Web.Models
+namespace Imageboard.Data.Enteties
 {
+    [Table("Tread")]
     public class Tread
     {
         public int Id { get; set; }

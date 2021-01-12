@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Imageboard.Data.Enteties;
 
-namespace Imageboard.Web.Models
+namespace Imageboard.Data.Contexts
 {
-    public class BoardsContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Board> Boards { get; set; }
-        public BoardsContext(DbContextOptions<BoardsContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
             //Database.EnsureDeleted();

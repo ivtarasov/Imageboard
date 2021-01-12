@@ -5,18 +5,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Imageboard.Web.Models;
+using Imageboard.Web.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Imageboard.Data.Contexts;
+using Imageboard.Data.Enteties;
 
 namespace Imageboard.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly BoardsContext db;
+        private readonly ApplicationDbContext db;
         private readonly Random random = new Random();
 
-        public HomeController(ILogger<HomeController> logger, BoardsContext context)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
             db = context;
