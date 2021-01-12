@@ -1,4 +1,4 @@
-﻿@model PostModel
+﻿@model PostViewModel
 
 <table>
     <tbody>
@@ -14,12 +14,13 @@
                 <span class="reflink"> <a href="~/#@Model.Post.Id">№@Model.Post.Id</a> </span>
                 @if (Model.IsFromShortcutTread)
                 {
-                    @:[<a href="/Home/Tread/@Model.Post.TreadId">Ответ</a>]
+                    @:[<a href="/Home/DisplayTread/@Model.Post.TreadId">Ответ</a>]
                 }
                 else
                 {
-                    <span class="postnum">#@(Model.PostNumber)</span>
+                    <span class="postnum">#@(Model.Post.NumberInTread + 1)</span>
                 }
+                <span class="postnum">#@(Model.Post.NumberInTread + 1)</span>
                 <blockquote> <p>@(Model.Post.Message ?? "")</p> </blockquote>
             </td>
         </tr>

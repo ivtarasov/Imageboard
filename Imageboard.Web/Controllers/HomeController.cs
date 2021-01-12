@@ -20,7 +20,7 @@ namespace Imageboard.Web.Controllers
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
-            _logger = logger;
+            //_logger = logger;
             db = context;
 
             if (db.Boards.Count() == 0)
@@ -35,10 +35,11 @@ namespace Imageboard.Web.Controllers
                     {
                         posts.Add(new Post()
                         {
-                            Message = RandomString(random.Next(10, 500)),
-                            Title = RandomString(random.Next(0, 5)),
+                            Message = j == 0 ? "Opening post." : RandomString(random.Next(10, 500)),
+                            Title = j == 0 ? "Title of opening post." : RandomString(random.Next(0, 5)),
                             PostTime = DateTime.Now,
-                            Tread = tread
+                            Tread = tread,
+                            NumberInTread = j
                         });
                     }
                     tread.Posts.AddRange(posts);
@@ -87,24 +88,22 @@ namespace Imageboard.Web.Controllers
             return View(tread);
         }*/
         [HttpGet]
-        public IActionResult Board()
+        public IActionResult DisplayBoard(int id = 1)
         {
             var boards = db.Boards.Include(b => b.Treads)
                                   .ThenInclude(t => t.Posts).AsNoTracking();
             return View(boards.ToList().First());
         }
         [HttpGet]
-        public IActionResult Tread(int id)
+        public IActionResult DisplayTread(int id)
         {
-            var boards = db.Boards.Include(b => b.Treads)
-                                  .ThenInclude(t => t.Posts).AsNoTracking();
-            var tread = boards.First().Treads.Find(t => t.Id == id);
-            Debug.WriteLine($"{(tread.Id.ToString() ?? "null")}");
-            TreadModel treadModel = new TreadModel()
+            var tread = db.Treads.Single(t => t.Id == id);
+            db.Entry(tread).Collection(t => t.Posts).Load();
+            tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
+            TreadViewModel treadModel = new TreadViewModel()
             {
                 Tread = tread,
                 AboutOmittedPosts = "",
-                FirstDisplayedPost = 1 + 1,
                 IsShortcut = false
             };
             return View(treadModel);

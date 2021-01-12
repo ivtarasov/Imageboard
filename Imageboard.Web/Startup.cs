@@ -53,7 +53,7 @@ namespace Imageboard.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Board}/{id?}");
+                    pattern: "{controller=Home}/{action=DisplayBoard}/{id?}");
             });
         }
     }

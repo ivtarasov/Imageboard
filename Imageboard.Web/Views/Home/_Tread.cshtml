@@ -1,15 +1,13 @@
-﻿@model TreadModel
+﻿@model TreadViewModel
 
 @{
     Post openingPost = Model.Tread.Posts.First();
     Model.Tread.Posts.RemoveAt(0);
-    int i = Model.FirstDisplayedPost;
 }
 
-@await Html.PartialAsync("_OpeningPost", new PostModel()
+@await Html.PartialAsync("_OpeningPost", new PostViewModel()
 {
     Post = openingPost,
-    PostNumber = 1,
     IsFromShortcutTread = Model.IsShortcut
 })
 
@@ -17,13 +15,11 @@
 
 @foreach (var post in Model.Tread.Posts)
 {
-    @await Html.PartialAsync("_Post", new PostModel()
+    @await Html.PartialAsync("_Post", new PostViewModel()
     {
         Post = post,
-        PostNumber = i,
         IsFromShortcutTread = Model.IsShortcut
     })
-    i++;
 }
 
 

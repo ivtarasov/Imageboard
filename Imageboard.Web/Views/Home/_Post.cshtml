@@ -1,4 +1,4 @@
-﻿@model PostModel
+﻿@model PostViewModel
 
 <table>
     <tbody>
@@ -13,10 +13,11 @@
                     <span class="posttime">@Model.Post.PostTime.ToString("dd.MM.yyyy (ddd) hh:mm:ss")</span>
                 </label>
                 <span class="reflink"> <a href="/#@Model.Post.Id">№@Model.Post.Id</a> </span>
-               @if (!Model.IsFromShortcutTread)
+                @if (!Model.IsFromShortcutTread)
                 {
-                    <span class="postnum">#@(Model.PostNumber)</span>
+                    <span class="postnum">#@(Model.Post.NumberInTread + 1)</span>
                 }
+                <span class="postnum">#@(Model.Post.NumberInTread + 1)</span>
                 <blockquote> <p>@(Model.Post.Message ?? "")</p> </blockquote>
             </td>
         </tr>

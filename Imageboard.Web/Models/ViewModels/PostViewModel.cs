@@ -2,10 +2,9 @@
 
 namespace Imageboard.Web.ViewModels
 {
-    public class PostModel
+    public class PostViewModel
     {
         public Post Post { get; set; }
-        public int PostNumber { get; set; }
         public bool IsFromShortcutTread { get; set; }
     }
 }

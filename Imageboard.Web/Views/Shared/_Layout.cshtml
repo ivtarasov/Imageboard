@@ -13,18 +13,8 @@
 <body class="replypage">
     <header></header>
     <main>
-        @await Html.PartialAsync("_ReplyForm")
-        <hr>
-        <br clear="left">
-        <form id="delform" method="post" asp-action="Delete">
-            @RenderBody()
-            <br clear="left">
-            <hr>
-            @await Html.PartialAsync("_DeleteForm")
-        </form>
-        <br>
-        <br>
+        @RenderBody()
     </main>
     <footer></footer>
-    </body>
-    </html>
+</body>
+</html>
