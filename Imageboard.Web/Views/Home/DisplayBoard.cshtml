@@ -10,7 +10,6 @@
 <form id="delform" method="post" asp-action="Delete">
     @foreach (var tread in Model.Treads)
     {
-        tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
         if (tread.Posts.Count() > NumberOfDisplayedMessages)
         {
             int NumberOfOmittedMessages = tread.Posts.Count() - NumberOfDisplayedMessages;

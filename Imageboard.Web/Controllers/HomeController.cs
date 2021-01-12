@@ -29,7 +29,7 @@ namespace Imageboard.Web.Controllers
                 List<Tread> treads = new List<Tread>();
                 for (int i = 0; i < 10; i++) 
                 {
-                    Tread tread = new Tread();
+                    Tread tread = new Tread() { Board = board };
                     List<Post> posts = new List<Post>();
                     for (int j = 0; j < 50; j++)
                     {
@@ -90,9 +90,14 @@ namespace Imageboard.Web.Controllers
         [HttpGet]
         public IActionResult DisplayBoard(int id = 1)
         {
-            var boards = db.Boards.Include(b => b.Treads)
-                                  .ThenInclude(t => t.Posts).AsNoTracking();
-            return View(boards.ToList().First());
+            var board = db.Boards.Single(b => b.Id == id);
+            db.Entry(board).Collection(b => b.Treads).Load();
+            foreach (var tread in board.Treads)
+            {
+                db.Entry(tread).Collection(t => t.Posts).Load();
+                tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
+            }
+            return View(board);
         }
         [HttpGet]
         public IActionResult DisplayTread(int id)
