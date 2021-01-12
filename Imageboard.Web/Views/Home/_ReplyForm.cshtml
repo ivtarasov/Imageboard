@@ -1,0 +1,23 @@
+﻿<div class="theader">Ответ</div>
+<div class="postarea">
+    <form id="postform" method="post" enctype="multipart/form-data" asp-action="Reply">
+        <table width="1%">
+            <tbody>
+                <tr>
+                    <td class="postblock">Тема</td>
+                    <td>
+                        <input type="text" name="title" size="35">
+                        <input type="submit" value="Отправить">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">Сообщение</td>
+                    <td>
+                        <textarea name="message" cols="60" rows="6" spellcheck="false" data-gramm="false"></textarea>
+                    </td>
+                </tr>
+                <!-- <tr><td class="postblock">Файл</td><td><input type="file" name="file" size="35"></td></tr> -->
+            </tbody>
+        </table>
+    </form>
+</div>

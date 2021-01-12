@@ -1,0 +1,30 @@
+﻿@model TreadModel
+
+@{
+    Post openingPost = Model.Tread.Posts.First();
+    Model.Tread.Posts.RemoveAt(0);
+    int i = Model.FirstDisplayedPost;
+}
+
+@await Html.PartialAsync("_OpeningPost", new PostModel()
+{
+    Post = openingPost,
+    PostNumber = 1,
+    IsFromShortcutTread = Model.IsShortcut
+})
+
+<span class="omittedposts">@Model.AboutOmittedPosts</span>
+
+@foreach (var post in Model.Tread.Posts)
+{
+    @await Html.PartialAsync("_Post", new PostModel()
+    {
+        Post = post,
+        PostNumber = i,
+        IsFromShortcutTread = Model.IsShortcut
+    })
+    i++;
+}
+
+
+

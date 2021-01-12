@@ -1,0 +1,27 @@
+﻿@model PostModel
+
+<table>
+    <tbody>
+        <tr>
+            <td id="@Model.Post.Id">
+                <a name="@Model.Post.Id"></a>
+                <label>
+                    <input type="checkbox" name="ids[@(Model.PostNumber - 1)]" value="@Model.Post.Id">
+                    <span class="replytitle">@(Model.Post.Title ?? "")</span>
+                    <span class="commentpostername">@(Model.Post.PosterName ?? "Аноним")</span>
+                    <span class="posttime">@Model.Post.PostTime.ToString("dd.MM.yyyy (ddd) hh:mm:ss")</span>
+                </label>
+                <span class="reflink"> <a href="~/#@Model.Post.Id">№@Model.Post.Id</a> </span>
+                @if (Model.IsFromShortcutTread)
+                {
+                    @:[<a href="/Home/Tread/@Model.Post.TreadId">Ответ</a>]
+                }
+                else
+                {
+                    <span class="postnum">#@(Model.PostNumber)</span>
+                }
+                <blockquote> <p>@(Model.Post.Message ?? "")</p> </blockquote>
+            </td>
+        </tr>
+    </tbody>
+</table>

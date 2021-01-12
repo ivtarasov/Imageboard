@@ -1,0 +1,126 @@
+            @media only screen and (min-width: 360px) {
+                a img.thumb[src*="/src/"] {
+                    max-width: calc(100% - 8px);
+                    max-height: initial;
+                }
+
+                a img.thumb {
+                    margin: 0;
+                    padding: 2px 4px;
+                }
+            }
+
+            @media only screen and (min-width: 480px) {
+                a img.thumb[src*="/src/"] {
+                    max-width: calc(100% - 40px);
+                    max-height: initial;
+                }
+
+                a img.thumb {
+                    margin: 0;
+                    padding: 2px 20px;
+                }
+            }
+
+            .iichan-video-player {
+                max-width: 100%;
+                height: auto;
+                box-sizing: border-box;
+                padding: 2px 20px;
+                margin: 0;
+            }
+
+            .iichan-hide-video-btn {
+                margin: 2px 20px;
+            }
+
+            .iichan-mute-video-checkbox {
+                float: right;
+            }
+
+            .iichan-hide-video-btn > span::before {
+                content: '[';
+            }
+
+            .iichan-hide-video-btn > span::after {
+                content: ']';
+            }
+
+            .iichan-hide-video-btn svg {
+                width: 16px;
+                height: 16px;
+                vertical-align: text-top;
+            }
+
+            .iichan-hide-video-btn use {
+                pointer-events: none;
+            }
+
+            #iichan-video-player-icons {
+                display: none;
+            }
+
+            a.imglink {
+                text-decoration: none;
+            }
+			
+            .iichan-quick-reply-btn {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                vertical-align: text-top;
+            }
+
+                .iichan-quick-reply-btn > svg {
+                    width: 16px;
+                    height: 16px;
+                }
+
+                .iichan-quick-reply-btn use {
+                    pointer-events: none;
+                }
+
+            .iichan-quick-reply-btn {
+                margin-left: 0.4em;
+                cursor: pointer;
+            }
+
+            #iichan-quick-reply-container .rules {
+                display: none;
+            }
+
+            #iichan-quick-reply-icons {
+                display: none;
+            }
+
+            .iichan-postform-container .theader {
+                width: auto;
+            }
+
+            .iichan-quick-reply-close-form-btn {
+                float: right;
+                cursor: pointer;
+                padding: 1px;
+            }
+
+                .iichan-quick-reply-close-form-btn svg {
+                    width: 16px;
+                    height: 16px;
+                    vertical-align: text-top;
+                }
+
+                .iichan-quick-reply-close-form-btn use {
+                    pointer-events: none;
+                }
+
+            @media only screen and (max-width: 480px) {
+                .iichan-postform-container table {
+                    margin: 0;
+                    width: 100%;
+                }
+            }
+
+            .iichan-postform-container table {
+                margin: 0px auto;
+                text-align: left;
+            }

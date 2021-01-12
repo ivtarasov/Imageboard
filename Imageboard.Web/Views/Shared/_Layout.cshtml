@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>@ViewData["Title"] - TreadApp</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="shortcut icon" href="/iichan_b.ico">
+    <link rel="stylesheet" type="text/css" href="~/css/global.css">
+    <link rel="stylesheet" type="text/css" href="~/css/some.css">
+    <link rel="stylesheet" type="text/css" href="~/css/tomorrow.css" title="Tomorrow">
+</head>
+
+<body class="replypage">
+    <header></header>
+    <main>
+        @await Html.PartialAsync("_ReplyForm")
+        <hr>
+        <br clear="left">
+        <form id="delform" method="post" asp-action="Delete">
+            @RenderBody()
+            <br clear="left">
+            <hr>
+            @await Html.PartialAsync("_DeleteForm")
+        </form>
+        <br>
+        <br>
+    </main>
+    <footer></footer>
+    </body>
+    </html>
