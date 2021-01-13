@@ -5,16 +5,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Imageboard.Web.ViewModels;
+using Imageboard.Web.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Imageboard.Data.Contexts;
 using Imageboard.Data.Enteties;
+using Imageboard.Data;
 
 namespace Imageboard.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext db;
         private readonly Random random = new Random();
 
@@ -71,17 +72,15 @@ namespace Imageboard.Web.Controllers
             db.Posts.RemoveRange(replies);
             db.SaveChanges();
             return RedirectToAction("Index");
-        }
-        [HttpPost]
-        public IActionResult Reply(Post post)
+        }*/
+        //[HttpPost]
+        /*public IActionResult ReplyInTread(Post openingPost)
         {
-            Debug.WriteLine(post.Message ?? "Пусто!");
-            post.PostTime = DateTime.Now;
             db.Posts.Add(post);
             db.SaveChanges();
             return RedirectToAction("Index");
-        }
-        [HttpGet]
+        }*/
+        /*[HttpGet]
         public IActionResult Index()
         {
             Tread tread = new Tread() { Posts = db.Posts.AsNoTracking().ToList() };
@@ -97,7 +96,7 @@ namespace Imageboard.Web.Controllers
                 db.Entry(tread).Collection(t => t.Posts).Load();
                 tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             }
-            return View(board);
+            return View(new BoardViewModel() { Board = board });
         }
         [HttpGet]
         public IActionResult DisplayTread(int id)
@@ -105,13 +104,12 @@ namespace Imageboard.Web.Controllers
             var tread = db.Treads.Single(t => t.Id == id);
             db.Entry(tread).Collection(t => t.Posts).Load();
             tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
-            TreadViewModel treadModel = new TreadViewModel()
+            return View(new TreadViewModel()
             {
                 Tread = tread,
                 AboutOmittedPosts = "",
                 IsShortcut = false
-            };
-            return View(treadModel);
+            });
         }
 
         /*[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

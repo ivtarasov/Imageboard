@@ -1,6 +1,6 @@
 using System;
 
-namespace Imageboard.Web.ViewModels
+namespace Imageboard.Web.Models.ViewModels
 {
     public class ErrorViewModel
     {

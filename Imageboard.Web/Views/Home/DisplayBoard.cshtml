@@ -1,14 +1,14 @@
-﻿@model Board
+﻿@model BoardViewModel
 @{
     ViewData["Title"] = "Board";
 }
-@await Html.PartialAsync("_ReplyForm")
+@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel() { Action = ReplyFormAction.CreateTread, ChangeTargetId = Model.Board.Id })
 <hr>
 @{
     int NumberOfDisplayedMessages = 7; // из конфига в будущем
 }
 <form id="delform" method="post" asp-action="Delete">
-    @foreach (var tread in Model.Treads)
+    @foreach (var tread in Model.Board.Treads)
     {
         if (tread.Posts.Count() > NumberOfDisplayedMessages)
         {

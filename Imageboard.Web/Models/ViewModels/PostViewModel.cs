@@ -1,6 +1,6 @@
 ﻿using Imageboard.Data.Enteties;
 
-namespace Imageboard.Web.ViewModels
+namespace Imageboard.Web.Models.ViewModels
 {
     public class PostViewModel
     {

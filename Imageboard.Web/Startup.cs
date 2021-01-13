@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Imageboard.Web.ViewModels;
+using Imageboard.Web.Models.ViewModels;
 using Imageboard.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 

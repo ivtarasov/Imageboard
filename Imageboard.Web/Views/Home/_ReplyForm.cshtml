@@ -1,14 +1,15 @@
-﻿
+﻿@model ReplyFormViewModel
 
-<div class="theader">Ответ</div>
+<div class="theader">@Model.ActionNameInView</div>
 <div class="postarea">
-    <form id="postform" method="post" enctype="multipart/form-data" asp-action="Reply">
+    <form id="postform" method="post" enctype="multipart/form-data" asp-action="@Model.Action">
         <table width="1%">
             <tbody>
                 <tr>
                     <td class="postblock">Тема</td>
                     <td>
                         <input type="text" name="title" size="35">
+                        <input type="hidden" name="id" value="@Model.ChangeTargetId">
                         <input type="submit" value="Отправить">
                     </td>
                 </tr>
