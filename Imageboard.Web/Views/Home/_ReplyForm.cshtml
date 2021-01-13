@@ -9,7 +9,16 @@
                     <td class="postblock">Тема</td>
                     <td>
                         <input type="text" name="title" size="35">
-                        <input type="hidden" name="id" value="@Model.ChangeTargetId">
+                        @if (Model.Action == ReplyFormAction.CreateTread)
+                        {
+                            <input type="hidden" name="boardId" value="@Model.ChageTargetBoard.Id">
+                            <input type="hidden" name="NumberInTread" value="0">
+                        }
+                        else
+                        {
+                            <input type="hidden" name="treadId" value="@Model.ChageTargetTread.Id">
+                            <input type="hidden" name="NumberInTread" value="@Model.ChageTargetTread.Posts.Count()">
+                        }
                         <input type="submit" value="Отправить">
                     </td>
                 </tr>

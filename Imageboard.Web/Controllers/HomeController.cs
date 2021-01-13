@@ -73,19 +73,26 @@ namespace Imageboard.Web.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }*/
-        //[HttpPost]
-        /*public IActionResult ReplyInTread(Post openingPost)
+        [HttpPost]
+        public IActionResult ReplyInTread(Post post, int treadId)
         {
+            var tread = db.Treads.Single(t => t.Id == treadId);
+            post.Tread = tread;
+            post.PostTime = DateTime.Now;
             db.Posts.Add(post);
             db.SaveChanges();
-            return RedirectToAction("Index");
-        }*/
-        /*[HttpGet]
-        public IActionResult Index()
+
+            return RedirectToAction("DisplayTread", new { id = treadId });
+        }
+        public IActionResult CreateTread(Post openingPost, int boardId)
         {
-            Tread tread = new Tread() { Posts = db.Posts.AsNoTracking().ToList() };
-            return View(tread);
-        }*/
+            var board = db.Boards.Single(t => t.Id == boardId);
+            openingPost.PostTime = DateTime.Now;
+            Tread tread = new Tread() { Board = board, Posts = { openingPost } };
+            db.Treads.Add(tread);
+            db.SaveChanges();
+            return RedirectToAction("DisplayBoard", new { id = boardId });
+        }
         [HttpGet]
         public IActionResult DisplayBoard(int id = 1)
         {

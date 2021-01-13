@@ -1,4 +1,5 @@
 ﻿using Imageboard.Data;
+using Imageboard.Data.Enteties;
 
 namespace Imageboard.Web.Models.ViewModels
 {
@@ -6,10 +7,32 @@ namespace Imageboard.Web.Models.ViewModels
     {
         private ReplyFormAction action;
         private string actionNameInView;
+        public Tread ChageTargetTread { get; set; }
+        public Board ChageTargetBoard { get; set; }
+        public ReplyFormViewModel(ReplyFormAction act, Tread tread)
+        {
+            Action = act;
+            ChageTargetTread = tread;
+        }
+        public ReplyFormViewModel(ReplyFormAction act, Board board)
+        {
+            Action = act;
+            ChageTargetBoard = board;
+        }
+        public ReplyFormViewModel(ReplyFormAction act, Board board, Tread tread)
+        {
+            Action = act;
+            ChageTargetBoard = board;
+            ChageTargetTread = tread;
+        }
+        public string ActionNameInView
+        {
+            get => actionNameInView;
+            private set => actionNameInView = value;
+        }
         public ReplyFormAction Action
         {
             get => action;
-
             set
             {
                 action = value;
@@ -23,13 +46,6 @@ namespace Imageboard.Web.Models.ViewModels
                         break;
                 }
             }
-        }  
-        public string ActionNameInView
-        {
-            get => actionNameInView;
-            private set => actionNameInView = value;
-        }
-        public int ChangeTargetId { get; set; } //Tread or Board id
-        
+        } 
     }
 }
