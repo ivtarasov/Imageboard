@@ -23,10 +23,16 @@ namespace Imageboard.Web.Controllers
         {
             //_logger = logger;
             db = context;
-
-            if (db.Boards.Count() == 0)
+            if (db.Treads.Count() == 0 || db.Boards.Count() == 0)
             {
-                Board board = new Board();
+                Board board;
+                if (db.Boards.Count() != 0)
+                {
+                    board = db.Boards.First();
+                } else
+                {
+                    board = new Board();
+                }
                 List<Tread> treads = new List<Tread>();
                 for (int i = 0; i < 10; i++) 
                 {
@@ -47,7 +53,7 @@ namespace Imageboard.Web.Controllers
                     treads.Add(tread);
                 }
                 board.Treads.AddRange(treads);
-                db.Boards.Add(board);
+                db.Boards.Update(board);
                 db.SaveChanges();
             }
         }
@@ -59,20 +65,28 @@ namespace Imageboard.Web.Controllers
                                         .Select(s => s[random.Next(s.Length)])
                                         .ToArray());
         }
-        /*[HttpPost]
+        [HttpPost]
         public IActionResult Delete(Dictionary<int, int> ids)
         {
-            var replies = from r in db.Posts
-                          where ids.Values.Contains(r.Id)
-                            select r;
-            foreach (var id in ids)
-            {
-                Debug.WriteLine($"{id} -- Полученное id.");
-            }
-            db.Posts.RemoveRange(replies);
+            var posts = db.Posts.Where(p => ids.Values.Contains(p.Id));
+            var openingPosts = posts.Where(p => p.NumberInTread == 0);
+            DeleteTreads(openingPosts);
+            DeletePosts(posts.Except(openingPosts));
             db.SaveChanges();
-            return RedirectToAction("Index");
-        }*/
+            return RedirectToAction("DisplayBoard", new { id = 1 });
+        }
+        [NonAction]
+        public void DeletePosts(IEnumerable<Post> posts)
+        {
+            db.Posts.RemoveRange(posts);
+        }
+        [NonAction]
+        public void DeleteTreads(IEnumerable<Post> openingPosts)
+        {
+            var treadIds = openingPosts.Select(p => p.TreadId);
+            var treads = db.Treads.Where(t => treadIds.Contains(t.Id));
+            db.Treads.RemoveRange(treads);
+        }
         [HttpPost]
         public IActionResult ReplyInTread(Post post, int treadId)
         {
