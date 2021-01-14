@@ -5,21 +5,13 @@
     Model.Tread.Posts.RemoveAt(0);
 }
 
-@await Html.PartialAsync("_OpeningPost", new PostViewModel()
-{
-    Post = openingPost,
-    IsFromShortcutTread = Model.IsShortcut
-})
+@await Html.PartialAsync("_OpeningPost", new PostViewModel(openingPost, Model.IsShortcut))
 
 <span class="omittedposts">@Model.AboutOmittedPosts</span>
 
 @foreach (var post in Model.Tread.Posts)
 {
-    @await Html.PartialAsync("_Post", new PostViewModel()
-    {
-        Post = post,
-        IsFromShortcutTread = Model.IsShortcut
-    })
+    @await Html.PartialAsync("_Post", new PostViewModel(post, Model.IsShortcut))
 }
 
 

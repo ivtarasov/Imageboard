@@ -13,5 +13,9 @@ namespace Imageboard.Data.Enteties
         {
             Treads = new List<Tread>();
         }
+        public Board(List<Tread> treads)
+        {
+            Treads = treads;
+        }
     }
 }

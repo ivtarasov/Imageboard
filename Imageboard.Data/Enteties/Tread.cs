@@ -16,5 +16,18 @@ namespace Imageboard.Data.Enteties
         {
             Posts = new List<Post>();
         }
+        public Tread(List<Post> posts)
+        {
+            Posts = posts;
+        }
+        public Tread(Board board)
+        {
+            Board = board;
+        }
+        public Tread(Board board, List<Post> posts)
+        {
+            Board = board;
+            Posts = posts;
+        }
     }
 }

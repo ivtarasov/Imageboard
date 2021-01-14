@@ -36,18 +36,13 @@ namespace Imageboard.Web.Controllers
                 List<Tread> treads = new List<Tread>();
                 for (int i = 0; i < 10; i++) 
                 {
-                    Tread tread = new Tread() { Board = board };
+                    Tread tread = new Tread(board);
                     List<Post> posts = new List<Post>();
                     for (int j = 0; j < 50; j++)
                     {
-                        posts.Add(new Post()
-                        {
-                            Message = j == 0 ? "Opening post." : RandomString(random.Next(10, 500)),
-                            Title = j == 0 ? "Title of opening post." : RandomString(random.Next(0, 5)),
-                            PostTime = DateTime.Now,
-                            Tread = tread,
-                            NumberInTread = j
-                        });
+                        posts.Add(new Post(j == 0 ? $"Opening post. {j}" : RandomString(random.Next(10, 500)),
+                                           j == 0 ? $"Title of opening post.{j}" : RandomString(random.Next(0, 5)),
+                                           DateTime.Now, tread, j));
                     }
                     tread.Posts.AddRange(posts);
                     treads.Add(tread);
@@ -102,7 +97,7 @@ namespace Imageboard.Web.Controllers
         {
             var board = db.Boards.Single(t => t.Id == boardId);
             openingPost.PostTime = DateTime.Now;
-            Tread tread = new Tread() { Board = board, Posts = { openingPost } };
+            Tread tread = new Tread(board, new List<Post>(){ openingPost });
             db.Treads.Add(tread);
             db.SaveChanges();
             return RedirectToAction("DisplayBoard", new { id = boardId });
@@ -117,7 +112,7 @@ namespace Imageboard.Web.Controllers
                 db.Entry(tread).Collection(t => t.Posts).Load();
                 tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             }
-            return View(new BoardViewModel() { Board = board });
+            return View(new BoardViewModel(board));
         }
         [HttpGet]
         public IActionResult DisplayTread(int id)
@@ -125,12 +120,7 @@ namespace Imageboard.Web.Controllers
             var tread = db.Treads.Single(t => t.Id == id);
             db.Entry(tread).Collection(t => t.Posts).Load();
             tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
-            return View(new TreadViewModel()
-            {
-                Tread = tread,
-                AboutOmittedPosts = "",
-                IsShortcut = false
-            });
+            return View(new TreadViewModel(tread, "", false));
         }
 
         /*[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -15,21 +15,15 @@
             int NumberOfOmittedMessages = tread.Posts.Count() - NumberOfDisplayedMessages;
             tread.Posts.RemoveRange(1, NumberOfOmittedMessages);
 
-            @await Html.PartialAsync("_Tread", new TreadViewModel()
-            {
-                Tread = tread,
-                AboutOmittedPosts = $"Пропущено сообщений {NumberOfOmittedMessages}. Для просмотра нажмите \"Ответ\".",
-                IsShortcut = true
-            })
+            @await Html.PartialAsync("_Tread", new TreadViewModel(tread,
+                                                                  $"Пропущено сообщений {NumberOfOmittedMessages}. Для просмотра нажмите \"Ответ\".",
+                                                                  true))
         }
         else
         {
-            @await Html.PartialAsync("_Tread", new TreadViewModel()
-        {
-            Tread = tread,
-            AboutOmittedPosts = $"Пропущено сообщений {0}. Для просмотра нажмите \"Ответ\".",
-            IsShortcut = true
-        })
+            @await Html.PartialAsync("_Tread", new TreadViewModel(tread,
+                                                                  $"Пропущено сообщений {0}. Для просмотра нажмите \"Ответ\".",
+                                                                  true))
         }
         <hr>
     }
