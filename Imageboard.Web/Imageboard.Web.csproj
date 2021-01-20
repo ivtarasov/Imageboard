@@ -9,9 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Imageboard.Crypto\Imageboard.Pass.csproj" />
     <ProjectReference Include="..\Imageboard.Data\Imageboard.Data.csproj" />
-    <ProjectReference Include="..\Imageboard.WakabaMark\Imageboard.Markup.csproj" />
+    <ProjectReference Include="..\Imageboard.Markup\Imageboard.Markup.csproj" />
+    <ProjectReference Include="..\Imageboard.Pass\Imageboard.Pass.csproj" />
   </ItemGroup>
 
 </Project>
