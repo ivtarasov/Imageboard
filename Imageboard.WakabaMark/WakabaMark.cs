@@ -23,15 +23,14 @@ namespace Imageboard.Markup
                 {
                     if (marksPosition.ContainsKey(mappedValue))
                     {
-                        foreach (var mark in marksPosition)
-                        {
-                            Console.WriteLine($"{mark.Key} -- {mark.Value}");
-                        }
                         value[marksPosition[mappedValue]] = MarkToHtmlMapper.Map(mappedValue);
                         value[i] = MarkToHtmlMapper.SecondMap(mappedValue);
                         marksPosition.Remove(mappedValue);
                     }
-                    marksPosition.Add(mappedValue, i);
+                    else
+                    {
+                        marksPosition.Add(mappedValue, i);
+                    }
                 }
                 i++;
             }
