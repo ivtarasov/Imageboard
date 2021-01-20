@@ -17,7 +17,7 @@ namespace Imageboard.Web.Controllers
     {
         //private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext db;
-        private readonly Random random = new Random();
+        static private readonly Random random = new Random();
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
@@ -52,7 +52,7 @@ namespace Imageboard.Web.Controllers
                 db.SaveChanges();
             }
         }
-        public string RandomString(int length)
+        static public string RandomString(int length)
         {
             const string chars = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
                                  "абвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789" + "\n\n";
@@ -61,14 +61,14 @@ namespace Imageboard.Web.Controllers
                                         .ToArray());
         }
         [HttpPost]
-        public IActionResult Delete(Dictionary<int, int> ids)
+        public IActionResult Delete(Dictionary<int, int> ids, int boardId)
         {
             var posts = db.Posts.Where(p => ids.Values.Contains(p.Id));
             var openingPosts = posts.Where(p => p.NumberInTread == 0);
             DeleteTreads(openingPosts);
             DeletePosts(posts.Except(openingPosts));
             db.SaveChanges();
-            return RedirectToAction("DisplayBoard", new { id = 1 });
+            return RedirectToAction("DisplayBoard", new { id = boardId });
         }
         [NonAction]
         public void DeletePosts(IEnumerable<Post> posts)
@@ -119,6 +119,7 @@ namespace Imageboard.Web.Controllers
         {
             var tread = db.Treads.Single(t => t.Id == id);
             db.Entry(tread).Collection(t => t.Posts).Load();
+            db.Entry(tread).Reference(t => t.Board).Load();
             tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             return View(new TreadViewModel(tread, "", false));
         }

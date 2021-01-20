@@ -2,7 +2,8 @@
 @{
     ViewData["Title"] = "Tread";
 }
-@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.ReplyInTread, Model.Tread));
+[<a href="/Home/DisplayBoard/@Model.Tread.Board.Id">Назад</a>]
+@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.ReplyInTread, Model.Tread))
 <hr>
 <form id="delform" method="post" asp-action="Delete">
     @await Html.PartialAsync("_Tread", Model)

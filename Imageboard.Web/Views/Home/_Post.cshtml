@@ -8,6 +8,7 @@
                 <a name="@Model.Post.Id"></a>
                 <label>
                     <input type="checkbox" name="ids[@(Model.Post.Id)]" value="@Model.Post.Id">
+                    <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
                     <span class="replytitle">@(Model.Post.Title ?? "")</span>
                     <span class="commentpostername">@(Model.Post.PosterName ?? "Аноним")</span>
                     <span class="posttime">@Model.Post.PostTime.ToString("dd.MM.yyyy (ddd) hh:mm:ss")</span>
