@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Imageboard.Markup;
 
 namespace Imageboard.Web
 {
@@ -13,6 +9,8 @@ namespace Imageboard.Web
     {
         public static void Main(string[] args)
         {
+            var sourse = "*te**st*";
+            Console.WriteLine(WakabaMark.MakeMarkUp(sourse));
             //CreateHostBuilder(args).Build().Run();
         }
 

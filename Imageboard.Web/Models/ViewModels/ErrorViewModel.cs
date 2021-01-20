@@ -1,4 +1,3 @@
-using System;
 
 namespace Imageboard.Web.Models.ViewModels
 {

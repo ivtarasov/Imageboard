@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Imageboard.Data
 {
-    class Configuration
+    public class Configuration
     {
     }
 }

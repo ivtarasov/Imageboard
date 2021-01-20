@@ -1,40 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Imageboard.WakabaMark
+namespace Imageboard.Markup
 {
-    public class WakabaMark
+    public static class WakabaMark
     {
-        public static void MakeMarkUp(string sourse)
+        public static string MakeMarkUp(string sourse)
         {
-            Dictionary<Mark, int> marksDict = new Dictionary<Mark, int>();
+            Dictionary<Marks, int> marksPosition = new Dictionary<Marks, int>();
             char[] value = sourse.ToCharArray();
-            MarkUp(ref value, marksDict);
+            MarkUp(ref value, marksPosition);
+            return new string(value);
+
         }
-        private static void MarkUp(ref char[] value, Dictionary<Mark, int> marksDict)
+        private static void MarkUp(ref char[] value, Dictionary<Marks, int> marksPosition)
         {
             var i = 0;
             while (i < value.Length)
             {
                 var mappedValue = CharToMarkMapper.Map(value[i]);
-                if (mappedValue != Mark.None)
+                if (mappedValue != Marks.None)
                 {
-                    if (marksDict.ContainsKey(mappedValue))
+                    if (marksPosition.ContainsKey(mappedValue))
                     {
-                        value[marksDict[mappedValue]] = MarkToHtmlMapper.Map(mappedValue);
+                        foreach (var mark in marksPosition)
+                        {
+                            Console.WriteLine($"{mark.Key} -- {mark.Value}");
+                        }
+                        value[marksPosition[mappedValue]] = MarkToHtmlMapper.Map(mappedValue);
                         value[i] = MarkToHtmlMapper.SecondMap(mappedValue);
-                        MarkUp(ref value, marksDict);
+                        marksPosition.Remove(mappedValue);
                     }
-                    marksDict.Add(mappedValue, i);
-                    MarkUp(ref value, marksDict);
-                    return;
+                    marksPosition.Add(mappedValue, i);
                 }
                 i++;
             }
-        }
-        static private void ChangeChars(ref char value)
-        {
-            
         }
     }
 }

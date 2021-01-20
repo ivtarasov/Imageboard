@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imageboard.Data", "Imageboa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imageboard.Pass", "Imageboard.Crypto\Imageboard.Pass.csproj", "{656480F3-653C-48F3-982B-FE7B0697EFFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imageboard.WakabaMark", "Imageboard.WakabaMark\Imageboard.WakabaMark.csproj", "{CFA185C7-40BE-4590-A5B7-F65DFC15D552}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imageboard.Markup", "Imageboard.WakabaMark\Imageboard.Markup.csproj", "{CFA185C7-40BE-4590-A5B7-F65DFC15D552}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

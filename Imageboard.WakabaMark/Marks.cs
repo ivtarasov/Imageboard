@@ -1,8 +1,7 @@
 ﻿
-
-namespace Imageboard.WakabaMark
+namespace Imageboard.Markup
 {
-    public enum  Mark
+    public enum  Marks
     {
         Code,
         Bold,

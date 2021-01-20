@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Imageboard.WakabaMark
+namespace Imageboard.Markup
 {
     class CharToMarkMapper
     {
-        public static Mark Map(char value)
+        public static Marks Map(char value)
         {
             switch (value)
             {
                 case '\'':
-                    return Mark.Code;
+                    return Marks.Code;
                 case '*':
-                    return Mark.Bold;
+                    return Marks.Bold;
                 case '_':
-                    return Mark.Italic;
+                    return Marks.Italic;
                 case '#':
-                    return Mark.Spoler;
+                    return Marks.Spoler;
                 default:
-                    return Mark.None;
+                    return Marks.None;
             }
         }
     }

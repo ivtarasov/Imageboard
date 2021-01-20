@@ -2,38 +2,38 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Imageboard.WakabaMark
+namespace Imageboard.Markup
 {
     class MarkToHtmlMapper
     {
         // временный вид
-        public static char Map(Mark value)
+        public static char Map(Marks value)
         {
             switch (value)
             {
-                case Mark.Code:
+                case Marks.Code:
                     return '[';
-                case Mark.Bold:
+                case Marks.Bold:
                     return '{';
-                case Mark.Italic:
+                case Marks.Italic:
                     return '(';
-                case Mark.Spoler:
+                case Marks.Spoler:
                     return '<';
                 default:
                     return '!';
             }
         }
-        public static char SecondMap(Mark value)
+        public static char SecondMap(Marks value)
         {
             switch (value)
             {
-                case Mark.Code:
+                case Marks.Code:
                     return ']';
-                case Mark.Bold:
+                case Marks.Bold:
                     return '}';
-                case Mark.Italic:
+                case Marks.Italic:
                     return ')';
-                case Mark.Spoler:
+                case Marks.Spoler:
                     return '>';
                 default:
                     return '!';
