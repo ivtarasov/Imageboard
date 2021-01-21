@@ -81,22 +81,24 @@ namespace Imageboard.Web.Controllers
             db.Treads.RemoveRange(treads);
         }
         [HttpPost]
-        public IActionResult ReplyInTread(Post post, int treadId)
+        public IActionResult ReplyInTread(string message, string title, int treadId)
         {
             var tread = db.Treads.Single(t => t.Id == treadId);
-            post.Tread = tread;
-            post.PostTime = DateTime.Now;
-            db.Posts.Add(post);
+            db.Entry(tread).Collection(t => t.Posts).Load();
+            var post = new Post(message, title, DateTime.Now, tread, tread.Posts.Count());
+            tread.Posts.Add(post);
+            db.Update(tread);
             db.SaveChanges();
-
             return RedirectToAction("DisplayTread", new { id = treadId });
         }
-        public IActionResult CreateTread(Post openingPost, int boardId)
+        public IActionResult CreateTread(string message, string title, int boardId)
         {
             var board = db.Boards.Single(t => t.Id == boardId);
-            openingPost.PostTime = DateTime.Now;
-            Tread tread = new Tread(board, new List<Post>(){ openingPost });
-            db.Treads.Add(tread);
+            db.Entry(board).Collection(b => b.Treads).Load();
+            var openingPost = new Post(message, title, DateTime.Now);
+            Tread tread = new Tread(board, openingPost);
+            board.Treads.Add(tread);
+            db.Update(board);
             db.SaveChanges();
             return RedirectToAction("DisplayBoard", new { id = boardId });
         }

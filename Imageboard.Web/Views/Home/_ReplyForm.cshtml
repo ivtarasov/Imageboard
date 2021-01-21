@@ -12,12 +12,10 @@
                         @if (Model.Action == ReplyFormAction.CreateTread)
                         {
                             <input type="hidden" name="boardId" value="@Model.ChageTargetBoard.Id">
-                            <input type="hidden" name="NumberInTread" value="0">
                         }
                         else
                         {
                             <input type="hidden" name="treadId" value="@Model.ChageTargetTread.Id">
-                            <input type="hidden" name="NumberInTread" value="@Model.ChageTargetTread.Posts.Count()">
                         }
                         <input type="submit" value="Отправить">
                     </td>

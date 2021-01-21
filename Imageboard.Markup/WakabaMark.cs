@@ -5,10 +5,10 @@ namespace Imageboard.Markup
 {
     public static class WakabaMark
     {
-        public static string MakeMarkUp(string sourse)
+        public static string MakeMarkup(string sourse)
         {
-            Dictionary<Marks, int> marksPosition = new Dictionary<Marks, int>();
-            char[] value = sourse.ToCharArray();
+            var marksPosition = new Dictionary<Marks, int>();
+            var value = sourse.ToCharArray();
             MarkUp(ref value, marksPosition);
             return new string(value);
 

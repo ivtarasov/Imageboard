@@ -9,8 +9,9 @@ namespace Imageboard.Web
     {
         public static void Main(string[] args)
         {
-            var sourse = "*te*sdf_sfr*sqweeeee_eeeeet*";
-            Console.WriteLine(WakabaMark.MakeMarkUp(sourse));
+            /*var sourse = "*te*sdf_sfr*sqweeeee_eeeeet*";
+            Console.WriteLine(WakabaMark.MakeMarkup(sourse));*/
+            CreateHostBuilder(args).Build().Run();
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)

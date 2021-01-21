@@ -23,11 +23,20 @@ namespace Imageboard.Data.Enteties
         public Tread(Board board)
         {
             Board = board;
+            Posts = new List<Post>();
         }
         public Tread(Board board, List<Post> posts)
         {
             Board = board;
             Posts = posts;
+        }
+        public Tread(Board board, Post openingPost)
+        {
+            Board = board;
+            Posts = new List<Post>();
+            openingPost.Tread = this;
+            openingPost.NumberInTread = 0;
+            Posts.Add(openingPost);
         }
     }
 }

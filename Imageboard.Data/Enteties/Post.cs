@@ -22,8 +22,14 @@ namespace Imageboard.Data.Enteties
             Message = message;
             Title = title;
             PostTime = postTime;
-            NumberInTread = numberInTread;
             Tread = tread;
+            NumberInTread = numberInTread;
+        }
+        public Post(string message, string title, DateTime postTime)
+        {
+            Message = message;
+            Title = title;
+            PostTime = postTime;
         }
     }
 }
