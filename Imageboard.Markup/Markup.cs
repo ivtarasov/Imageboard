@@ -24,20 +24,18 @@ namespace Imageboard.Markup
                 {
                     if (mstack.Contains(mappedValue))
                     {
-                        var mark = mstack.Pop();
+                        Mark mark;
                         var tmpstack = new Stack<Mark>();
-                        while (true)
+                        while ((mark = mstack.Pop()) != mappedValue)
                         {
-                            if (mark == mappedValue)
-                            {
-                                stringBuilder.Append(MarkToHtmlMapper.SecondMap(mappedValue));
-                                break;
-                            } 
-                            else
-                            {
-                                stringBuilder.Append(MarkToHtmlMapper.SecondMap(mappedValue));
-                            }
-                            mark = mstack.Pop();
+                                stringBuilder.Append(MarkToHtmlMapper.SecondMap(mark));
+                                tmpstack.Push(mark);
+                        }
+                        stringBuilder.Append(MarkToHtmlMapper.SecondMap(mappedValue));
+                        while (tmpstack.TryPop(out mark))
+                        {
+                            stringBuilder.Append(MarkToHtmlMapper.Map(mark));
+                            mstack.Push(mark);
                         }
                     } 
                     else

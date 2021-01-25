@@ -15,13 +15,13 @@ namespace MarkupTests
             if (result == expectedResult)
             {
                 stringBuilder.Append("First test passed.\n")
-                             .Append($"#####\n");
+                             .Append($"#########\n");
             } else
             {
                 stringBuilder.Append("First test failed.\n")
                              .Append($"Expected result: {expectedResult}\n")
                              .Append($"The result: {result}\n")
-                             .Append($"#####\n");
+                             .Append($"#########\n");
             }
             return stringBuilder.ToString();
         }
@@ -34,14 +34,54 @@ namespace MarkupTests
             if (result == expectedResult)
             {
                 stringBuilder.Append("Second test passed.\n")
-                             .Append($"#####\n");
+                             .Append($"#########\n");
             }
             else
             {
                 stringBuilder.Append("Second test failed.\n")
                              .Append($"Expected result: {expectedResult}\n")
                              .Append($"The result: {result}\n")
-                             .Append($"#####\n");
+                             .Append($"#########\n");
+            }
+            return stringBuilder.ToString();
+        }
+        static private string ThirdTest()
+        {
+            var sourse = "|*_#*_#|";
+            var expectedResult = "|{(<>)}(<>)<>|";
+            var stringBuilder = new StringBuilder();
+            var result = Markup.MakeMarkup(sourse);
+            if (result == expectedResult)
+            {
+                stringBuilder.Append("Third test passed.\n")
+                             .Append($"#########\n");
+            }
+            else
+            {
+                stringBuilder.Append("Third test failed.\n")
+                             .Append($"Expected result: {expectedResult}\n")
+                             .Append($"The result: {result}\n")
+                             .Append($"#########\n");
+            }
+            return stringBuilder.ToString();
+        }
+        static private string FourTest()
+        {
+            var sourse = "||";
+            var expectedResult = "||";
+            var stringBuilder = new StringBuilder();
+            var result = Markup.MakeMarkup(sourse);
+            if (result == expectedResult)
+            {
+                stringBuilder.Append("Four test passed.\n")
+                             .Append($"#########\n");
+            }
+            else
+            {
+                stringBuilder.Append("Four test failed.\n")
+                             .Append($"Expected result: {expectedResult}\n")
+                             .Append($"The result: {result}\n")
+                             .Append($"#########\n");
             }
             return stringBuilder.ToString();
         }
@@ -49,6 +89,8 @@ namespace MarkupTests
         {
             Console.WriteLine(Test.FirstTest());
             Console.WriteLine(Test.SecondTest());
+            Console.WriteLine(Test.ThirdTest());
+            Console.WriteLine(Test.FourTest());
         }
     }
 }
