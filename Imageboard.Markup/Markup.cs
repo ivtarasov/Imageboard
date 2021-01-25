@@ -11,7 +11,6 @@ namespace Imageboard.Markup
         {
             var value = sourse.ToCharArray();
             return MarkUp(value);
-
         }
         private static string MarkUp(char[] value)
         {

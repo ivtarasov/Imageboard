@@ -65,7 +65,7 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
-        static private string FourTest()
+        static private string FourthTest()
         {
             var sourse = "||";
             var expectedResult = "||";
@@ -73,12 +73,32 @@ namespace MarkupTests
             var result = Markup.MakeMarkup(sourse);
             if (result == expectedResult)
             {
-                stringBuilder.Append("Four test passed.\n")
+                stringBuilder.Append("Fourth test passed.\n")
                              .Append($"#########\n");
             }
             else
             {
-                stringBuilder.Append("Four test failed.\n")
+                stringBuilder.Append("Fourth test failed.\n")
+                             .Append($"Expected result: {expectedResult}\n")
+                             .Append($"The result: {result}\n")
+                             .Append($"#########\n");
+            }
+            return stringBuilder.ToString();
+        }
+        static private string FifthTest()
+        {
+            var sourse = "|*#*_#_|";
+            var expectedResult = "|{<>}<>(<>)|";
+            var stringBuilder = new StringBuilder();
+            var result = Markup.MakeMarkup(sourse);
+            if (result == expectedResult)
+            {
+                stringBuilder.Append("Fifth test passed.\n")
+                             .Append($"#########\n");
+            }
+            else
+            {
+                stringBuilder.Append("Fifth test failed.\n")
                              .Append($"Expected result: {expectedResult}\n")
                              .Append($"The result: {result}\n")
                              .Append($"#########\n");
@@ -90,7 +110,8 @@ namespace MarkupTests
             Console.WriteLine(Test.FirstTest());
             Console.WriteLine(Test.SecondTest());
             Console.WriteLine(Test.ThirdTest());
-            Console.WriteLine(Test.FourTest());
+            Console.WriteLine(Test.FourthTest());
+            Console.WriteLine(Test.FifthTest());
         }
     }
 }
