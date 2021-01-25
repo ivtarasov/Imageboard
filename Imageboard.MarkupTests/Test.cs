@@ -25,9 +25,30 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
+        static private string SecondTest()
+        {
+            var sourse = "|*_*_|";
+            var expectedResult = "|{[]}[]|";
+            var stringBuilder = new StringBuilder();
+            var result = Markup.MakeMarkup(sourse);
+            if (result == expectedResult)
+            {
+                stringBuilder.Append("Second test passed.\n")
+                             .Append($"#####\n");
+            }
+            else
+            {
+                stringBuilder.Append("Second test failed.\n")
+                             .Append($"Expected result: {expectedResult}\n")
+                             .Append($"The result: {result}\n")
+                             .Append($"#####\n");
+            }
+            return stringBuilder.ToString();
+        }
         static void Main(string[] args)
         {
             Console.WriteLine(Test.FirstTest());
+            Console.WriteLine(Test.SecondTest());
         }
     }
 }
