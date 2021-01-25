@@ -9,8 +9,8 @@ namespace Imageboard.Markup
     {
         public static string MakeMarkup(string sourse)
         {
-            var val = sourse.ToCharArray();
-            return MarkUp(val);
+            var value = sourse.ToCharArray();
+            return MarkUp(value);
 
         }
         private static string MarkUp(char[] value)
