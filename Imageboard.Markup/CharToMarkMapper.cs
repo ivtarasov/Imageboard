@@ -6,20 +6,22 @@ namespace Imageboard.Markup
 {
     class CharToMarkMapper
     {
-        public static Marks Map(char value)
+        public static Mark Map(char value)
         {
             switch (value)
             {
                 case '\'':
-                    return Marks.Code;
+                    return Mark.Code;
                 case '*':
-                    return Marks.Bold;
+                    return Mark.Bold;
                 case '_':
-                    return Marks.Italic;
+                    return Mark.Italic;
                 case '#':
-                    return Marks.Spoler;
+                    return Mark.Spoler;
+                case '|':
+                    return Mark.End;
                 default:
-                    return Marks.None;
+                    return Mark.None;
             }
         }
     }

@@ -7,34 +7,38 @@ namespace Imageboard.Markup
     class MarkToHtmlMapper
     {
         // временный вид
-        public static char Map(Marks value)
+        public static char Map(Mark value)
         {
             switch (value)
             {
-                case Marks.Code:
+                case Mark.Code:
                     return '[';
-                case Marks.Bold:
+                case Mark.Bold:
                     return '{';
-                case Marks.Italic:
+                case Mark.Italic:
                     return '(';
-                case Marks.Spoler:
+                case Mark.Spoler:
                     return '<';
+                case Mark.End:
+                    return '|';
                 default:
                     return '!';
             }
         }
-        public static char SecondMap(Marks value)
+        public static char SecondMap(Mark value)
         {
             switch (value)
             {
-                case Marks.Code:
+                case Mark.Code:
                     return ']';
-                case Marks.Bold:
+                case Mark.Bold:
                     return '}';
-                case Marks.Italic:
+                case Mark.Italic:
                     return ')';
-                case Marks.Spoler:
+                case Mark.Spoler:
                     return '>';
+                case Mark.End:
+                    return '|';
                 default:
                     return '!';
             }

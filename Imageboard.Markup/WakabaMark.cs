@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Imageboard.Markup
 {
@@ -7,33 +9,44 @@ namespace Imageboard.Markup
     {
         public static string MakeMarkup(string sourse)
         {
-            var marksPosition = new Dictionary<Marks, int>();
             var value = sourse.ToCharArray();
-            MarkUp(ref value, marksPosition);
-            return new string(value);
+            return MarkUp(value);
 
         }
-        private static void MarkUp(ref char[] value, Dictionary<Marks, int> marksPosition)
+        private static string MarkUp(char[] value)
         {
-            var i = 0;
-            while (i < value.Length)
+            var mstack = new Stack<Mark>();
+            var sb = new StringBuilder();
+            for(var i = 0; i < value.Length; i++)
             {
                 var mappedValue = CharToMarkMapper.Map(value[i]);
-                if (mappedValue != Marks.None)
+                if (mappedValue != Mark.None)
                 {
-                    if (marksPosition.ContainsKey(mappedValue))
+                    if (mstack.Contains(mappedValue))
                     {
-                        value[marksPosition[mappedValue]] = MarkToHtmlMapper.Map(mappedValue);
-                        value[i] = MarkToHtmlMapper.SecondMap(mappedValue);
-                        marksPosition.Remove(mappedValue);
-                    }
+                        var m = mstack.Pop();
+                        while (true)
+                        {
+                            if (m == mappedValue)
+                            {
+                                sb.Append(MarkToHtmlMapper.SecondMap(mappedValue));
+                                break;
+                            } 
+                            else
+                            {
+                                sb.Append(MarkToHtmlMapper.SecondMap(mappedValue));
+                            }
+                            m = mstack.Pop();
+                        }
+                    } 
                     else
                     {
-                        marksPosition.Add(mappedValue, i);
+                        mstack.Push(mappedValue);
+                        sb.Append(MarkToHtmlMapper.Map(mappedValue));
                     }
                 }
-                i++;
             }
+            return sb.ToString();
         }
     }
 }
