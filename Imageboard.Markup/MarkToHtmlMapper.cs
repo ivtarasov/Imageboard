@@ -6,7 +6,6 @@ namespace Imageboard.Markup
 {
     class MarkToHtmlMapper
     {
-        // временный вид
         public static char Map(Mark value)
         {
             switch (value)

@@ -5,18 +5,18 @@ using System.Text;
 
 namespace Imageboard.Markup
 {
-    public static class WakabaMark
+    public static class Markup
     {
         public static string MakeMarkup(string sourse)
         {
-            var value = sourse.ToCharArray();
-            return MarkUp(value);
+            var val = sourse.ToCharArray();
+            return MarkUp(val);
 
         }
         private static string MarkUp(char[] value)
         {
             var mstack = new Stack<Mark>();
-            var sb = new StringBuilder();
+            var stringBuilder = new StringBuilder();
             for(var i = 0; i < value.Length; i++)
             {
                 var mappedValue = CharToMarkMapper.Map(value[i]);
@@ -24,29 +24,30 @@ namespace Imageboard.Markup
                 {
                     if (mstack.Contains(mappedValue))
                     {
-                        var m = mstack.Pop();
+                        var mark = mstack.Pop();
+                        var tmpstack = new Stack<Mark>();
                         while (true)
                         {
-                            if (m == mappedValue)
+                            if (mark == mappedValue)
                             {
-                                sb.Append(MarkToHtmlMapper.SecondMap(mappedValue));
+                                stringBuilder.Append(MarkToHtmlMapper.SecondMap(mappedValue));
                                 break;
                             } 
                             else
                             {
-                                sb.Append(MarkToHtmlMapper.SecondMap(mappedValue));
+                                stringBuilder.Append(MarkToHtmlMapper.SecondMap(mappedValue));
                             }
-                            m = mstack.Pop();
+                            mark = mstack.Pop();
                         }
                     } 
                     else
                     {
                         mstack.Push(mappedValue);
-                        sb.Append(MarkToHtmlMapper.Map(mappedValue));
+                        stringBuilder.Append(MarkToHtmlMapper.Map(mappedValue));
                     }
                 }
             }
-            return sb.ToString();
+            return stringBuilder.ToString();
         }
     }
 }
