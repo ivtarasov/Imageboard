@@ -10,7 +10,7 @@ namespace Imageboard.Markup
         {
             return value switch
             {
-                Mark.Code => "[",
+                Mark.Monospace => "[",
                 Mark.Bold => "{",
                 Mark.Italic => "(",
                 Mark.Spoler => "<",
@@ -29,7 +29,7 @@ namespace Imageboard.Markup
         {
             return value switch
             {
-                Mark.Code => "]",
+                Mark.Monospace => "]",
                 Mark.Bold => "}",
                 Mark.Italic => ")",
                 Mark.Spoler => ">",

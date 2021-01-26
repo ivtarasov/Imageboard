@@ -3,16 +3,18 @@ namespace Imageboard.Markup
 {
     public enum Mark
     {
-        Code,
+        /* PairedMarks. */
+        Monospace,
         Bold,
         Italic,
         Spoler,
 
+        /* NotPairedMarks. */
         NextLine,
-        OList,
-        UnList,
+        OList, // ordered list
+        UnList, // unordered list
         Quote,
-        Link,
+        Link, // link to another post 
 
         End,
         None
