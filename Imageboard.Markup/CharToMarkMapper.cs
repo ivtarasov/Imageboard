@@ -19,6 +19,9 @@ namespace Imageboard.Markup
                 '№' => Mark.OList,
                 '+' => Mark.UnList,
                 '>' => Mark.Quote,
+                /* Double quoting is the Mark.Link. 
+                 * It's checked in the parser.  
+                 */
 
                 '|' => Mark.End,
                 _ => Mark.None

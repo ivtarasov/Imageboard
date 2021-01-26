@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Imageboard.Markup
 {
-    public static class Markup
+    public static class Parser
     {
         public static string MarkUp(string value)
         {

@@ -17,10 +17,5 @@ namespace Imageboard.Markup
         End,
         None
     }
-    public enum Form
-    {
-        Open,
-        Close
-    }
 }
 
