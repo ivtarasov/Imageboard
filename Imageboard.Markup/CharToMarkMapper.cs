@@ -8,21 +8,21 @@ namespace Imageboard.Markup
     {
         public static Mark Map(char value)
         {
-            switch (value)
+            return value switch
             {
-                case '\'':
-                    return Mark.Code;
-                case '*':
-                    return Mark.Bold;
-                case '_':
-                    return Mark.Italic;
-                case '#':
-                    return Mark.Spoler;
-                case '|':
-                    return Mark.End;
-                default:
-                    return Mark.None;
-            }
+                '`' => Mark.Code,
+                '*' => Mark.Bold,
+                '_' => Mark.Italic,
+                '#' => Mark.Spoler,
+
+                '\n' => Mark.NextLine,
+                '№' => Mark.OList,
+                '+' => Mark.UnList,
+                '>' => Mark.Quote,
+
+                '|' => Mark.End,
+                _ => Mark.None
+            };
         }
     }
 }

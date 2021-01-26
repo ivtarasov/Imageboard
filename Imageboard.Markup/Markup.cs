@@ -7,18 +7,18 @@ namespace Imageboard.Markup
 {
     public static class Markup
     {
-        public static string MakeMarkup(string sourse)
-        {
-            var value = sourse.ToCharArray();
-            return MarkUp(value);
-        }
-        private static string MarkUp(char[] value)
+        public static string MarkUp(string value)
         {
             var mstack = new Stack<Mark>();
             var stringBuilder = new StringBuilder();
             for(var i = 0; i < value.Length; i++)
             {
+
                 var mappedValue = CharToMarkMapper.Map(value[i]);
+                if (mappedValue == Mark.NextLine)
+                {
+
+                }
                 if (mappedValue != Mark.None)
                 {
                     if (mstack.Contains(mappedValue))

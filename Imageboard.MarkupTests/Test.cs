@@ -11,7 +11,7 @@ namespace MarkupTests
             var sourse = "|**|";
             var expectedResult = "|{}|";
             var stringBuilder = new StringBuilder();
-            var result = Markup.MakeMarkup(sourse);
+            var result = Markup.MarkUp(sourse);
             if (result == expectedResult)
             {
                 stringBuilder.Append("First test passed.\n")
@@ -30,7 +30,7 @@ namespace MarkupTests
             var sourse = "|*_*_|";
             var expectedResult = "|{()}()|";
             var stringBuilder = new StringBuilder();
-            var result = Markup.MakeMarkup(sourse);
+            var result = Markup.MarkUp(sourse);
             if (result == expectedResult)
             {
                 stringBuilder.Append("Second test passed.\n")
@@ -50,7 +50,7 @@ namespace MarkupTests
             var sourse = "|*_#*_#|";
             var expectedResult = "|{(<>)}(<>)<>|";
             var stringBuilder = new StringBuilder();
-            var result = Markup.MakeMarkup(sourse);
+            var result = Markup.MarkUp(sourse);
             if (result == expectedResult)
             {
                 stringBuilder.Append("Third test passed.\n")
@@ -70,7 +70,7 @@ namespace MarkupTests
             var sourse = "||";
             var expectedResult = "||";
             var stringBuilder = new StringBuilder();
-            var result = Markup.MakeMarkup(sourse);
+            var result = Markup.MarkUp(sourse);
             if (result == expectedResult)
             {
                 stringBuilder.Append("Fourth test passed.\n")
@@ -90,7 +90,7 @@ namespace MarkupTests
             var sourse = "|*#*_#_|";
             var expectedResult = "|{<>}<()>()|";
             var stringBuilder = new StringBuilder();
-            var result = Markup.MakeMarkup(sourse);
+            var result = Markup.MarkUp(sourse);
             if (result == expectedResult)
             {
                 stringBuilder.Append("Fifth test passed.\n")

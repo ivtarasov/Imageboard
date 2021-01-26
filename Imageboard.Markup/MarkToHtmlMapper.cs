@@ -6,41 +6,43 @@ namespace Imageboard.Markup
 {
     class MarkToHtmlMapper
     {
-        public static char Map(Mark value)
+        public static string Map(Mark value)
         {
-            switch (value)
+            return value switch
             {
-                case Mark.Code:
-                    return '[';
-                case Mark.Bold:
-                    return '{';
-                case Mark.Italic:
-                    return '(';
-                case Mark.Spoler:
-                    return '<';
-                case Mark.End:
-                    return '|';
-                default:
-                    return '!';
-            }
+                Mark.Code => "[",
+                Mark.Bold => "{",
+                Mark.Italic => "(",
+                Mark.Spoler => "<",
+
+                Mark.UnList => "UNL",
+                Mark.OList => "OL",
+                Mark.Quote => "Q",
+                Mark.Link => "LI",
+
+                Mark.NextLine => "\n",
+                Mark.End => "|",
+                _ => "!"
+            };
         }
-        public static char SecondMap(Mark value)
+        public static string SecondMap(Mark value)
         {
-            switch (value)
+            return value switch
             {
-                case Mark.Code:
-                    return ']';
-                case Mark.Bold:
-                    return '}';
-                case Mark.Italic:
-                    return ')';
-                case Mark.Spoler:
-                    return '>';
-                case Mark.End:
-                    return '|';
-                default:
-                    return '!';
-            }
+                Mark.Code => "]",
+                Mark.Bold => "}",
+                Mark.Italic => ")",
+                Mark.Spoler => ">",
+
+                Mark.UnList => "UNL",
+                Mark.OList => "OL",
+                Mark.Quote => "Q",
+                Mark.Link => "LI",
+
+                Mark.NextLine => "\n",
+                Mark.End => "|",
+                _ => "!"
+            };
         }
     }
 }

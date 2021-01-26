@@ -7,6 +7,13 @@ namespace Imageboard.Markup
         Bold,
         Italic,
         Spoler,
+
+        NextLine,
+        OList,
+        UnList,
+        Quote,
+        Link,
+
         End,
         None
     }
