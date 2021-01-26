@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imageboard.Markup", "Imageb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imageboard.MarkupTests", "Imageboard.MarkupTests\Imageboard.MarkupTests.csproj", "{FE789B27-1CB9-460E-8650-FB5CE8092E8B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{69E88793-8532-41A4-9501-3B2565B441B7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9FCB9CD7-FA0C-4686-A154-8A7D50E1DAEB}"
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
