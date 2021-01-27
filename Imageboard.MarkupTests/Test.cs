@@ -105,6 +105,26 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
+        static private string SixthTest()
+        {
+            var sourse = "|_|";
+            var expectedResult = "|()|";
+            var stringBuilder = new StringBuilder();
+            var result = Parser.MarkUp(sourse);
+            if (result == expectedResult)
+            {
+                stringBuilder.Append("Fifth test passed.\n")
+                             .Append($"#########\n");
+            }
+            else
+            {
+                stringBuilder.Append("Fifth test failed.\n")
+                             .Append($"Expected result: {expectedResult}\n")
+                             .Append($"The result: {result}\n")
+                             .Append($"#########\n");
+            }
+            return stringBuilder.ToString();
+        }
         static void Main(string[] args)
         {
             Console.WriteLine(Test.FirstTest());
@@ -112,6 +132,7 @@ namespace MarkupTests
             Console.WriteLine(Test.ThirdTest());
             Console.WriteLine(Test.FourthTest());
             Console.WriteLine(Test.FifthTest());
+            Console.WriteLine(Test.SixthTest());
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Imageboard.Markup
                  */
 
                 '|' => Mark.End,
-                _ => Mark.None
+                 _ => Mark.None
             };
         }
     }
