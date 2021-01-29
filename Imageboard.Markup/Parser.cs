@@ -10,15 +10,19 @@ namespace Imageboard.Markup
         public static string MarkUp(string value)
         {
             var mstack = new Stack<Mark>();
-            var stringBuilder = new StringBuilder();
+            var result = new StringBuilder();
             for(var i = 0; i < value.Length; i++)
             {
-                var mappedValue = CharToMarkMapper.Map(value[i]);
-                /*if (mappedValue == Mark.Quote && CharToMarkMapper.Map(value[i + 1]) == Mark.Quote)
+                Mark mappedValue;
+                if (i == 0)
                 {
-                    i++;
-                    mappedValue = Mark.Link;
-                }*/
+                    mappedValue = Mark.NextLine;
+                }
+                else
+                {
+                    mappedValue = CharToMarkMapper.Map(value[i]);
+                }
+                var mappedValue = CharToMarkMapper.Map(value[i]);
                 if (mappedValue == Mark.NextLine)
                 {
                     mappedValue = CharToMarkMapper.Map(value[++i]);
@@ -30,46 +34,58 @@ namespace Imageboard.Markup
                                 i++;
                                 goto case Mark.Link;
                             }
-                            break;
+                            HandleMark(mappedValue, mstack, result);
+                            continue;
                         case Mark.Link:
-                            break;
+                            continue;
                         case Mark.OList:
-                            break;
+                            continue;
                         case Mark.UnList:
-                            break;
+                            continue;
                         default:
-                            break;
+                            continue;
                     }
                 }
                 if (mappedValue != Mark.None)
                 {
-                    if (mstack.Contains(mappedValue))
+                    HandleMark(mappedValue, mstack, result);
+                }
+            }
+            return result.ToString();
+        }
+        static private void HandleMark(Mark value, Stack<Mark> mstack, StringBuilder result)
+        {
+            if (mstack.Contains(value))
+            {
+                Mark mark;
+                var tmpstack = new Stack<Mark>();
+                while ((mark = mstack.Pop()) != value)
+                {
+                    CloseMarkAndPushToStack(result, tmpstack, mark);
+                }
+                result.Append(MarkToHtmlMapper.MapToClosingElem(value));
+                if (value != Mark.End)
+                {
+                    while (tmpstack.TryPop(out mark))
                     {
-                        Mark mark;
-                        var tmpstack = new Stack<Mark>();
-                        while ((mark = mstack.Pop()) != mappedValue)
-                        {
-                                stringBuilder.Append(MarkToHtmlMapper.MapToClosingElement(mark));
-                                tmpstack.Push(mark);
-                        }
-                        stringBuilder.Append(MarkToHtmlMapper.MapToClosingElement(mappedValue));
-                        if (mappedValue != Mark.End)
-                        {
-                            while (tmpstack.TryPop(out mark))
-                            {
-                                stringBuilder.Append(MarkToHtmlMapper.MapToOpeningElement(mark));
-                                mstack.Push(mark);
-                            }
-                        }
-                    } 
-                    else
-                    {
-                        mstack.Push(mappedValue);
-                        stringBuilder.Append(MarkToHtmlMapper.MapToOpeningElement(mappedValue));
+                        OpenMarkAndPushToStack(result, mstack, mark);
                     }
                 }
             }
-            return stringBuilder.ToString();
+            else
+            {
+                OpenMarkAndPushToStack(result, mstack, value);
+            }
+        }
+        static private void OpenMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
+        {
+            result.Append(MarkToHtmlMapper.MapToOpeningElem(value));
+            stack.Push(value);
+        }
+        static private void CloseMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
+        {
+            result.Append(MarkToHtmlMapper.MapToClosingElem(value));
+            stack.Push(value);
         }
     }
 }

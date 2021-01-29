@@ -6,7 +6,7 @@ namespace Imageboard.Markup
 {
     class MarkToHtmlMapper
     {
-        public static string MapToOpeningElement(Mark value)
+        public static string MapToOpeningElem(Mark value)
         {
             return value switch
             {
@@ -25,7 +25,7 @@ namespace Imageboard.Markup
                 _ => "!"
             };
         }
-        public static string MapToClosingElement(Mark value)
+        public static string MapToClosingElem(Mark value)
         {
             return value switch
             {
