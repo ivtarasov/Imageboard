@@ -38,6 +38,7 @@ namespace Imageboard.Web.Models.ViewModels
         public ReplyFormAction Action
         {
             get => action;
+
             set
             {
                 action = value;

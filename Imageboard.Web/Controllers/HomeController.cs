@@ -24,6 +24,7 @@ namespace Imageboard.Web.Controllers
             if (db.Treads.Count() == 0 || db.Boards.Count() == 0)
             {
                 Board board;
+
                 if (db.Boards.Count() != 0)
                 {
                     board = db.Boards.First();
@@ -31,20 +32,24 @@ namespace Imageboard.Web.Controllers
                 {
                     board = new Board();
                 }
+
                 List<Tread> treads = new List<Tread>();
                 for (int i = 0; i < 10; i++) 
                 {
                     Tread tread = new Tread(board);
                     List<Post> posts = new List<Post>();
+
                     for (int j = 0; j < 50; j++)
                     {
                         posts.Add(new Post(j == 0 ? $"Opening post. {j}" : RandomString(random.Next(10, 500)),
                                            j == 0 ? $"Title of opening post.{j}" : RandomString(random.Next(0, 5)),
                                            DateTime.Now, tread, j));
                     }
+
                     tread.Posts.AddRange(posts);
                     treads.Add(tread);
                 }
+
                 board.Treads.AddRange(treads);
                 db.Boards.Update(board);
                 db.SaveChanges();
@@ -65,9 +70,11 @@ namespace Imageboard.Web.Controllers
         {
             var posts = db.Posts.Where(p => ids.Values.Contains(p.Id));
             var openingPosts = posts.Where(p => p.NumberInTread == 0);
+
             DeleteTreads(openingPosts);
             DeletePosts(posts.Except(openingPosts));
             db.SaveChanges();
+
             return RedirectToAction("DisplayBoard", new { id = boardId });
         }
 
@@ -82,6 +89,7 @@ namespace Imageboard.Web.Controllers
         {
             var treadIds = openingPosts.Select(p => p.TreadId);
             var treads = db.Treads.Where(t => treadIds.Contains(t.Id));
+
             db.Treads.RemoveRange(treads);
         }
 
@@ -92,8 +100,10 @@ namespace Imageboard.Web.Controllers
             db.Entry(tread).Collection(t => t.Posts).Load();
             var post = new Post(message, title, DateTime.Now, tread, tread.Posts.Count());
             tread.Posts.Add(post);
+
             db.Update(tread);
             db.SaveChanges();
+
             return RedirectToAction("DisplayTread", new { id = treadId });
         }
 
@@ -104,8 +114,10 @@ namespace Imageboard.Web.Controllers
             var openingPost = new Post(message, title, DateTime.Now);
             Tread tread = new Tread(board, openingPost);
             board.Treads.Add(tread);
+
             db.Update(board);
             db.SaveChanges();
+
             return RedirectToAction("DisplayBoard", new { id = boardId });
         }
 
@@ -114,11 +126,13 @@ namespace Imageboard.Web.Controllers
         {
             var board = db.Boards.Single(b => b.Id == id);
             db.Entry(board).Collection(b => b.Treads).Load();
+
             foreach (var tread in board.Treads)
             {
                 db.Entry(tread).Collection(t => t.Posts).Load();
                 tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             }
+
             return View(new BoardViewModel(board));
         }
 
@@ -126,8 +140,10 @@ namespace Imageboard.Web.Controllers
         public IActionResult DisplayTread(int id)
         {
             var tread = db.Treads.Single(t => t.Id == id);
+
             db.Entry(tread).Collection(t => t.Posts).Load();
             db.Entry(tread).Reference(t => t.Board).Load();
+
             tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             return View(new TreadViewModel(tread, "", false));
         }

@@ -2,11 +2,15 @@
 @{
     ViewData["Title"] = "Board";
 }
+
 @await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.CreateTread, Model.Board))
+
 <hr>
+
 @{
     var NumberOfDisplayedMessages = 7; // из конфига в будущем
 }
+
 <form id="delform" method="post" asp-action="Delete">
     @foreach (var tread in Model.Board.Treads)
     {

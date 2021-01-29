@@ -11,6 +11,7 @@ namespace Imageboard.Markup
         {
             var mstack = new Stack<Mark>();
             var result = new StringBuilder();
+
             for(var i = 0; i < value.Length; i++)
             {
                 var mappedValue = CharToMarkMapper.Map(value[i]);
@@ -21,26 +22,34 @@ namespace Imageboard.Markup
                         result.Append(value[i]);
                         mappedValue = CharToMarkMapper.Map(value[++i]);
                     }
+
                     switch (mappedValue)
                     {
                         case Mark.Quote:
+
                             if (CharToMarkMapper.Map(value[i+1]) == Mark.Quote) 
                             {
                                 i++;
                                 goto case Mark.Link;
                             }
+
                             HandleMark(mappedValue, mstack, result);
                             continue;
+
                         case Mark.Link:
                             continue;
+
                         case Mark.OList:
                             continue;
+
                         case Mark.UnList:
                             continue;
+
                         default:
                             break;
                     }
                 }
+
                 if (mappedValue != Mark.None)
                 {
                     HandleMark(mappedValue, mstack, result);
@@ -49,6 +58,7 @@ namespace Imageboard.Markup
                     result.Append(value[i]);
                 }
             }
+
             return result.ToString();
         }
 
@@ -58,11 +68,14 @@ namespace Imageboard.Markup
             {
                 Mark mark;
                 var tmpstack = new Stack<Mark>();
+
                 while ((mark = mstack.Pop()) != value)
                 {
                     CloseMarkAndPushToStack(result, tmpstack, mark);
                 }
+
                 CloseMark(result, value);
+
                 if (value != Mark.End)
                 {
                     while (tmpstack.TryPop(out mark))
