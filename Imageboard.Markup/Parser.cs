@@ -13,23 +13,18 @@ namespace Imageboard.Markup
             var result = new StringBuilder();
             for(var i = 0; i < value.Length; i++)
             {
-                Mark mappedValue;
-                if (i == 0)
-                {
-                    mappedValue = Mark.NextLine;
-                }
-                else
-                {
-                    mappedValue = CharToMarkMapper.Map(value[i]);
-                }
                 var mappedValue = CharToMarkMapper.Map(value[i]);
-                if (mappedValue == Mark.NextLine)
+                if (mappedValue == Mark.NewLine || i == 0)
                 {
-                    mappedValue = CharToMarkMapper.Map(value[++i]);
+                    if (i != 0)
+                    {
+                        result.Append(value[i]);
+                        mappedValue = CharToMarkMapper.Map(value[++i]);
+                    }
                     switch (mappedValue)
                     {
                         case Mark.Quote:
-                            if (CharToMarkMapper.Map(value[i + 1]) == Mark.Quote) 
+                            if (CharToMarkMapper.Map(value[i+1]) == Mark.Quote) 
                             {
                                 i++;
                                 goto case Mark.Link;
@@ -43,12 +38,15 @@ namespace Imageboard.Markup
                         case Mark.UnList:
                             continue;
                         default:
-                            continue;
+                            break;
                     }
                 }
                 if (mappedValue != Mark.None)
                 {
                     HandleMark(mappedValue, mstack, result);
+                } else
+                {
+                    result.Append(value[i]);
                 }
             }
             return result.ToString();
@@ -63,7 +61,7 @@ namespace Imageboard.Markup
                 {
                     CloseMarkAndPushToStack(result, tmpstack, mark);
                 }
-                result.Append(MarkToHtmlMapper.MapToClosingElem(value));
+                CloseMark(result, value);
                 if (value != Mark.End)
                 {
                     while (tmpstack.TryPop(out mark))
@@ -86,6 +84,10 @@ namespace Imageboard.Markup
         {
             result.Append(MarkToHtmlMapper.MapToClosingElem(value));
             stack.Push(value);
+        }
+        static private void CloseMark(StringBuilder result, Mark value)
+        {
+            result.Append(MarkToHtmlMapper.MapToClosingElem(value));
         }
     }
 }

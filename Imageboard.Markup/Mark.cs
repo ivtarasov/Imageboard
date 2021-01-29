@@ -10,7 +10,7 @@ namespace Imageboard.Markup
         Spoler,
 
         /* NotPairedMarks. */
-        NextLine,
+        NewLine,
         OList, // ordered list
         UnList, // unordered list
         Quote,

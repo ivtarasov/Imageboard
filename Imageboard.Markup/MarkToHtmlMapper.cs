@@ -20,7 +20,7 @@ namespace Imageboard.Markup
                 Mark.Quote => "Q",
                 Mark.Link => "LI",
 
-                Mark.NextLine => "\n",
+                Mark.NewLine => "\n",
                 Mark.End => "|",
                 _ => "!"
             };
@@ -39,7 +39,7 @@ namespace Imageboard.Markup
                 Mark.Quote => "Q",
                 Mark.Link => "LI",
 
-                Mark.NextLine => "\n",
+                Mark.NewLine => "\n",
                 Mark.End => "|",
                 _ => "!"
             };

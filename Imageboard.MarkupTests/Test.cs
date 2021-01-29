@@ -87,8 +87,8 @@ namespace MarkupTests
         }
         static private string FifthTest()
         {
-            var sourse = "|*#*_#_|";
-            var expectedResult = "|{<>}<()>()|";
+            var sourse = "|*#qq\n*_#_|";
+            var expectedResult = "|{<qq\n>}<()>()|";
             var stringBuilder = new StringBuilder();
             var result = Parser.MarkUp(sourse);
             if (result == expectedResult)

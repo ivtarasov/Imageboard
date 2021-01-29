@@ -15,7 +15,7 @@ namespace Imageboard.Markup
                 '_' => Mark.Italic,
                 '#' => Mark.Spoler,
 
-                '\n' => Mark.NextLine,
+                '\n' => Mark.NewLine,
                 '№' => Mark.OList,
                 '+' => Mark.UnList,
                 '>' => Mark.Quote,
