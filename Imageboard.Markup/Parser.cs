@@ -101,6 +101,7 @@ namespace Imageboard.Markup
             result.Append(MarkToHtmlMapper.MapToClosingElem(value));
             stack.Push(value);
         }
+
         static private void CloseMark(StringBuilder result, Mark value)
         {
             result.Append(MarkToHtmlMapper.MapToClosingElem(value));

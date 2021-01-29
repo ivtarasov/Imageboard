@@ -98,6 +98,7 @@ namespace Imageboard.Web.Controllers
         {
             var tread = db.Treads.Single(t => t.Id == treadId);
             db.Entry(tread).Collection(t => t.Posts).Load();
+
             var post = new Post(message, title, DateTime.Now, tread, tread.Posts.Count());
             tread.Posts.Add(post);
 
@@ -111,8 +112,10 @@ namespace Imageboard.Web.Controllers
         {
             var board = db.Boards.Single(t => t.Id == boardId);
             db.Entry(board).Collection(b => b.Treads).Load();
+
             var openingPost = new Post(message, title, DateTime.Now);
             Tread tread = new Tread(board, openingPost);
+
             board.Treads.Add(tread);
 
             db.Update(board);
@@ -125,6 +128,7 @@ namespace Imageboard.Web.Controllers
         public IActionResult DisplayBoard(int id = 1)
         {
             var board = db.Boards.Single(b => b.Id == id);
+
             db.Entry(board).Collection(b => b.Treads).Load();
 
             foreach (var tread in board.Treads)
