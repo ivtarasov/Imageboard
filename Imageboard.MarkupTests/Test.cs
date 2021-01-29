@@ -25,6 +25,7 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
+
         static private string SecondTest()
         {
             var sourse = "|*_*_|";
@@ -45,6 +46,7 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
+
         static private string ThirdTest()
         {
             var sourse = "|*_#*_#|";
@@ -65,6 +67,7 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
+
         static private string FourthTest()
         {
             var sourse = "||";
@@ -85,6 +88,7 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
+
         static private string FifthTest()
         {
             var sourse = "|*#qq\n*_#_|";
@@ -105,6 +109,7 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
+
         static private string SixthTest()
         {
             var sourse = "|_|";
@@ -125,6 +130,7 @@ namespace MarkupTests
             }
             return stringBuilder.ToString();
         }
+
         static void Main(string[] args)
         {
             Console.WriteLine(Test.FirstTest());

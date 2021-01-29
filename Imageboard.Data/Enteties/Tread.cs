@@ -12,24 +12,29 @@ namespace Imageboard.Data.Enteties
         public List<Post> Posts { get; set; }
         public Board Board { get; set; }
         public int BoardId { get; set; }
+
         public Tread()
         {
             Posts = new List<Post>();
         }
+
         public Tread(List<Post> posts)
         {
             Posts = posts;
         }
+
         public Tread(Board board)
         {
             Board = board;
             Posts = new List<Post>();
         }
+
         public Tread(Board board, List<Post> posts)
         {
             Board = board;
             Posts = posts;
         }
+
         public Tread(Board board, Post openingPost)
         {
             Board = board;

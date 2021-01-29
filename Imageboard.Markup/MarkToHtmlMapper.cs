@@ -25,6 +25,7 @@ namespace Imageboard.Markup
                 _ => "!"
             };
         }
+
         public static string MapToClosingElem(Mark value)
         {
             return value switch

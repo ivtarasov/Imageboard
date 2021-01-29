@@ -16,7 +16,9 @@ namespace Imageboard.Data.Enteties
         public int NumberInTread { get; set; }
         public Tread Tread { get; set; }
         public int TreadId { get; set; }
+
         public Post() { }
+
         public Post(string message, string title, DateTime postTime, Tread tread, int numberInTread)
         {
             Message = message;
@@ -25,6 +27,7 @@ namespace Imageboard.Data.Enteties
             Tread = tread;
             NumberInTread = numberInTread;
         }
+
         public Post(string message, string title, DateTime postTime)
         {
             Message = message;

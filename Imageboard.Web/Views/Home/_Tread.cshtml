@@ -1,7 +1,7 @@
 ﻿@model TreadViewModel
 
 @{
-    Post openingPost = Model.Tread.Posts.First();
+    var openingPost = Model.Tread.Posts.First();
     Model.Tread.Posts.RemoveAt(0);
 }
 

@@ -50,6 +50,7 @@ namespace Imageboard.Web.Controllers
                 db.SaveChanges();
             }
         }
+
         static public string RandomString(int length)
         {
             const string chars = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
@@ -58,6 +59,7 @@ namespace Imageboard.Web.Controllers
                                         .Select(s => s[random.Next(s.Length)])
                                         .ToArray());
         }
+
         [HttpPost]
         public IActionResult Delete(Dictionary<int, int> ids, int boardId)
         {
@@ -68,11 +70,13 @@ namespace Imageboard.Web.Controllers
             db.SaveChanges();
             return RedirectToAction("DisplayBoard", new { id = boardId });
         }
+
         [NonAction]
         public void DeletePosts(IEnumerable<Post> posts)
         {
             db.Posts.RemoveRange(posts);
         }
+
         [NonAction]
         public void DeleteTreads(IEnumerable<Post> openingPosts)
         {
@@ -80,6 +84,7 @@ namespace Imageboard.Web.Controllers
             var treads = db.Treads.Where(t => treadIds.Contains(t.Id));
             db.Treads.RemoveRange(treads);
         }
+
         [HttpPost]
         public IActionResult ReplyInTread(string message, string title, int treadId)
         {
@@ -91,6 +96,7 @@ namespace Imageboard.Web.Controllers
             db.SaveChanges();
             return RedirectToAction("DisplayTread", new { id = treadId });
         }
+
         public IActionResult CreateTread(string message, string title, int boardId)
         {
             var board = db.Boards.Single(t => t.Id == boardId);
@@ -102,6 +108,7 @@ namespace Imageboard.Web.Controllers
             db.SaveChanges();
             return RedirectToAction("DisplayBoard", new { id = boardId });
         }
+
         [HttpGet]
         public IActionResult DisplayBoard(int id = 1)
         {
@@ -114,6 +121,7 @@ namespace Imageboard.Web.Controllers
             }
             return View(new BoardViewModel(board));
         }
+
         [HttpGet]
         public IActionResult DisplayTread(int id)
         {

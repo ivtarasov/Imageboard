@@ -51,6 +51,7 @@ namespace Imageboard.Markup
             }
             return result.ToString();
         }
+
         static private void HandleMark(Mark value, Stack<Mark> mstack, StringBuilder result)
         {
             if (mstack.Contains(value))
@@ -75,11 +76,13 @@ namespace Imageboard.Markup
                 OpenMarkAndPushToStack(result, mstack, value);
             }
         }
+
         static private void OpenMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
         {
             result.Append(MarkToHtmlMapper.MapToOpeningElem(value));
             stack.Push(value);
         }
+
         static private void CloseMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
         {
             result.Append(MarkToHtmlMapper.MapToClosingElem(value));
