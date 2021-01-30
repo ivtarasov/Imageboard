@@ -3,13 +3,13 @@ namespace Imageboard.Markup
 {
     public enum Mark
     {
-        /* PairedMarks. */
+        /* The paired marks. */
         Monospace,
         Bold,
         Italic,
         Spoler,
 
-        /* NotPairedMarks. */
+        /* The new line marks. They are non paired and must be at the beginning of a new line. */
         NewLine,
         OList, // ordered list
         UnList, // unordered list

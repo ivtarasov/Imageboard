@@ -19,10 +19,11 @@ namespace Imageboard.Markup
                 {
                     if (i != 0)
                     {
+                        CheckForNewLineMarksAndHandleThem(mstack, result);
+
                         result.Append(value[i]);
                         mappedValue = CharToMarkMapper.Map(value[++i]);
 
-                        CheckForNewLineMarksAndParseIt(mstack, result);
                     }
 
                     switch (mappedValue)
@@ -35,7 +36,7 @@ namespace Imageboard.Markup
                                 goto case Mark.Link;
                             }
 
-                            ParseMark(mstack, result, mappedValue);
+                            HandelMark(mstack, result, mappedValue);
                             continue;
 
                         case Mark.Link:
@@ -54,7 +55,7 @@ namespace Imageboard.Markup
 
                 if (mappedValue != Mark.None)
                 {
-                    ParseMark(mstack, result, mappedValue);
+                    HandelMark(mstack, result, mappedValue);
                 } else
                 {
                     result.Append(value[i]);
@@ -64,11 +65,11 @@ namespace Imageboard.Markup
             return result.ToString();
         }
 
-        static private void ParseMark(Stack<Mark> mstack, StringBuilder result, Mark value)
+        static private void HandelMark(Stack<Mark> mstack, StringBuilder result, Mark value)
         {
             if (mstack.Contains(value))
             {
-                HadleMark(mstack, result, value);
+                FixSyntaxAndConvertMarkToResult(mstack, result, value);
             }
             else
             {
@@ -76,17 +77,17 @@ namespace Imageboard.Markup
             }
         }
 
-        private static void CheckForNewLineMarksAndParseIt(Stack<Mark> mstack, StringBuilder result)
+        private static void CheckForNewLineMarksAndHandleThem(Stack<Mark> mstack, StringBuilder result)
         {
             if (mstack.Contains(Mark.Quote))
-                HadleMark(mstack, result, Mark.Quote);
+                FixSyntaxAndConvertMarkToResult(mstack, result, Mark.Quote);
             if (mstack.Contains(Mark.OList))
-                HadleMark(mstack, result, Mark.OList);
+                FixSyntaxAndConvertMarkToResult(mstack, result, Mark.OList);
             if (mstack.Contains(Mark.UnList))
-                HadleMark(mstack, result, Mark.UnList);
+                FixSyntaxAndConvertMarkToResult(mstack, result, Mark.UnList);
         }
 
-        private static void HadleMark(Stack<Mark> mstack, StringBuilder result, Mark value)
+        private static void FixSyntaxAndConvertMarkToResult(Stack<Mark> mstack, StringBuilder result, Mark value)
         {
             Mark mark;
             var tmpstack = new Stack<Mark>();
