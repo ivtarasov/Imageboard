@@ -14,8 +14,9 @@ namespace Imageboard.Markup
 
             for(var i = 0; i < value.Length; i++)
             {
-                var mappedValue = CharToMarkMapper.Map(value[i], i == 0);
-                if (mappedValue == Mark.NewLine || i == 0)
+                var isFirstChar = i == 0;
+                var mappedValue = CharToMarkMapper.Map(value[i], isFirstChar);
+                if (mappedValue == Mark.NewLine || isFirstChar)
                 {
                     if (HadleNewLine(value, mstack, result, ref i, ref mappedValue)) continue;
                 }
@@ -63,21 +64,26 @@ namespace Imageboard.Markup
 
                 case Mark.OList:
                 case Mark.UnList:
-                    if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))
-                    {
-                        HandleMark(mstack, result, Mark.ListElem);
-                    }
-                    else
-                    {
-                        HandleMark(mstack, result, value);
-                        HandleMark(mstack, result, Mark.ListElem);
-                    }
+                    HadleList(mstack, result, value);
                     return true;
 
                 default:
                     if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
                     if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
                     return false;
+            }
+        }
+
+        static private void HadleList(Stack<Mark> mstack, StringBuilder result, Mark value)
+        {
+            if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))
+            {
+                HandleMark(mstack, result, Mark.ListElem);
+            }
+            else
+            {
+                HandleMark(mstack, result, value);
+                HandleMark(mstack, result, Mark.ListElem);
             }
         }
 
