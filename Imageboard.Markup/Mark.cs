@@ -9,8 +9,9 @@ namespace Imageboard.Markup
         Italic,
         Spoler,
 
-        /* The new line marks. They are non paired and must be at the beginning of a new line. */
         NewLine,
+
+        /* The new line marks. They are non paired and must be at the beginning of a new line. */
         OList, // ordered list
         UnList, // unordered list
         Quote,
