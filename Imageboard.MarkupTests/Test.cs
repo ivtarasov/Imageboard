@@ -16,6 +16,8 @@ namespace MarkupTests
             { "|*#qq\n*_#_|", "|{<qq\n>}<()>()|" },
             { "|_|", "|()|" },
             { "|\n>qwe\nqwe|", "|\nQqweQ\nqwe|" },
+            { "|\n+w\n+ww\n+www|", "|\nUNLlewle\nlewwle\nlewwwleUNL|" },
+            { "|\n№w\n№ww\n№www|", "|\nOLlewle\nlewwle\nlewwwleOL|" }
         };
 
         static private void TestParser()
