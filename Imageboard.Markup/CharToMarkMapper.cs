@@ -6,7 +6,7 @@ namespace Imageboard.Markup
 {
     class CharToMarkMapper
     {
-        public static Mark Map(char value)
+        public static Mark Map(char value, bool isNewLine)
         {
             return value switch
             {
@@ -16,9 +16,10 @@ namespace Imageboard.Markup
                 '#' => Mark.Spoler,
 
                 '\n' => Mark.NewLine,
-                '№' => Mark.OList,
-                '+' => Mark.UnList,
-                '>' => Mark.Quote,
+
+                '№' when isNewLine => Mark.OList,
+                '+' when isNewLine => Mark.UnList,
+                '>' when isNewLine => Mark.Quote,
                 /* Double quoting is the Mark.Link. 
                  * It's checked in the parser.  
                  */

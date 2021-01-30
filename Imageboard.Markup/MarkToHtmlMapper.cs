@@ -17,6 +17,7 @@ namespace Imageboard.Markup
 
                 Mark.UnList => "UNL",
                 Mark.OList => "OL",
+                Mark.ListElem => "le",
                 Mark.Quote => "Q",
                 Mark.Link => "LI",
 
@@ -37,6 +38,7 @@ namespace Imageboard.Markup
 
                 Mark.UnList => "UNL",
                 Mark.OList => "OL",
+                Mark.ListElem => "le",
                 Mark.Quote => "Q",
                 Mark.Link => "LI",
 

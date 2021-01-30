@@ -14,13 +14,10 @@ namespace Imageboard.Markup
 
             for(var i = 0; i < value.Length; i++)
             {
-                var mappedValue = CharToMarkMapper.Map(value[i]);
+                var mappedValue = CharToMarkMapper.Map(value[i], i == 0);
                 if (mappedValue == Mark.NewLine || i == 0)
                 {
-                    if (HadleNewLine(value, mstack, result, ref i, ref mappedValue))
-                    {
-                        continue;
-                    }
+                    if (HadleNewLine(value, mstack, result, ref i, ref mappedValue)) continue;
                 }
 
                 if (mappedValue != Mark.None)
@@ -44,7 +41,7 @@ namespace Imageboard.Markup
                 CheckForNewLineMarksInStack(mstack, result);
 
                 result.Append(sourse[position]);
-                value = CharToMarkMapper.Map(sourse[++position]);
+                value = CharToMarkMapper.Map(sourse[++position], true);
 
             }
 
@@ -52,7 +49,7 @@ namespace Imageboard.Markup
             {
                 case Mark.Quote:
 
-                    if (CharToMarkMapper.Map(sourse[position + 1]) == Mark.Quote)
+                    if (CharToMarkMapper.Map(sourse[position + 1], true) == Mark.Quote)
                     {
                         position++;
                         goto case Mark.Link;
@@ -65,12 +62,21 @@ namespace Imageboard.Markup
                     return true;
 
                 case Mark.OList:
-                    return true;
-
                 case Mark.UnList:
+                    if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))
+                    {
+                        HandleMark(mstack, result, Mark.ListElem);
+                    }
+                    else
+                    {
+                        HandleMark(mstack, result, value);
+                        HandleMark(mstack, result, Mark.ListElem);
+                    }
                     return true;
 
                 default:
+                    if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
+                    if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
                     return false;
             }
         }
@@ -90,11 +96,13 @@ namespace Imageboard.Markup
         private static void CheckForNewLineMarksInStack(Stack<Mark> mstack, StringBuilder result)
         {
             if (mstack.Contains(Mark.Quote))
+            {
                 FixSyntaxAndConvertMarkToResult(mstack, result, Mark.Quote);
-            if (mstack.Contains(Mark.OList))
-                FixSyntaxAndConvertMarkToResult(mstack, result, Mark.OList);
-            if (mstack.Contains(Mark.UnList))
-                FixSyntaxAndConvertMarkToResult(mstack, result, Mark.UnList);
+            }
+            if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))
+            {
+                FixSyntaxAndConvertMarkToResult(mstack, result, Mark.ListElem);
+            }
         }
 
         private static void FixSyntaxAndConvertMarkToResult(Stack<Mark> mstack, StringBuilder result, Mark value)

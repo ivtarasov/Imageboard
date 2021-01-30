@@ -15,7 +15,7 @@ namespace MarkupTests
             { "||", "||" },
             { "|*#qq\n*_#_|", "|{<qq\n>}<()>()|" },
             { "|_|", "|()|" },
-            { "|>qwe\nqwe|", "|QqweQ\nqwe|" }
+            { "|\n>qwe\nqwe|", "|\nQqweQ\nqwe|" },
         };
 
         static private void TestParser()
@@ -37,7 +37,7 @@ namespace MarkupTests
                 {
                     testOutput.Append($"Test №{i} failed.\n")
                                  .Append($"Expected result: {testPair.Value}\n")
-                                 .Append($"The result: {testPair.Value}\n")
+                                 .Append($"The result: {result}\n")
                                  .Append($"#########\n");
                 }
 
