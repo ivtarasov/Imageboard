@@ -7,42 +7,39 @@ using Imageboard.Web.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Imageboard.Data.Contexts;
 using Imageboard.Data.Enteties;
-using Imageboard.Data;
 
 namespace Imageboard.Web.Controllers
 {
     public class HomeController : Controller
     {
-        //private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext db;
-        static private readonly Random random = new Random();
+        private readonly ApplicationDbContext _db;
+        private readonly Random _random = new Random();
         
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
-            //_logger = logger;
-            db = context;
-            if (db.Treads.Count() == 0 || db.Boards.Count() == 0)
+            _db = context;
+            if (_db.Treads.Count() == 0 || _db.Boards.Count() == 0)
             {
                 Board board;
 
-                if (db.Boards.Count() != 0)
+                if (_db.Boards.Count() != 0)
                 {
-                    board = db.Boards.First();
+                    board = _db.Boards.First();
                 } else
                 {
                     board = new Board();
                 }
 
-                List<Tread> treads = new List<Tread>();
+                var treads = new List<Tread>();
                 for (int i = 0; i < 10; i++) 
                 {
-                    Tread tread = new Tread(board);
-                    List<Post> posts = new List<Post>();
+                    var tread = new Tread(board);
+                    var posts = new List<Post>();
 
                     for (int j = 0; j < 50; j++)
                     {
-                        posts.Add(new Post(j == 0 ? $"Opening post. {j}" : RandomString(random.Next(10, 500)),
-                                           j == 0 ? $"Title of opening post.{j}" : RandomString(random.Next(0, 5)),
+                        posts.Add(new Post(j == 0 ? $"Opening post. {j}" : RandomString(_random.Next(10, 500)),
+                                           j == 0 ? $"Title of opening post.{j}" : RandomString(_random.Next(0, 5)),
                                            DateTime.Now, tread, j));
                     }
 
@@ -51,29 +48,29 @@ namespace Imageboard.Web.Controllers
                 }
 
                 board.Treads.AddRange(treads);
-                db.Boards.Update(board);
-                db.SaveChanges();
+                _db.Boards.Update(board);
+                _db.SaveChanges();
             }
         }
 
-        static public string RandomString(int length)
+        private string RandomString(int length)
         {
-            const string chars = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
+            var chars = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
                                  "абвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789" + "\n\n";
             return new string(Enumerable.Repeat(chars, length)
-                                        .Select(s => s[random.Next(s.Length)])
+                                        .Select(s => s[_random.Next(s.Length)])
                                         .ToArray());
         }
 
         [HttpPost]
         public IActionResult Delete(Dictionary<int, int> ids, int boardId)
         {
-            var posts = db.Posts.Where(p => ids.Values.Contains(p.Id));
+            var posts = _db.Posts.Where(p => ids.Values.Contains(p.Id));
             var openingPosts = posts.Where(p => p.NumberInTread == 0);
 
             DeleteTreads(openingPosts);
             DeletePosts(posts.Except(openingPosts));
-            db.SaveChanges();
+            _db.SaveChanges();
 
             return RedirectToAction("DisplayBoard", new { id = boardId });
         }
@@ -81,45 +78,45 @@ namespace Imageboard.Web.Controllers
         [NonAction]
         public void DeletePosts(IEnumerable<Post> posts)
         {
-            db.Posts.RemoveRange(posts);
+            _db.Posts.RemoveRange(posts);
         }
 
         [NonAction]
         public void DeleteTreads(IEnumerable<Post> openingPosts)
         {
             var treadIds = openingPosts.Select(p => p.TreadId);
-            var treads = db.Treads.Where(t => treadIds.Contains(t.Id));
+            var treads = _db.Treads.Where(t => treadIds.Contains(t.Id));
 
-            db.Treads.RemoveRange(treads);
+            _db.Treads.RemoveRange(treads);
         }
 
         [HttpPost]
         public IActionResult ReplyInTread(string message, string title, int treadId)
         {
-            var tread = db.Treads.Single(t => t.Id == treadId);
-            db.Entry(tread).Collection(t => t.Posts).Load();
+            var tread = _db.Treads.Single(t => t.Id == treadId);
+            _db.Entry(tread).Collection(t => t.Posts).Load();
 
             var post = new Post(message, title, DateTime.Now, tread, tread.Posts.Count());
             tread.Posts.Add(post);
 
-            db.Update(tread);
-            db.SaveChanges();
+            _db.Update(tread);
+            _db.SaveChanges();
 
             return RedirectToAction("DisplayTread", new { id = treadId });
         }
 
         public IActionResult CreateTread(string message, string title, int boardId)
         {
-            var board = db.Boards.Single(t => t.Id == boardId);
-            db.Entry(board).Collection(b => b.Treads).Load();
+            var board = _db.Boards.Single(t => t.Id == boardId);
+            _db.Entry(board).Collection(b => b.Treads).Load();
 
             var openingPost = new Post(message, title, DateTime.Now);
-            Tread tread = new Tread(board, openingPost);
+            var tread = new Tread(board, openingPost);
 
             board.Treads.Add(tread);
 
-            db.Update(board);
-            db.SaveChanges();
+            _db.Update(board);
+            _db.SaveChanges();
 
             return RedirectToAction("DisplayBoard", new { id = boardId });
         }
@@ -127,13 +124,13 @@ namespace Imageboard.Web.Controllers
         [HttpGet]
         public IActionResult DisplayBoard(int id = 1)
         {
-            var board = db.Boards.Single(b => b.Id == id);
+            var board = _db.Boards.Single(b => b.Id == id);
 
-            db.Entry(board).Collection(b => b.Treads).Load();
+            _db.Entry(board).Collection(b => b.Treads).Load();
 
             foreach (var tread in board.Treads)
             {
-                db.Entry(tread).Collection(t => t.Posts).Load();
+                _db.Entry(tread).Collection(t => t.Posts).Load();
                 tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             }
 
@@ -143,19 +140,13 @@ namespace Imageboard.Web.Controllers
         [HttpGet]
         public IActionResult DisplayTread(int id)
         {
-            var tread = db.Treads.Single(t => t.Id == id);
+            var tread = _db.Treads.Single(t => t.Id == id);
 
-            db.Entry(tread).Collection(t => t.Posts).Load();
-            db.Entry(tread).Reference(t => t.Board).Load();
+            _db.Entry(tread).Collection(t => t.Posts).Load();
+            _db.Entry(tread).Reference(t => t.Board).Load();
 
             tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             return View(new TreadViewModel(tread, "", false));
         }
-
-        /*[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }*/
     }
 }
