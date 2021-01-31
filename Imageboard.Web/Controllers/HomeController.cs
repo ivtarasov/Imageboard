@@ -18,14 +18,15 @@ namespace Imageboard.Web.Controllers
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _db = context;
-            if (_db.Treads.Count() == 0 || _db.Boards.Count() == 0)
+            if (!(_db.Treads.Any() && _db.Boards.Any()))
             {
                 Board board;
 
-                if (_db.Boards.Count() != 0)
+                if (!_db.Boards.Any())
                 {
                     board = _db.Boards.First();
-                } else
+                } 
+                else
                 {
                     board = new Board();
                 }
@@ -96,8 +97,7 @@ namespace Imageboard.Web.Controllers
             var tread = _db.Treads.Single(t => t.Id == treadId);
             _db.Entry(tread).Collection(t => t.Posts).Load();
 
-            var post = new Post(message, title, DateTime.Now, tread, tread.Posts.Count());
-            tread.Posts.Add(post);
+            tread.Posts.Add(new Post(message, title, DateTime.Now, tread, tread.Posts.Count));
 
             _db.Update(tread);
             _db.SaveChanges();
