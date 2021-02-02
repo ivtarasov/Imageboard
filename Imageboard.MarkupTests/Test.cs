@@ -9,18 +9,18 @@ namespace MarkupTests
     {
         private static readonly Dictionary<string, string> _testData = new Dictionary<string, string>
         {
-            { "**", "((({})))" },
-            { "*_*_", "((({()}())))" },
-            { "*_#*_#", "((({(<>)}(<>)<>)))"},
-            { "", "((()))" },
-            { "*#qq\n*_#_", "((({<qq\n>}<()>())))" },
-            { "_", "(((())))" },
-            { ">qweqwe", "(((QqweqweQ)))" },
-            { "+w\n+ww\n+www", "(((UNLlewlelewwlelewwwleUNL)))" },
-            { "№w\n№ww\n№www", "(((OLlewlelewwlelewwwleOL)))" },
-            { "№w\n№w*w\n№www\n", "(((OLlewlelew{w}le{lewwwle}OL{})))" },
-            { "№w*\n№ww", "(((OLlew{}le{lewwle}OL{})))" },
-            { "+w\n№ww", "(((UNLlewleUNLOLlewwleOL)))" }
+            { "**", "<article><b></b></article>" },
+            { "*_*_", "<article><b><i></i></b><i></i></article>" },
+            { "*_#*_#", "<article><b><i><span></span></i></b><i><span></span></i><span></span></article>"},
+            { "", "<article></article>" },
+            { "*#qq\n*_#_", "<article><b><span>qq<br></span></b><span><i></i></span><i></i></article>" },
+            { "_", "<article><i></i></article>" },
+            { ">qweqwe", "<article><span>qweqwe</span></article>" },
+            { "+w\n+ww\n+www", "<article><ul><li>w</li><li>ww</li><li>www</li></ul></article>" },
+            { "№w\n№ww\n№www", "<article><ol><li>w</li><li>ww</li><li>www</li></ol></article>" },
+            { "№w\n№w*w\n№www\n", "<article><ol><li>w</li><li>w<b>w</b></li><b><li>www</li></b></ol><b></b></article>" },
+            { "№w*\n№ww", "<article><ol><li>w<b></b></li><b><li>ww</li></b></ol><b></b></article>" },
+            { "+w\n№ww", "<article><ul><li>w</li></ul><ol><li>ww</li></ol></article>" }
         };
 
         static private void TestParser()

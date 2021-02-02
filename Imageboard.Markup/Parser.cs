@@ -75,7 +75,7 @@ namespace Imageboard.Markup
                     if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
                     if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
 
-                    if (!isFirstChar) result.Append('\n'); // sourse[position - 1]
+                    if (!isFirstChar) result.Append("<br>"); // sourse[position - 1]
 
                     if (value != Mark.None) HandleMark(mstack, result, value);
                     else result.Append(sourse[position]);
@@ -165,7 +165,7 @@ namespace Imageboard.Markup
         static private void CloseMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
         {
             result.Append(MarkToHtmlMapper.MapToClosingElem(value));
-            if (value == Mark.Quote) result.Append('\n');
+            if (value == Mark.Quote) result.Append("<br>");
             stack.Push(value);
         }
 

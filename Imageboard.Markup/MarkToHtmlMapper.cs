@@ -10,19 +10,19 @@ namespace Imageboard.Markup
         {
             return value switch
             {
-                Mark.Monospace => "[",
-                Mark.Bold => "{",
-                Mark.Italic => "(",
-                Mark.Spoler => "<",
+                Mark.Monospace => "<code>",
+                Mark.Bold => "<b>",
+                Mark.Italic => "<i>",
+                Mark.Spoler => "<span>",
 
-                Mark.UnList => "UNL",
-                Mark.OList => "OL",
-                Mark.ListElem => "le",
-                Mark.Quote => "Q",
-                Mark.Link => "LI",
+                Mark.UnList => "<ul>",
+                Mark.OList => "<ol>",
+                Mark.ListElem => "<li>",
+                Mark.Quote => "<span>",
+                Mark.Link => "<a>",
 
-                Mark.NewLine => "\n",
-                Mark.End => "(((",
+                Mark.NewLine => "<br>",
+                Mark.End => "<article>",
                 _ => "!"
             };
         }
@@ -31,19 +31,19 @@ namespace Imageboard.Markup
         {
             return value switch
             {
-                Mark.Monospace => "]",
-                Mark.Bold => "}",
-                Mark.Italic => ")",
-                Mark.Spoler => ">",
+                Mark.Monospace => "</code>",
+                Mark.Bold => "</b>",
+                Mark.Italic => "</i>",
+                Mark.Spoler => "</span>",
 
-                Mark.UnList => "UNL",
-                Mark.OList => "OL",
-                Mark.ListElem => "le",
-                Mark.Quote => "Q",
-                Mark.Link => "LI",
+                Mark.UnList => "</ul>",
+                Mark.OList => "</ol>",
+                Mark.ListElem => "</li>",
+                Mark.Quote => "</span>",
+                Mark.Link => "</a>",
 
-                Mark.NewLine => "\n",
-                Mark.End => ")))",
+                Mark.NewLine => "</br>",
+                Mark.End => "</article>",
                 _ => "!"
             };
         }
