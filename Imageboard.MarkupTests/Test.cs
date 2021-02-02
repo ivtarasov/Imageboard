@@ -9,7 +9,7 @@ namespace MarkupTests
     {
         private static readonly Dictionary<string, string> _testData = new Dictionary<string, string>
         {
-            { "**", "((({})))" },
+            /*{ "**", "((({})))" },
             { "*_*_", "((({()}())))" },
             { "*_#*_#", "((({(<>)}(<>)<>)))"},
             { "", "((()))" },
@@ -18,7 +18,9 @@ namespace MarkupTests
             { ">qweqwe", "(((QqweqweQ)))" },
             { "+w\n+ww\n+www", "(((UNLlewlelewwlelewwwleUNL)))" },
             { "№w\n№ww\n№www", "(((OLlewlelewwlelewwwleOL)))" },
-            { "№w\n№w*w\n№www\n", "(((OLlewlelew{w}le{lewwwle}OL{})))" }
+            { "№w\n№w*w\n№www\n", "(((OLlewlelew{w}le{lewwwle}OL{})))" },
+            { "№w*\n№ww", "(((OLlew{}le{lewwle}OL{})))" },**/
+            { "+w\n№ww", "" }
         };
 
         static private void TestParser()

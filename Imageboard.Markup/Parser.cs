@@ -51,14 +51,23 @@ namespace Imageboard.Markup
                         goto case Mark.Link;
                     }
 
+                    if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
+                    if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
+
                     HandleMark(mstack, result, Mark.Quote);
                     return;
 
                 case Mark.Link:
+                    if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
+                    if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
                     return;
 
                 case Mark.OList:
+                    if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
+                    HadleList(mstack, result, value);
+                    return;
                 case Mark.UnList:
+                    if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
                     HadleList(mstack, result, value);
                     return;
 
@@ -74,9 +83,10 @@ namespace Imageboard.Markup
             }
         }
 
+        // Only to open list.
         static private void HadleList(Stack<Mark> mstack, StringBuilder result, Mark value)
         {
-            if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))
+            if (mstack.Contains(value))
             {
                 HandleMark(mstack, result, Mark.ListElem);
             }
@@ -107,7 +117,7 @@ namespace Imageboard.Markup
             HandleMark(mstack, result, Mark.End);
         }
 
-        // To close ListElem or Quote.
+        // Only to close ListElem or Quote.
         private static void CheckForNewLineMarksInStack(StringBuilder result, Stack<Mark> mstack)
         {
             CheckForListsAndQuoteInStack(result, mstack);
