@@ -9,15 +9,16 @@ namespace MarkupTests
     {
         private static readonly Dictionary<string, string> _testData = new Dictionary<string, string>
         {
-            { "|**|", "|{}|" },
-            { "|*_*_|", "|{()}()|" },
-            { "|*_#*_#|", "|{(<>)}(<>)<>|"},
-            { "||", "||" },
-            { "|*#qq\n*_#_|", "|{<qq\n>}<()>()|" },
-            { "|_|", "|()|" },
-            { "|\n>qwe\nqwe|", "|\nQqweQ\nqwe|" },
-            { "|\n+w\n+ww\n+www|", "|\nUNLlewle\nlewwle\nlewwwleUNL|" },
-            { "|\n№w\n№ww\n№www|", "|\nOLlewle\nlewwle\nlewwwleOL|" }
+            { "**", "((({})))" },
+            { "*_*_", "((({()}())))" },
+            { "*_#*_#", "((({(<>)}(<>)<>)))"},
+            { "", "((()))" },
+            { "*#qq\n*_#_", "((({<qq\n>}<()>())))" },
+            { "_", "(((())))" },
+            { ">qweqwe", "(((QqweqweQ)))" },
+            { "+w\n+ww\n+www", "(((UNLlewlelewwlelewwwleUNL)))" },
+            { "№w\n№ww\n№www", "(((OLlewlelewwlelewwwleOL)))" },
+            { "№w\n№w*w\n№www\n", "(((OLlewlelew{w}le{lewwwle}OL{})))" }
         };
 
         static private void TestParser()

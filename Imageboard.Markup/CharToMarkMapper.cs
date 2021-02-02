@@ -24,7 +24,6 @@ namespace Imageboard.Markup
                  * It's checked in the parser.  
                  */
 
-                '|' => Mark.End,
                  _ => Mark.None
             };
         }

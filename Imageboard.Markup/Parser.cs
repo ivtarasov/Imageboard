@@ -12,38 +12,33 @@ namespace Imageboard.Markup
             var mstack = new Stack<Mark>();
             var result = new StringBuilder();
 
-            for(var i = 0; i < value.Length; i++)
+            HandleMark(mstack, result, Mark.End);
+            for (var i = 0; i < value.Length; i++)
             {
                 var isFirstChar = i == 0;
                 var mappedValue = CharToMarkMapper.Map(value[i], isFirstChar);
                 if (mappedValue == Mark.NewLine || isFirstChar)
                 {
-                    if (HadleNewLine(value, mstack, result, ref i, ref mappedValue)) continue;
+                    HadleNewLine(value, mstack, result, ref i, ref mappedValue, isFirstChar);
+                    continue;
                 }
 
-                if (mappedValue != Mark.None)
-                {
-                    HandleMark(mstack, result, mappedValue);
-                } 
-                else
-                {
-                    result.Append(value[i]);
-                }
+                if (mappedValue != Mark.None) HandleMark(mstack, result, mappedValue);
+                else result.Append(value[i]);
             }
+            HadleEnd(result, mstack);
 
             return result.ToString();
         }
 
-        static private bool HadleNewLine(string sourse, Stack<Mark> mstack, StringBuilder result, 
-                                         ref int position, ref Mark value)
+        static private void HadleNewLine(string sourse, Stack<Mark> mstack, StringBuilder result, 
+                                         ref int position, ref Mark value, bool isFirstChar)
         {
-            if (position != 0)
+            if (!isFirstChar)
             {
-                CheckForNewLineMarksInStack(mstack, result);
-
-                result.Append(sourse[position]);
+                if (position == sourse.Length - 1) return;
+                CheckForNewLineMarksInStack(result, mstack);
                 value = CharToMarkMapper.Map(sourse[++position], true);
-
             }
 
             switch (value)
@@ -57,20 +52,25 @@ namespace Imageboard.Markup
                     }
 
                     HandleMark(mstack, result, Mark.Quote);
-                    return true;
+                    return;
 
                 case Mark.Link:
-                    return true;
+                    return;
 
                 case Mark.OList:
                 case Mark.UnList:
                     HadleList(mstack, result, value);
-                    return true;
+                    return;
 
                 default:
                     if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
                     if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
-                    return false;
+
+                    if (!isFirstChar) result.Append('\n'); // sourse[position - 1]
+
+                    if (value != Mark.None) HandleMark(mstack, result, value);
+                    else result.Append(sourse[position]);
+                    return;
             }
         }
 
@@ -91,7 +91,7 @@ namespace Imageboard.Markup
         {
             if (mstack.Contains(value))
             {
-                FixSyntaxAndConvertMarkToResult(mstack, result, value);
+                FixSyntaxAndConvertMarkToResult(result, mstack, value);
             }
             else
             {
@@ -99,19 +99,33 @@ namespace Imageboard.Markup
             }
         }
 
-        private static void CheckForNewLineMarksInStack(Stack<Mark> mstack, StringBuilder result)
+        static private void HadleEnd(StringBuilder result, Stack<Mark> mstack)
+        {
+            CheckForListsAndQuoteInStack(result, mstack);
+            if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
+            if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
+            HandleMark(mstack, result, Mark.End);
+        }
+
+        // To close ListElem or Quote.
+        private static void CheckForNewLineMarksInStack(StringBuilder result, Stack<Mark> mstack)
+        {
+            CheckForListsAndQuoteInStack(result, mstack);
+        }
+
+        private static void CheckForListsAndQuoteInStack(StringBuilder result, Stack<Mark> mstack)
         {
             if (mstack.Contains(Mark.Quote))
             {
-                FixSyntaxAndConvertMarkToResult(mstack, result, Mark.Quote);
+                FixSyntaxAndConvertMarkToResult(result, mstack, Mark.Quote);
             }
             if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))
             {
-                FixSyntaxAndConvertMarkToResult(mstack, result, Mark.ListElem);
+                FixSyntaxAndConvertMarkToResult(result, mstack, Mark.ListElem);
             }
         }
 
-        private static void FixSyntaxAndConvertMarkToResult(Stack<Mark> mstack, StringBuilder result, Mark value)
+        private static void FixSyntaxAndConvertMarkToResult(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
             Mark mark;
             var tmpstack = new Stack<Mark>();
@@ -141,6 +155,7 @@ namespace Imageboard.Markup
         static private void CloseMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
         {
             result.Append(MarkToHtmlMapper.MapToClosingElem(value));
+            if (value == Mark.Quote) result.Append('\n');
             stack.Push(value);
         }
 

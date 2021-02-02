@@ -22,7 +22,7 @@ namespace Imageboard.Markup
                 Mark.Link => "LI",
 
                 Mark.NewLine => "\n",
-                Mark.End => "|",
+                Mark.End => "(((",
                 _ => "!"
             };
         }
@@ -43,7 +43,7 @@ namespace Imageboard.Markup
                 Mark.Link => "LI",
 
                 Mark.NewLine => "\n",
-                Mark.End => "|",
+                Mark.End => ")))",
                 _ => "!"
             };
         }
