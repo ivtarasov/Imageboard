@@ -12,18 +12,18 @@ namespace Imageboard.Markup
             var mstack = new Stack<Mark>();
             var result = new StringBuilder();
 
-            HandleMark(mstack, result, Mark.End);
+            HandleMark(result, mstack, Mark.End);
             for (var i = 0; i < value.Length; i++)
             {
                 var isFirstChar = i == 0;
                 var mappedValue = CharToMarkMapper.Map(value[i], isFirstChar);
                 if (mappedValue == Mark.NewLine || isFirstChar)
                 {
-                    HadleNewLine(value, mstack, result, ref i, ref mappedValue, isFirstChar);
+                    HadleNewLine(value, result, mstack, ref i, ref mappedValue, isFirstChar);
                     continue;
                 }
 
-                if (mappedValue != Mark.None) HandleMark(mstack, result, mappedValue);
+                if (mappedValue != Mark.None) HandleMark(result, mstack, mappedValue);
                 else result.Append(value[i]);
             }
             HadleEnd(result, mstack);
@@ -31,7 +31,7 @@ namespace Imageboard.Markup
             return result.ToString();
         }
 
-        static private void HadleNewLine(string sourse, Stack<Mark> mstack, StringBuilder result, 
+        static private void HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack,
                                          ref int position, ref Mark value, bool isFirstChar)
         {
             if (!isFirstChar)
@@ -51,33 +51,33 @@ namespace Imageboard.Markup
                         goto case Mark.Link;
                     }
 
-                    if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
-                    if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
+                    if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
+                    if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
 
-                    HandleMark(mstack, result, Mark.Quote);
+                    HandleMark(result, mstack, Mark.Quote);
                     return;
 
                 case Mark.Link:
-                    if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
-                    if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
+                    if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
+                    if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
                     return;
 
                 case Mark.OList:
-                    if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
+                    if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
                     HadleList(mstack, result, value);
                     return;
                 case Mark.UnList:
-                    if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
+                    if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
                     HadleList(mstack, result, value);
                     return;
 
                 default:
-                    if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
-                    if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
+                    if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
+                    if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
 
                     if (!isFirstChar) result.Append("<br>"); // sourse[position - 1]
 
-                    if (value != Mark.None) HandleMark(mstack, result, value);
+                    if (value != Mark.None) HandleMark(result, mstack, value);
                     else result.Append(sourse[position]);
                     return;
             }
@@ -88,16 +88,16 @@ namespace Imageboard.Markup
         {
             if (mstack.Contains(value))
             {
-                HandleMark(mstack, result, Mark.ListElem);
+                HandleMark(result, mstack, Mark.ListElem);
             }
             else
             {
-                HandleMark(mstack, result, value);
-                HandleMark(mstack, result, Mark.ListElem);
+                HandleMark(result, mstack, value);
+                HandleMark(result, mstack, Mark.ListElem);
             }
         }
 
-        static private void HandleMark(Stack<Mark> mstack, StringBuilder result, Mark value)
+        static private void HandleMark(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
             if (mstack.Contains(value))
             {
@@ -112,9 +112,9 @@ namespace Imageboard.Markup
         static private void HadleEnd(StringBuilder result, Stack<Mark> mstack)
         {
             CheckForListsAndQuoteInStack(result, mstack);
-            if (mstack.Contains(Mark.OList)) HandleMark(mstack, result, Mark.OList);
-            if (mstack.Contains(Mark.UnList)) HandleMark(mstack, result, Mark.UnList);
-            HandleMark(mstack, result, Mark.End);
+            if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
+            if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
+            HandleMark(result, mstack, Mark.End);
         }
 
         // Only to close ListElem or Quote.
