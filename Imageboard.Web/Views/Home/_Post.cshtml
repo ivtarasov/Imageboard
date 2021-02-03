@@ -18,7 +18,7 @@
                 {
                     <span class="postnum">#@(Model.Post.NumberInTread + 1)</span>
                 }
-                <blockquote> <p>@(Model.Post.Message ?? "")</p> </blockquote>
+                @Html.Raw("<p>" + (Model.Post.Message ?? "") + "</p>")
             </td>
         </tr>
     </tbody>

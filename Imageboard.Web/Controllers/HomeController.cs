@@ -7,6 +7,7 @@ using Imageboard.Web.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Imageboard.Data.Contexts;
 using Imageboard.Data.Enteties;
+using Imageboard.Markup;
 
 namespace Imageboard.Web.Controllers
 {
@@ -97,7 +98,7 @@ namespace Imageboard.Web.Controllers
             var tread = _db.Treads.Single(t => t.Id == treadId);
             _db.Entry(tread).Collection(t => t.Posts).Load();
 
-            tread.Posts.Add(new Post(message, title, DateTime.Now, tread, tread.Posts.Count));
+            tread.Posts.Add(new Post(Parser.MarkUp(message, _db), title, DateTime.Now, tread, tread.Posts.Count));
 
             _db.Update(tread);
             _db.SaveChanges();
@@ -110,7 +111,7 @@ namespace Imageboard.Web.Controllers
             var board = _db.Boards.Single(t => t.Id == boardId);
             _db.Entry(board).Collection(b => b.Treads).Load();
 
-            var openingPost = new Post(message, title, DateTime.Now);
+            var openingPost = new Post(Parser.MarkUp(message, _db), title, DateTime.Now);
             var tread = new Tread(board, openingPost);
 
             board.Treads.Add(tread);
