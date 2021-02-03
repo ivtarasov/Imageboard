@@ -16,15 +16,15 @@ namespace MarkupTests
             { "", "<article></article>" },
             { "*#qq\n*_#_", "<article><b><span>qq<br></span></b><span><i></i></span><i></i></article>" },
             { "_", "<article><i></i></article>" },
-            { ">qweqwe", "<article><span>qweqwe</span></article>" },
+            { ">qweqwe", "<article><span style=\"color: blue;\">&gt;qweqwe</span></article>" },
             { "+w\n+ww\n+www", "<article><ul><li>w</li><li>ww</li><li>www</li></ul></article>" },
             { "№w\n№ww\n№www", "<article><ol><li>w</li><li>ww</li><li>www</li></ol></article>" },
             { "№w\n№w*w\n№www\n", "<article><ol><li>w</li><li>w<b>w</b></li><b><li>www</li></b></ol><b></b></article>" },
             { "№w*\n№ww", "<article><ol><li>w<b></b></li><b><li>ww</li></b></ol><b></b></article>" },
             { "+w\n№ww", "<article><ul><li>w</li></ul><ol><li>ww</li></ol></article>" },
-            { ">>107 qqq", "<article><a href=/Home/DisplayTread/6/#107>107</a> qqq</article>"},
+            { ">>107 qqq", "<article><a href=\"/Home/DisplayTread/6/#107\">&gt;&gt;107</a> qqq</article>"},
             { ">>1000000000", "<article>1000000000</article>" },
-            { ">>100", "<article><a href=/Home/DisplayTread/7/#100>100</a></article>" }
+            { ">>100", "<article><a href=\"/Home/DisplayTread/7/#100\">&gt;&gt;100</a></article>" }
         };
 
         static private void TestParser()

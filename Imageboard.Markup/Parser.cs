@@ -113,8 +113,8 @@ namespace Imageboard.Markup
                 context.Entry(post).Reference(p => p.Tread).Load();
                 context.Entry(post.Tread).Reference(t => t.Board).Load();
 
-                string link = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
-                result.Append($"<a href={link}>{post.Id}</a>");
+                string href = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
+                result.Append($"{MarkToHtmlMapper.HtmlForLink(href, postId)}");
 
                 return;
             }
@@ -207,7 +207,6 @@ namespace Imageboard.Markup
         static private void CloseMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
         {
             result.Append(MarkToHtmlMapper.MapToClosingElem(value));
-            if (value == Mark.Quote) result.Append("<br>");
             stack.Push(value);
         }
 
