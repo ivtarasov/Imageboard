@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Imageboard.Data\Imageboard.Data.csproj" />
+	  <ProjectReference Include="..\Imageboard.Markup\Imageboard.Markup.csproj" />
     <ProjectReference Include="..\Imageboard.Markup\Imageboard.Markup.csproj" />
   </ItemGroup>
 

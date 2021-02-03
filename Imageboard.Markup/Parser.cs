@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Imageboard.Data.Contexts;
 
 namespace Imageboard.Markup
 {
     public static class Parser
     {
-        public static string MarkUp(string value)
+        public static string MarkUp(string value, ApplicationDbContext context)
         {
             var mstack = new Stack<Mark>();
             var result = new StringBuilder();
@@ -19,7 +20,7 @@ namespace Imageboard.Markup
                 var mappedValue = CharToMarkMapper.Map(value[i], isFirstChar);
                 if (mappedValue == Mark.NewLine || isFirstChar)
                 {
-                    HadleNewLine(value, result, mstack, ref i, ref mappedValue, isFirstChar);
+                    HadleNewLine(value, result, mstack, ref i, ref mappedValue, isFirstChar, context);
                     continue;
                 }
 
@@ -32,7 +33,8 @@ namespace Imageboard.Markup
         }
 
         static private void HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack,
-                                         ref int position, ref Mark value, bool isFirstChar)
+                                         ref int position, ref Mark value, bool isFirstChar, 
+                                         ApplicationDbContext context)
         {
             if (!isFirstChar)
             {
@@ -58,17 +60,21 @@ namespace Imageboard.Markup
                     return;
 
                 case Mark.Link:
+                    HadleLink(result, sourse, ref position, context);
+
                     if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
                     if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
+
                     return;
 
                 case Mark.OList:
                     if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
-                    HadleList(mstack, result, value);
+                    HadleList(result, mstack, value);
                     return;
+
                 case Mark.UnList:
                     if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
-                    HadleList(mstack, result, value);
+                    HadleList(result, mstack, value);
                     return;
 
                 default:
@@ -83,8 +89,44 @@ namespace Imageboard.Markup
             }
         }
 
+        static private void HadleLink(StringBuilder result, string sourse, ref int position, 
+                                      ApplicationDbContext context)
+        {
+            var digits = new Stack<int>();
+            int digit;
+            while (++position < sourse.Length && (digit = (int) char.GetNumericValue(sourse[position])) != -1.0)
+            {
+                digits.Push(digit);
+            }
+            position--;
+
+            var postId = 0;
+            var i = 0;
+            while (digits.TryPop(out digit))
+            {
+                postId += digit * (int) Math.Pow(10, i++);
+            }
+
+            var post = context.Posts.Find(postId);
+            if (post != null)
+            {
+                context.Entry(post).Reference(p => p.Tread).Load();
+                context.Entry(post.Tread).Reference(t => t.Board).Load();
+
+                string link = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
+                result.Append($"<a href={link}>{post.Id}</a>");
+
+                return;
+            }
+            else
+            {
+                result.Append(postId);
+                return;
+            }
+        }
+
         // Only to open list.
-        static private void HadleList(Stack<Mark> mstack, StringBuilder result, Mark value)
+        static private void HadleList(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
             if (mstack.Contains(value))
             {

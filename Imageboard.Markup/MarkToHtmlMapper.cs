@@ -19,7 +19,6 @@ namespace Imageboard.Markup
                 Mark.OList => "<ol>",
                 Mark.ListElem => "<li>",
                 Mark.Quote => "<span>",
-                Mark.Link => "<a>",
 
                 Mark.NewLine => "<br>",
                 Mark.End => "<article>",
@@ -40,7 +39,6 @@ namespace Imageboard.Markup
                 Mark.OList => "</ol>",
                 Mark.ListElem => "</li>",
                 Mark.Quote => "</span>",
-                Mark.Link => "</a>",
 
                 Mark.NewLine => "</br>",
                 Mark.End => "</article>",
