@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Imageboard.Data.Enteties;
-using Microsoft.EntityFrameworkCore.Design;
 
 namespace Imageboard.Data.Contexts
 {
@@ -14,6 +13,7 @@ namespace Imageboard.Data.Contexts
             return new ApplicationDbContext(optionsBuilder.Options);
         }
     }
+
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Board> Boards { get; set; }
