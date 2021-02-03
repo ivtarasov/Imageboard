@@ -15,14 +15,14 @@ namespace Imageboard.Web.Controllers
         private readonly ApplicationDbContext _db;
         private readonly Random _random = new Random();
         
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context)
         {
             _db = context;
             if (!(_db.Treads.Any() && _db.Boards.Any()))
             {
                 Board board;
 
-                if (!_db.Boards.Any())
+                if (_db.Boards.Any())
                 {
                     board = _db.Boards.First();
                 } 
