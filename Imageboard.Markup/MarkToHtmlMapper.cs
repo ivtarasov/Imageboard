@@ -18,7 +18,7 @@ namespace Imageboard.Markup
                 Mark.UnList => "<ul>",
                 Mark.OList => "<ol>",
                 Mark.ListElem => "<li>",
-                Mark.Quote => "<span style=\"color: blue;\">&gt;",
+                Mark.Quote => "<span style=\"color: green;\">&gt;",
 
                 Mark.NewLine => "<br>",
                 Mark.End => "<article>",
@@ -38,7 +38,7 @@ namespace Imageboard.Markup
                 Mark.UnList => "</ul>",
                 Mark.OList => "</ol>",
                 Mark.ListElem => "</li>",
-                Mark.Quote => "</span><br>",
+                Mark.Quote => "</span>",
 
                 Mark.NewLine => "</br>",
                 Mark.End => "</article>",
@@ -48,7 +48,17 @@ namespace Imageboard.Markup
 
         public static string HtmlForLink(string href, int postId)
         {
-            return $"<a href=\"{href}\">&gt;&gt;{postId}</a><br>";
+            return $"<a href=\"{href}\">&gt;&gt;{postId}</a>";
+        }
+
+        public static string BlankLink()
+        {
+            return "&gt;&gt;";
+        }
+
+        public static string NewLine()
+        {
+            return "<br>";
         }
     }
 }

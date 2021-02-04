@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Imageboard.Data.Contexts;
+using Imageboard.Data.Enteties;
 
 namespace Imageboard.Markup
 {
@@ -56,6 +57,8 @@ namespace Imageboard.Markup
                     if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
                     if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
 
+                    if (!isFirstChar) result.Append(MarkToHtmlMapper.NewLine());
+
                     HandleMark(result, mstack, Mark.Quote);
                     return;
 
@@ -78,10 +81,19 @@ namespace Imageboard.Markup
                     return;
 
                 default:
-                    if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
-                    if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
+                    bool isAfterClosingList = false;
+                    if (mstack.Contains(Mark.OList))
+                    {
+                        HandleMark(result, mstack, Mark.OList);
+                        isAfterClosingList = true;
+                    }
+                    if (mstack.Contains(Mark.UnList))
+                    {
+                        HandleMark(result, mstack, Mark.UnList);
+                        isAfterClosingList = true;
+                    }
 
-                    if (!isFirstChar) result.Append("<br>"); // sourse[position - 1]
+                    if (!isFirstChar && !isAfterClosingList) result.Append(MarkToHtmlMapper.NewLine());
 
                     if (value != Mark.None) HandleMark(result, mstack, value);
                     else result.Append(sourse[position]);
@@ -99,6 +111,12 @@ namespace Imageboard.Markup
                 digits.Push(digit);
             }
             position--;
+
+            if (!digits.Any())
+            {
+                result.Append(MarkToHtmlMapper.BlankLink());
+                return;
+            }
 
             var postId = 0;
             var i = 0;
