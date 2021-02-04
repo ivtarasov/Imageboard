@@ -138,7 +138,7 @@ namespace Imageboard.Markup
             }
             else
             {
-                result.Append(postId);
+                result.Append(MarkToHtmlMapper.BlankLink() + postId);
                 return;
             }
         }
