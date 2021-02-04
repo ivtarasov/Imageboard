@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Imageboard.Data.Contexts;
-using Imageboard.Data.Enteties;
+using System.Web;
 
 namespace Imageboard.Markup
 {
@@ -26,7 +26,7 @@ namespace Imageboard.Markup
                 }
 
                 if (mappedValue != Mark.None) HandleMark(result, mstack, mappedValue);
-                else result.Append(value[i]);
+                else result.Append(HttpUtility.HtmlEncode(value[i]));
             }
             HadleEnd(result, mstack);
 
@@ -96,7 +96,7 @@ namespace Imageboard.Markup
                     if (!isFirstChar && !isAfterClosingList) result.Append(MarkToHtmlMapper.NewLine());
 
                     if (value != Mark.None) HandleMark(result, mstack, value);
-                    else result.Append(sourse[position]);
+                    else result.Append(HttpUtility.HtmlEncode(sourse[position]));
                     return;
             }
         }
