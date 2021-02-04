@@ -29,7 +29,7 @@ namespace MarkupTests
             { ">>123\n>qq", "<article><a href=\"/Home/DisplayTread/6/#123\">&gt;&gt;123</a><br><span style=\"color: green;\">&gt;qq</span></article>" },
             { "+123\nttt", "<article><ul><li>123</li></ul>ttt</article>" },
             { ">>r", "<article>&gt;&gt;r</article>" },
-            { "*\n+123", "" }
+            { "*\n+123", "<article><b><ul><li>123</li></ul></b></article>" }
         };
 
         static private void TestParser()
