@@ -18,14 +18,18 @@ namespace Imageboard.Markup
             for (var i = 0; i < value.Length; i++)
             {
                 var isFirstChar = i == 0;
-                var mappedValue = CharToMarkMapper.Map(value[i], isFirstChar);
+                var mappedValue = CharToMarkMapper.Map(value, ref i, isFirstChar);
                 if (mappedValue == Mark.NewLine || isFirstChar)
                 {
                     HadleNewLine(value, result, mstack, ref i, ref mappedValue, isFirstChar, context);
                     continue;
                 }
 
-                if (mappedValue != Mark.None) HandleMark(result, mstack, mappedValue);
+                if (mappedValue != Mark.None)
+                {   
+                    if (mappedValue == Mark.Link) HadleLink(result, value, ref i, context);
+                    else HandleMark(result, mstack, mappedValue);
+                }
                 else result.Append(HttpUtility.HtmlEncode(value[i]));
             }
             HadleEnd(result, mstack);
@@ -34,25 +38,20 @@ namespace Imageboard.Markup
         }
 
         static private void HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack,
-                                         ref int position, ref Mark value, bool isFirstChar, 
+                                         ref int pos, ref Mark value, bool isFirstChar, 
                                          ApplicationDbContext context)
         {
             if (!isFirstChar)
             {
-                if (position == sourse.Length - 1) return;
+                if (pos == sourse.Length - 1) return;
                 CheckForNewLineMarksInStack(result, mstack);
-                value = CharToMarkMapper.Map(sourse[++position], true);
+                pos++;
+                value = CharToMarkMapper.Map(sourse, ref pos, true);
             }
 
             switch (value)
             {
                 case Mark.Quote:
-
-                    if (CharToMarkMapper.Map(sourse[position + 1], true) == Mark.Quote)
-                    {
-                        position++;
-                        goto case Mark.Link;
-                    }
 
                     if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
                     if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
@@ -60,14 +59,6 @@ namespace Imageboard.Markup
                     if (!isFirstChar) result.Append(MarkToHtmlMapper.NewLine());
 
                     HandleMark(result, mstack, Mark.Quote);
-                    return;
-
-                case Mark.Link:
-                    HadleLink(result, sourse, ref position, context);
-
-                    if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
-                    if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
-
                     return;
 
                 case Mark.OList:
@@ -95,22 +86,26 @@ namespace Imageboard.Markup
 
                     if (!isFirstChar && !isAfterClosingList) result.Append(MarkToHtmlMapper.NewLine());
 
-                    if (value != Mark.None) HandleMark(result, mstack, value);
-                    else result.Append(HttpUtility.HtmlEncode(sourse[position]));
+                    if (value != Mark.None)
+                    {
+                        if (value == Mark.Link) HadleLink(result, sourse, ref pos, context);
+                        else HandleMark(result, mstack, value);
+                    }
+                    else result.Append(HttpUtility.HtmlEncode(sourse[pos]));
                     return;
             }
         }
 
-        static private void HadleLink(StringBuilder result, string sourse, ref int position, 
+        static private void HadleLink(StringBuilder result, string sourse, ref int pos, 
                                       ApplicationDbContext context)
         {
             var digits = new Stack<int>();
             int digit;
-            while (++position < sourse.Length && (digit = (int) char.GetNumericValue(sourse[position])) != -1.0)
+            while (++pos < sourse.Length && (digit = (int) char.GetNumericValue(sourse[pos])) != -1.0)
             {
                 digits.Push(digit);
             }
-            position--;
+            pos--;
 
             if (!digits.Any())
             {

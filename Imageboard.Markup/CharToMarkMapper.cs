@@ -6,25 +6,36 @@ namespace Imageboard.Markup
 {
     class CharToMarkMapper
     {
-        public static Mark Map(char value, bool isNewLine)
+        public static Mark Map(string sourse, ref int pos, bool isNewLine)
         {
-            return value switch
+            (char, char) mark;
+            mark = (pos + 1 < sourse.Length) ? (sourse[pos], sourse[pos + 1]): (sourse[pos], '!');
+            switch (mark)
             {
-                '`' => Mark.Monospace,
-                '*' => Mark.Bold,
-                '_' => Mark.Italic,
-                '#' => Mark.Spoler,
+                case ('`', _):
+                    return Mark.Monospace;
+                case ('*', _):
+                    return Mark.Bold;
+                case ('_', _):
+                    return Mark.Italic;
+                case ('#', _):
+                    return Mark.Spoler;
 
-                '\n' => Mark.NewLine,
+                case ('\n', _):
+                    return Mark.NewLine;
+                case ('>', '>'):
+                    pos++;
+                    return Mark.Link;
 
-                '№' when isNewLine => Mark.OList,
-                '+' when isNewLine => Mark.UnList,
-                '>' when isNewLine => Mark.Quote,
-                /* Double quoting is the Mark.Link. 
-                 * It's checked in the parser.  
-                 */
+                case ('№', _) when isNewLine:
+                    return Mark.OList;
+                case ('+', _) when isNewLine:
+                    return Mark.UnList;
+                case ('>', _) when isNewLine:
+                    return Mark.Quote;
 
-                 _ => Mark.None
+                default: 
+                    return Mark.None;
             };
         }
     }
