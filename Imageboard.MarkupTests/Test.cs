@@ -23,13 +23,14 @@ namespace MarkupTests
             { "№w*\n№ww", "<article><ol><li>w<b></b></li><b><li>ww</li></b></ol><b></b></article>" },
             { "+w\n№ww", "<article><ul><li>w</li></ul><ol><li>ww</li></ol></article>" },
             { ">>107 qqq", "<article><a href=\"/Home/DisplayTread/6/#107\">&gt;&gt;107</a> qqq</article>"},
-            { ">>1000000000", "<article>1000000000</article>" },
+            { ">>1000000000", "<article>&gt;&gt;1000000000</article>" },
             { ">>100", "<article><a href=\"/Home/DisplayTread/7/#100\">&gt;&gt;100</a></article>" },
             { ">test\n>test", "<article><span style=\"color: green;\">&gt;test</span><br><span style=\"color: green;\">&gt;test</span></article>" },
             { ">>123\n>qq", "<article><a href=\"/Home/DisplayTread/6/#123\">&gt;&gt;123</a><br><span style=\"color: green;\">&gt;qq</span></article>" },
             { "+123\nttt", "<article><ul><li>123</li></ul>ttt</article>" },
             { ">>r", "<article>&gt;&gt;r</article>" },
-            { "*\n+123", "<article><b><ul><li>123</li></ul></b></article>" }
+            { "*\n+123", "<article><b><ul><li>123</li></ul></b></article>" },
+            { "*>>" , "<article><b>&gt;&gt;</b></article>"}
         };
 
         static private void TestParser()
