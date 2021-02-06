@@ -9,90 +9,95 @@ namespace Imageboard.Markup
 {
     public static class Parser
     {
-        public static string MarkUp(string value, ApplicationDbContext context)
+        public static string ToHtml(string value, ApplicationDbContext context)
         {
             var mstack = new Stack<Mark>();
             var result = new StringBuilder();
 
-            HandleMark(result, mstack, Mark.End);
+            OpenMark(result, mstack, Mark.End);
             for (var i = 0; i < value.Length; i++)
             {
-                var isFirstChar = i == 0;
-                var mappedValue = CharToMarkMapper.Map(value, ref i, isFirstChar);
-                if (mappedValue == Mark.NewLine || isFirstChar)
+                Mark mvalue;
+                if (i == 0)
                 {
-                    HadleNewLine(value, result, mstack, ref i, ref mappedValue, isFirstChar, context);
-                    continue;
+                    mvalue = Mark.NewLine;
+                    i--;
+                }
+                else mvalue = Mapper.ToMark(value, ref i, false);
+
+                if (mvalue == Mark.NewLine)
+                {
+                    if (HadleNewLine(value, result, mstack, ref i, ref mvalue, context)) continue;
                 }
 
-                if (mappedValue != Mark.None)
-                {   
-                    if (mappedValue == Mark.Link) HadleLink(result, value, ref i, context);
-                    else HandleMark(result, mstack, mappedValue);
+                switch (mvalue)
+                {
+                    case Mark.NewLine:
+                        result.Append(Mapper.NewLine());
+                        break;
+                    case Mark.Link:
+                        HadleLink(result, value, ref i, context);
+                        break;
+                    case not Mark.None:
+                        HandleMark(result, mstack, mvalue);
+                        break;
+                    default:
+                        result.Append(HttpUtility.HtmlEncode(value[i]));
+                        break;
                 }
-                else result.Append(HttpUtility.HtmlEncode(value[i]));
             }
-            HadleEnd(result, mstack);
+            CloseMarkup(result, mstack);
 
             return result.ToString();
         }
 
-        static private void HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack,
-                                         ref int pos, ref Mark value, bool isFirstChar, 
-                                         ApplicationDbContext context)
+        static private bool HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack,
+                                         ref int pos, ref Mark value, ApplicationDbContext context)
         {
-            if (!isFirstChar)
-            {
-                if (pos == sourse.Length - 1) return;
-                CheckForNewLineMarksInStack(result, mstack);
-                pos++;
-                value = CharToMarkMapper.Map(sourse, ref pos, true);
-            }
+            if (pos == sourse.Length - 1) return true;
+            var isFirst = pos == -1;
+            CheckForListsAndQuoteInStack(result, mstack);
+            pos++;
+            value = Mapper.ToMark(sourse, ref pos, true);
 
             switch (value)
             {
                 case Mark.Quote:
 
-                    if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
-                    if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
+                    if (mstack.Contains(Mark.OList)) FixSyntax(result, mstack, Mark.OList);
+                    if (mstack.Contains(Mark.UnList)) FixSyntax(result, mstack, Mark.UnList);
 
-                    if (!isFirstChar) result.Append(MarkToHtmlMapper.NewLine());
+                    if (!isFirst) result.Append(Mapper.NewLine());
 
-                    HandleMark(result, mstack, Mark.Quote);
-                    return;
+                    OpenMark(result, mstack, Mark.Quote);
+                    return true;
 
                 case Mark.OList:
-                    if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
-                    HadleList(result, mstack, value);
-                    return;
+                    if (mstack.Contains(Mark.UnList)) FixSyntax(result, mstack, Mark.UnList);
+                    OpenList(result, mstack, value);
+                    return true;
 
                 case Mark.UnList:
-                    if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
-                    HadleList(result, mstack, value);
-                    return;
+                    if (mstack.Contains(Mark.OList)) FixSyntax(result, mstack, Mark.OList);
+                    OpenList(result, mstack, value);
+                    return true;
 
                 default:
                     bool isAfterClosingList = false;
                     if (mstack.Contains(Mark.OList))
                     {
-                        HandleMark(result, mstack, Mark.OList);
+                        FixSyntax(result, mstack, Mark.OList);
                         isAfterClosingList = true;
                     }
                     if (mstack.Contains(Mark.UnList))
                     {
-                        HandleMark(result, mstack, Mark.UnList);
+                        FixSyntax(result, mstack, Mark.UnList);
                         isAfterClosingList = true;
                     }
 
-                    if (!isFirstChar && !isAfterClosingList) result.Append(MarkToHtmlMapper.NewLine());
+                    if (!isFirst && !isAfterClosingList) result.Append(Mapper.NewLine());
 
-                    if (value != Mark.None)
-                    {
-                        if (value == Mark.Link) HadleLink(result, sourse, ref pos, context);
-                        else HandleMark(result, mstack, value);
-                    }
-                    else result.Append(HttpUtility.HtmlEncode(sourse[pos]));
-                    return;
+                    return false;
             }
         }
 
@@ -109,7 +114,7 @@ namespace Imageboard.Markup
 
             if (!digits.Any())
             {
-                result.Append(MarkToHtmlMapper.BlankLink());
+                result.Append(Mapper.BlankLink());
                 return;
             }
 
@@ -127,77 +132,51 @@ namespace Imageboard.Markup
                 context.Entry(post.Tread).Reference(t => t.Board).Load();
 
                 string href = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
-                result.Append($"{MarkToHtmlMapper.HtmlForLink(href, postId)}");
+                result.Append($"{Mapper.HtmlForLink(href, postId)}");
 
                 return;
             }
             else
             {
-                result.Append(MarkToHtmlMapper.BlankLink() + postId);
+                result.Append(Mapper.BlankLink() + postId);
                 return;
             }
         }
 
-        // Only to open list.
-        static private void HadleList(StringBuilder result, Stack<Mark> mstack, Mark value)
+        static private void OpenList(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
-            if (mstack.Contains(value))
-            {
-                HandleMark(result, mstack, Mark.ListElem);
-            }
-            else
-            {
-                HandleMark(result, mstack, value);
-                HandleMark(result, mstack, Mark.ListElem);
-            }
+            if (!mstack.Contains(value)) OpenMark(result, mstack, value);
+            OpenMark(result, mstack, Mark.ListElem);
         }
 
         static private void HandleMark(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
-            if (mstack.Contains(value))
-            {
-                FixSyntaxAndConvertMarkToResult(result, mstack, value);
-            }
-            else
-            {
-                OpenMarkAndPushToStack(result, mstack, value);
-            }
+            if (mstack.Contains(value)) FixSyntax(result, mstack, value);
+            else OpenMark(result, mstack, value);
         }
 
-        static private void HadleEnd(StringBuilder result, Stack<Mark> mstack)
+        static private void CloseMarkup(StringBuilder result, Stack<Mark> mstack)
         {
             CheckForListsAndQuoteInStack(result, mstack);
-            if (mstack.Contains(Mark.OList)) HandleMark(result, mstack, Mark.OList);
-            if (mstack.Contains(Mark.UnList)) HandleMark(result, mstack, Mark.UnList);
-            HandleMark(result, mstack, Mark.End);
-        }
-
-        // Only to close ListElem or Quote.
-        private static void CheckForNewLineMarksInStack(StringBuilder result, Stack<Mark> mstack)
-        {
-            CheckForListsAndQuoteInStack(result, mstack);
+            if (mstack.Contains(Mark.OList)) FixSyntax(result, mstack, Mark.OList);
+            if (mstack.Contains(Mark.UnList)) FixSyntax(result, mstack, Mark.UnList);
+            FixSyntax(result, mstack, Mark.End);
         }
 
         private static void CheckForListsAndQuoteInStack(StringBuilder result, Stack<Mark> mstack)
         {
-            if (mstack.Contains(Mark.Quote))
-            {
-                FixSyntaxAndConvertMarkToResult(result, mstack, Mark.Quote);
-            }
-            if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))
-            {
-                FixSyntaxAndConvertMarkToResult(result, mstack, Mark.ListElem);
-            }
+            if (mstack.Contains(Mark.Quote)) FixSyntax(result, mstack, Mark.Quote);
+            if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))  FixSyntax(result, mstack, Mark.ListElem);
         }
 
-        private static void FixSyntaxAndConvertMarkToResult(StringBuilder result, Stack<Mark> mstack, Mark value)
+        private static void FixSyntax(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
             Mark mark;
             var tmpstack = new Stack<Mark>();
 
             while ((mark = mstack.Pop()) != value)
             {
-                CloseMarkAndPushToStack(result, tmpstack, mark);
+                CloseMark(result, tmpstack, mark);
             }
 
             CloseMark(result, value);
@@ -206,26 +185,26 @@ namespace Imageboard.Markup
             {
                 while (tmpstack.TryPop(out mark))
                 {
-                    OpenMarkAndPushToStack(result, mstack, mark);
+                    OpenMark(result, mstack, mark);
                 }
             }
         }
 
-        static private void OpenMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
+        static private void OpenMark(StringBuilder result, Stack<Mark> stack, Mark value)
         {
-            result.Append(MarkToHtmlMapper.MapToOpeningElem(value));
+            result.Append(Mapper.ToOpeningHtml(value));
             stack.Push(value);
         }
 
-        static private void CloseMarkAndPushToStack(StringBuilder result, Stack<Mark> stack, Mark value)
+        static private void CloseMark(StringBuilder result, Stack<Mark> stack, Mark value)
         {
-            result.Append(MarkToHtmlMapper.MapToClosingElem(value));
+            result.Append(Mapper.ToClosingHtml(value));
             stack.Push(value);
         }
 
         static private void CloseMark(StringBuilder result, Mark value)
         {
-            result.Append(MarkToHtmlMapper.MapToClosingElem(value));
+            result.Append(Mapper.ToClosingHtml(value));
         }
     }
 }
