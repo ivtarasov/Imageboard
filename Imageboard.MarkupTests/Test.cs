@@ -30,7 +30,10 @@ namespace MarkupTests
             { "+123\nttt", "<article><ul><li>123</li></ul>ttt</article>" },
             { ">>r", "<article>&gt;&gt;r</article>" },
             { "*\n+123", "<article><b><ul><li>123</li></ul></b></article>" },
-            { "*>>" , "<article><b>&gt;&gt;</b></article>"}
+            { "*>>" , "<article><b>&gt;&gt;</b></article>"},
+            { "\n\n\n\n", "<article><br><br><br></article>" },
+            { ">>\n\nq", "<article>&gt;&gt;<br><br>q</article>" },
+
         };
 
         static private void TestParser()
@@ -44,7 +47,7 @@ namespace MarkupTests
             var i = 0;
             foreach (var testPair in _testData)
             {
-                result = Parser.MarkUp(testPair.Key, contex);
+                result = Parser.ToHtml(testPair.Key, contex);
 
                 if (result == testPair.Value)
                 {
