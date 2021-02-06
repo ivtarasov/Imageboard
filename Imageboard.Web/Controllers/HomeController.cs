@@ -98,7 +98,7 @@ namespace Imageboard.Web.Controllers
             var tread = _db.Treads.Single(t => t.Id == treadId);
             _db.Entry(tread).Collection(t => t.Posts).Load();
 
-            tread.Posts.Add(new Post(Parser.MarkUp(message, _db), title, DateTime.Now, tread, tread.Posts.Count));
+            tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, tread, tread.Posts.Count));
 
             _db.Update(tread);
             _db.SaveChanges();
@@ -111,7 +111,7 @@ namespace Imageboard.Web.Controllers
             var board = _db.Boards.Single(t => t.Id == boardId);
             _db.Entry(board).Collection(b => b.Treads).Load();
 
-            var openingPost = new Post(Parser.MarkUp(message, _db), title, DateTime.Now);
+            var openingPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now);
             var tread = new Tread(board, openingPost);
 
             board.Treads.Add(tread);
