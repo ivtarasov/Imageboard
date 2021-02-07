@@ -27,7 +27,7 @@ namespace Imageboard.Markup
 
                 if (mvalue == Mark.NewLine)
                 {
-                    if (HadleNewLine(value, result, mstack, ref i, ref mvalue, context)) continue;
+                    if (HadleNewLine(value, result, mstack, ref i, ref mvalue)) continue;
                 }
 
                 switch (mvalue)
@@ -51,8 +51,7 @@ namespace Imageboard.Markup
             return result.ToString();
         }
 
-        static private bool HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack,
-                                         ref int pos, ref Mark value, ApplicationDbContext context)
+        static private bool HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack, ref int pos, ref Mark value)
         {
             if (pos == sourse.Length - 1) return true;
             var isFirst = pos == -1;
