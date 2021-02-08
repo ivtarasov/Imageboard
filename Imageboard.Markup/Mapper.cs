@@ -47,7 +47,7 @@ namespace Imageboard.Markup
                 Mark.UnList => "<ul>",
                 Mark.OList => "<ol>",
                 Mark.ListElem => "<li>",
-                Mark.Quote => "<span style=\"color: green;\">&gt;",
+                Mark.Quote => "<span style=\"color: #789922;\">&gt;",
 
                 Mark.End => "<article>",
                 _ => "!"

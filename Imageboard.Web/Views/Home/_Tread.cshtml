@@ -2,17 +2,19 @@
 
 @{
     var openingPost = Model.Tread.Posts.First();
-    Model.Tread.Posts.RemoveAt(0);
+   // Model.Tread.Posts.RemoveAt(0);
 }
 
-@await Html.PartialAsync("_OpeningPost", new PostViewModel(openingPost, Model.IsShortcut))
+<div id="tread-@Model.Tread.Posts.First().Id" class="tread">
+    @await Html.PartialAsync("_Post", new PostViewModel(openingPost, Model.IsShortcut, true))
 
-<span class="omittedposts">@Model.AboutOmittedPosts</span>
+    <span class="omitted_posts">@Model.AboutOmittedPosts</span>
 
-@foreach (var post in Model.Tread.Posts)
-{
-    @await Html.PartialAsync("_Post", new PostViewModel(post, Model.IsShortcut))
-}
+    @foreach (var post in Model.Tread.Posts)
+    {
+        @await Html.PartialAsync("_Post", new PostViewModel(post, Model.IsShortcut, false))
+    }
+</div>
 
 
 

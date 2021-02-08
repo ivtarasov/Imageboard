@@ -1,25 +1,25 @@
 ﻿@model PostViewModel
 
-<table>
-    <tbody>
-        <tr>
-            <td class="doubledash">&gt;&gt;</td>
-            <td class="reply" id="@Model.Post.Id">
-                <a name="@Model.Post.Id"></a>
-                <label>
-                    <input type="checkbox" name="ids[@(Model.Post.Id)]" value="@Model.Post.Id">
-                    <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
-                    <span class="replytitle">@(Model.Post.Title ?? "")</span>
-                    <span class="commentpostername">@(Model.Post.PosterName ?? "Аноним")</span>
-                    <span class="posttime">@Model.Post.PostTime.ToString("dd.MM.yyyy (ddd) hh:mm:ss")</span>
-                </label>
-                <span class="reflink"> <a href="/#@Model.Post.Id">№@Model.Post.Id</a> </span>
-                @if (!Model.IsFromShortcutTread)
-                {
-                    <span class="postnum">#@(Model.Post.NumberInTread + 1)</span>
-                }
-                @Html.Raw("<p>" + (Model.Post.Message ?? "") + "</p>")
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div id="post-@Model.Post.Id" class="post">
+    <div id="post-body-@Model.Post.Id" class=@(Model.IsOp ? "op-post-body" : "post_body")>
+        <div id="post-details-@Model.Post.Id" class="post_details">
+            <input type="checkbox" name="ids[@(Model.Post.Id)]" value="@Model.Post.Id">
+            <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
+            <span class="post_title">@(Model.Post.Title ?? "")</span>
+            <span class="poster_name">@(Model.Post.PosterName ?? "Аноним")</span>
+            <span>@Model.Post.PostTime.ToString("dd.MM.yyyy (ddd) hh:mm:ss")</span>
+            <span class="post_link"> <a href="/#@Model.Post.Id">No.@Model.Post.Id</a> </span>
+            @if (Model.IsOp && Model.IsFromShortcutTread)
+            {
+                @:[<a href="/Home/DisplayTread/@Model.Post.TreadId">Ответ</a>]
+            }
+            @if (!Model.IsFromShortcutTread)
+            {
+                <span class="post_number">#@(Model.Post.NumberInTread + 1)</span>
+            }
+        </div>
+        <article id="mesage-@Model.Post.Id" class="post_message">
+            @Html.Raw((Model.Post.Message ?? ""))
+        </article>
+    </div>
+</div>
