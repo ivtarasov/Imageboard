@@ -2,10 +2,10 @@
 
 @{
     var openingPost = Model.Tread.Posts.First();
-   // Model.Tread.Posts.RemoveAt(0);
+    Model.Tread.Posts.RemoveAt(0);
 }
 
-<div id="tread-@Model.Tread.Posts.First().Id" class="tread">
+<div id="tread-@openingPost.Id" class="tread">
     @await Html.PartialAsync("_Post", new PostViewModel(openingPost, Model.IsShortcut, true))
 
     <span class="omitted_posts">@Model.AboutOmittedPosts</span>
