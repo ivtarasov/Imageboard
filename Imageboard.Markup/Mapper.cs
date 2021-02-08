@@ -6,7 +6,7 @@ namespace Imageboard.Markup
         public static Mark ToMark(string sourse, ref int pos, bool isNewLine)
         {
             (char, char) mark;
-            mark = (pos + 2 < sourse.Length) ? (sourse[pos], sourse[pos + 1]) : (sourse[pos], '!');
+            mark = (pos + 1 < sourse.Length) ? (sourse[pos], sourse[pos + 1]) : (sourse[pos], '!');
             switch (mark)
             {
                 case ('`', _):
