@@ -7,7 +7,6 @@
 
 @await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.ReplyInTread, Model.Tread))
 
-
 <form id="delform" method="post" asp-action="Delete">
     @await Html.PartialAsync("_Tread", Model)
     @await Html.PartialAsync("_DeleteForm")

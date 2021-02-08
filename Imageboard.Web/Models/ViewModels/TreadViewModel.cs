@@ -4,16 +4,30 @@ namespace Imageboard.Web.Models.ViewModels
 {
     public class TreadViewModel
     {
-        public Tread Tread { get; set; }
-        public string AboutOmittedPosts { get; set; }
-        public bool IsShortcut { get; set; }
-        public int BoardId { get; set; }
+        int _numberOfOmittedPosts;
+        public Tread Tread { get; private set; }
+        public bool IsShortcut { get; private set; }
+        //public int BoardId { get; private set; }
+        public int NumberOfOmittedPosts
+        {
+            get
+            {
+                return _numberOfOmittedPosts;
+            }
+            private set
+            {
+                if (value < 0) _numberOfOmittedPosts = 0;
+                else _numberOfOmittedPosts = value;
+            }
+        }
 
-        public TreadViewModel(Tread tread, string aboutOmittedPosts, bool isShortcut)
+        public TreadViewModel(Tread tread) => Tread = tread;
+
+        public TreadViewModel(Tread tread, int numberOfOmittedPosts)
         {
             Tread = tread;
-            AboutOmittedPosts = aboutOmittedPosts;
-            IsShortcut = isShortcut;
+            NumberOfOmittedPosts = numberOfOmittedPosts;
+            IsShortcut = true;
         }
     }
 }

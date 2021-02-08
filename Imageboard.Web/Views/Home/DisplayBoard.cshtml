@@ -6,27 +6,16 @@
 @await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.CreateTread, Model.Board))
 
 @{
-    var NumberOfDisplayedMessages = 11; // из конфига в будущем
+    var NumberOfDisplayedPosts = 11;
 }
 
 <form id="del-post-form" method="post" asp-action="Delete">
     @foreach (var tread in Model.Board.Treads)
     {
-        if (tread.Posts.Count() > NumberOfDisplayedMessages)
-        {
-            var NumberOfOmittedMessages = tread.Posts.Count() - NumberOfDisplayedMessages;
-            tread.Posts.RemoveRange(1, NumberOfOmittedMessages);
+        var NumberOfOmittedPosts = tread.Posts.Count - NumberOfDisplayedPosts;
+        if (NumberOfOmittedPosts > 0) tread.Posts.RemoveRange(1, NumberOfOmittedPosts);
 
-            @await Html.PartialAsync("_Tread", new TreadViewModel(tread,
-                                                                  $"Пропущено сообщений {NumberOfOmittedMessages}. Для просмотра нажмите \"Ответ\".",
-                                                                  true))
-        }
-        else
-        {
-            @await Html.PartialAsync("_Tread", new TreadViewModel(tread,
-                                                                  $"Пропущено сообщений {0}. Для просмотра нажмите \"Ответ\".",
-                                                                  true))
-        }
+        @await Html.PartialAsync("_Tread", new TreadViewModel(tread, NumberOfOmittedPosts))
     }
     @await Html.PartialAsync("_DeleteForm")
 </form>

@@ -147,7 +147,7 @@ namespace Imageboard.Web.Controllers
             _db.Entry(tread).Reference(t => t.Board).Load();
 
             tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
-            return View(new TreadViewModel(tread, "", false));
+            return View(new TreadViewModel(tread));
         }
     }
 }

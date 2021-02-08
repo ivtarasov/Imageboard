@@ -8,7 +8,10 @@
 <div id="tread-@openingPost.Id" class="tread">
     @await Html.PartialAsync("_Post", new PostViewModel(openingPost, Model.IsShortcut, true))
 
-    <span class="omitted_posts">@Model.AboutOmittedPosts</span>
+    @if (Model.NumberOfOmittedPosts > 0)
+    {
+    <span class="omitted_posts">@($"Пропущено {@Model.NumberOfOmittedPosts} сообщений. Для просмотра нажмите \"Ответ\".")</span>
+    }
 
     @foreach (var post in Model.Tread.Posts)
     {
