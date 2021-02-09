@@ -53,7 +53,7 @@ ul, ol {
 }
 
 .post_body::before {
-	color: #800000;
+	color: #80000040;
 	content: ">>";
 	display: inline-block;
 	left: -21px;
