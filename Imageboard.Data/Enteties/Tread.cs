@@ -13,15 +13,7 @@ namespace Imageboard.Data.Enteties
         public Board Board { get; set; }
         public int BoardId { get; set; }
 
-        public Tread()
-        {
-            Posts = new List<Post>();
-        }
-
-        public Tread(List<Post> posts)
-        {
-            Posts = posts;
-        }
+        public Tread() => Posts = new List<Post>();
 
         public Tread(Board board)
         {
@@ -29,19 +21,15 @@ namespace Imageboard.Data.Enteties
             Posts = new List<Post>();
         }
 
-        public Tread(Board board, List<Post> posts)
+        public Tread(Board board, Post OPost)
         {
             Board = board;
-            Posts = posts;
-        }
-
-        public Tread(Board board, Post openingPost)
-        {
-            Board = board;
-            Posts = new List<Post>();
-            openingPost.Tread = this;
-            openingPost.NumberInTread = 0;
-            Posts.Add(openingPost);
+            OPost.Tread = this;
+            OPost.NumberInTread = 0;
+            Posts = new List<Post>
+            {
+                OPost
+            };
         }
     }
 }

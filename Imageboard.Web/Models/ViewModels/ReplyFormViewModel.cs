@@ -1,56 +1,27 @@
 ﻿using Imageboard.Data;
-using Imageboard.Data.Enteties;
 
 namespace Imageboard.Web.Models.ViewModels
 {
     public class ReplyFormViewModel
     {
-        private ReplyFormAction action;
-        private string actionNameInView;
-        public Tread ChageTargetTread { get; set; }
-        public Board ChageTargetBoard { get; set; }
+        private ReplyFormAction _action;
+        public string ActionNameInView { get; private set; }
+        public int TargetId { get; private set; }
 
-        public ReplyFormViewModel(ReplyFormAction act, Tread tread)
+        public ReplyFormViewModel(ReplyFormAction act, int targetId)
         {
             Action = act;
-            ChageTargetTread = tread;
-        }
-
-        public ReplyFormViewModel(ReplyFormAction act, Board board)
-        {
-            Action = act;
-            ChageTargetBoard = board;
-        }
-
-        public ReplyFormViewModel(ReplyFormAction act, Board board, Tread tread)
-        {
-            Action = act;
-            ChageTargetBoard = board;
-            ChageTargetTread = tread;
-        }
-
-        public string ActionNameInView
-        {
-            get => actionNameInView;
-            private set => actionNameInView = value;
+            TargetId = targetId;
         }
 
         public ReplyFormAction Action
         {
-            get => action;
-
-            set
+            get => _action;
+            private set
             {
-                action = value;
-                switch (action)
-                {
-                    case ReplyFormAction.CreateTread:
-                        ActionNameInView = "Создать тред";
-                        break;
-                    case ReplyFormAction.ReplyInTread:
-                        ActionNameInView = "Ответить в тред";
-                        break;
-                }
+                _action = value;
+                ActionNameInView = _action == ReplyFormAction.ReplyInTread ? "Ответить в тред" : "Создать тред";
+              
             }
         } 
     }

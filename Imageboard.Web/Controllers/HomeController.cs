@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Imageboard.Web.Models.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using Imageboard.Data.Contexts;
+﻿using Imageboard.Data.Contexts;
 using Imageboard.Data.Enteties;
 using Imageboard.Markup;
+using Imageboard.Web.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System;
+
 
 namespace Imageboard.Web.Controllers
 {
@@ -111,8 +112,8 @@ namespace Imageboard.Web.Controllers
             var board = _db.Boards.Single(t => t.Id == boardId);
             _db.Entry(board).Collection(b => b.Treads).Load();
 
-            var openingPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now);
-            var tread = new Tread(board, openingPost);
+            var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now);
+            var tread = new Tread(board, oPost);
 
             board.Treads.Add(tread);
 

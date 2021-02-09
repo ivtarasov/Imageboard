@@ -3,7 +3,7 @@
     ViewData["Title"] = "Board";
 }
 
-@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.CreateTread, Model.Board))
+@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.CreateTread, Model.Board.Id))
 
 @{
     var NumberOfDisplayedPosts = 11;

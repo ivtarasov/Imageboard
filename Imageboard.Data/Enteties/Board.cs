@@ -10,14 +10,8 @@ namespace Imageboard.Data.Enteties
         public string Name { get; set; }
         public List<Tread> Treads { get; set; }
 
-        public Board()
-        {
-            Treads = new List<Tread>();
-        }
+        public Board() => Treads = new List<Tread>();
 
-        public Board(List<Tread> treads)
-        {
-            Treads = treads;
-        }
+        public Board(List<Tread> treads) => Treads = treads;
     }
 }

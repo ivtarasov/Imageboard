@@ -5,7 +5,7 @@
     Model.Tread.Posts.RemoveAt(0);
 }
 
-<div id="tread-@openingPost.Id" class="tread">
+<div id="tread-@openingPost.Tread.Id" class="tread">
     @await Html.PartialAsync("_Post", new PostViewModel(openingPost, Model.IsShortcut, true))
 
     @if (Model.NumberOfOmittedPosts > 0)

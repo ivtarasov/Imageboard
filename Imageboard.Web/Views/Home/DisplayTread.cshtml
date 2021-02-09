@@ -5,7 +5,7 @@
 
 [<a href="/Home/DisplayBoard/@Model.Tread.Board.Id">Назад</a>]
 
-@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.ReplyInTread, Model.Tread))
+@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.ReplyInTread, Model.Tread.Id))
 
 <form id="delform" method="post" asp-action="Delete">
     @await Html.PartialAsync("_Tread", Model)

@@ -8,12 +8,10 @@ namespace Imageboard.Web.Models.ViewModels
         public Tread Tread { get; private set; }
         public bool IsShortcut { get; private set; }
         //public int BoardId { get; private set; }
+
         public int NumberOfOmittedPosts
         {
-            get
-            {
-                return _numberOfOmittedPosts;
-            }
+            get => _numberOfOmittedPosts;
             private set
             {
                 if (value < 0) _numberOfOmittedPosts = 0;

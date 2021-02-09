@@ -12,11 +12,11 @@
                         <input type="text" name="title" size="35">
                         @if (Model.Action == ReplyFormAction.CreateTread)
                         {
-                            <input type="hidden" name="boardId" value="@Model.ChageTargetBoard.Id">
+                            <input type="hidden" name="boardId" value="@Model.TargetId">
                         }
                         else
                         {
-                            <input type="hidden" name="treadId" value="@Model.ChageTargetTread.Id">
+                            <input type="hidden" name="treadId" value="@Model.TargetId">
                         }
                         <input type="submit" value="Отправить">
                     </td>

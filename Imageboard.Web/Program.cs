@@ -1,7 +1,7 @@
+using Imageboard.Markup;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System;
-using Imageboard.Markup;
 
 namespace Imageboard.Web
 {

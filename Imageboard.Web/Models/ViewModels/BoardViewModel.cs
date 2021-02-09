@@ -6,9 +6,6 @@ namespace Imageboard.Web.Models.ViewModels
     {
         public Board Board { get; set; }
 
-        public BoardViewModel(Board board)
-        {
-            Board = board;
-        }
+        public BoardViewModel(Board board) => Board = board;
     }
 }
