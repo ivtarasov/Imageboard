@@ -1,3 +1,15 @@
+input, select, textarea, button, file {
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+	 border:0;
+	 padding:0
+}
+
 html, body {
 	background: #FFFFEE;
 	color: #800000;
@@ -123,5 +135,57 @@ a:hover {
 	font-weight: bold;
 }
 
-.post_area {
+.reply_form {
+	width: 500px;
+	margin: 0 auto;
+	text-align: left;
+	font-size: .9em;
+}
+
+.reply_form_part {
+	margin: 2px;
+}
+
+.reply_form_part_flex {
+	display: flex;
+}
+
+.reply_input {
+	width: 100%;
+	margin-right: 2px;
+	padding: 2px 4px;
+	background: #F0E0D6;
+	border: 1px solid #80000040;
+	border-radius: 10px;
+}
+
+.reply_button {
+	padding: 2px 4px;
+	height: inherit;
+	background: #F0E0D6;
+	border: 1px solid #80000040;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.reply_button:hover {
+	background: #80000040;
+}
+
+.reply_options {
+	background: #F0E0D6;
+	border: 1px solid #80000040;
+	border-radius: 10px;
+}
+
+.reply_file {
+}
+
+.post_area::after {
+	content: '';
+	border-top: 1px solid #80000040;
+	width: 100%;
+	display: block;
+	margin: 8px 0;
+	clear: both;
 }
