@@ -142,11 +142,11 @@ a:hover {
 	font-size: .9em;
 }
 
-.reply_form_part {
+.form_part {
 	margin: 2px;
 }
 
-.reply_form_part_flex {
+.form_part_flex {
 	display: flex;
 }
 
@@ -183,7 +183,16 @@ a:hover {
 	border-top: 1px solid #80000040;
 	width: 100%;
 	display: block;
-	margin: 8px 0;
+	margin: 8px 8px;
+	clear: both;
+}
+
+.post_area::before {
+	content: '';
+	border-top: 1px solid #80000040;
+	width: 100%;
+	display: block;
+	margin: 0 8px;
 	clear: both;
 }
 
@@ -193,4 +202,32 @@ a:hover {
 	justify-content: center;
 	align-items: center;
 	font-size: 1.1em;
+}
+
+.delete_input {
+	margin-right: 2px;
+	padding: 2px 4px;
+	background: #F0E0D6;
+	border: 1px solid #80000040;
+	border-radius: 10px;
+}
+
+.delete_form_part {
+	float: right;
+	margin-right: 2px;
+	margin-left: 2px;
+	margin-bottom: 8px;
+}
+
+.delete_form {
+
+}
+
+.delete_form::after {
+	content: '';
+	border-top: 1px solid #80000040;
+	width: 100%;
+	display: block;
+	margin: 8px 0;
+	clear: both;
 }
