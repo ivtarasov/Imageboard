@@ -56,11 +56,8 @@ ul, ol {
 }
 
 .op_post_body {
-	background: #F0E0D6;
 	color: #800000;
 	display: inline-block;
-	margin: 0;
-	padding: 4px;
 	position: relative;
 }
 
@@ -97,7 +94,6 @@ ul, ol {
 .post_number {
 	color: #707070;
 	font-size: 13px;
-	margin-right: 5px;
 	vertical-align: 1px;
 }
 
