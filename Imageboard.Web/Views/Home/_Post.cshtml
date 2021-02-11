@@ -1,7 +1,7 @@
 ﻿@model PostViewModel
 
 <div id="post-@Model.Post.Id" class="post">
-    <div id="post-body-@Model.Post.Id" class=@(Model.IsOp ? "op-post-body" : "post_body")>
+    <div id="post-body-@Model.Post.Id" class=@(Model.IsOp ? "op_post_body" : "post_body")>
         <div id="post-details-@Model.Post.Id" class="post_details">
             <input type="checkbox" name="ids[@(Model.Post.Id)]" value="@Model.Post.Id">
             <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
@@ -9,15 +9,23 @@
             <span class="poster_name">@(Model.Post.PosterName ?? "Аноним")</span>
             <span>@Model.Post.PostTime.ToString("dd.MM.yyyy (ddd) hh:mm:ss")</span>
             <span class="post_link"> <a href="/#@Model.Post.Id">№.@Model.Post.Id</a> </span>
-            @if (Model.IsOp && Model.IsFromShortcutTread)
+            @if (Model.IsOp)
             {
-                @:[<a href="/Home/DisplayTread/@Model.Post.TreadId">Ответ</a>]
+                if (Model.IsFromShortcutTread)
+                {
+                    @:[<a href="/Home/DisplayTread/@Model.Post.TreadId">Ответ</a>]
+                }
+                else
+                {
+                    <span class="post_number">#@(Model.Post.NumberInTread + 1)</span>
+                    @:[<a href="/Home/DisplayBoard/@Model.Post.Tread.BoardId">Назад</a>]
+                }
             }
-            @if (!Model.IsFromShortcutTread)
+            else
             {
                 <span class="post_number">#@(Model.Post.NumberInTread + 1)</span>
             }
-        </div>
+            </div>
         <article id="mesage-@Model.Post.Id" class="post_message">
             @Html.Raw(Model.Post.Message ?? "")
         </article>
