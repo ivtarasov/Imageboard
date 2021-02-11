@@ -1,5 +1,6 @@
 ﻿using Imageboard.Data.Contexts;
 using Imageboard.Data.Enteties;
+using Imageboard.Data;
 using Imageboard.Markup;
 using Imageboard.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -94,7 +95,7 @@ namespace Imageboard.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult ReplyInTread(string message, string title, int treadId)
+        public IActionResult ReplyInTread(string message, string title, int treadId, Destination dest)
         {
             var tread = _db.Treads.Single(t => t.Id == treadId);
             _db.Entry(tread).Collection(t => t.Posts).Load();
@@ -104,10 +105,11 @@ namespace Imageboard.Web.Controllers
             _db.Update(tread);
             _db.SaveChanges();
 
-            return RedirectToAction("DisplayTread", new { id = treadId });
+            if (dest == Destination.Tread) return RedirectToAction("DisplayTread", new { id = treadId });
+            else return RedirectToAction("DisplayBoard", new { id = tread.BoardId });
         }
 
-        public IActionResult CreateTread(string message, string title, int boardId)
+        public IActionResult CreateTread(string message, string title, int boardId, Destination dest)
         {
             var board = _db.Boards.Single(t => t.Id == boardId);
             _db.Entry(board).Collection(b => b.Treads).Load();
@@ -120,7 +122,8 @@ namespace Imageboard.Web.Controllers
             _db.Update(board);
             _db.SaveChanges();
 
-            return RedirectToAction("DisplayBoard", new { id = boardId });
+            if (dest == Destination.Board) return RedirectToAction("DisplayBoard", new { id = boardId });
+            else return RedirectToAction("DisplayTread", new { id = tread.Id });
         }
 
         [HttpGet]

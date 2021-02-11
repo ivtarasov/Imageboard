@@ -1,23 +1,28 @@
 ﻿@model ReplyFormViewModel
 
-<div id="post_area" class="post_area">
-<form id="reply-form" class="reply_form" method="post" enctype="multipart/form-data" asp-action="@Model.Action">
-    <div class="reply_form_part reply_form_part_flex">
-        <input id="title" type="text" class="reply_input" size ="10" name="title" placeholder="Тема">
-        <input id="submit" type="submit" class="reply_button" name="submit" value="Отправить">
-    </div>
-    <div class="reply_form_part">
-        <textarea id="message" class="reply_input" name="message" rows="10" placeholder="Сообщение"
-                  spellcheck="false" data-gramm="false" style="line-height: 17.55px;"></textarea>
-    </div>
-    <input type="hidden" name="@(Model.Action == ReplyFormAction.ReplyInTread ? "treadId" : "boardId")"
-           value="@Model.TargetId">
-    <div class="reply_form_part">
-        <div class="reply_options">
-            <input type="checkbox" id="sage_check_box" name="sage">
-            <span title="Не поднимать тред">Sage</span>
-            <input id="file" class="reply_file" type="file" name="file">
+<div id="post-area" class="post_area">
+    <form id="reply-form" class="reply_form" method="post" enctype="multipart/form-data" asp-action="@Model.Action">
+        <div id="action" class="action">
+            <label>@Model.ActionNameInView</label>
         </div>
-    </div>
-</form>
+        <div class="reply_form_part reply_form_part_flex">
+            <input id="title" type="text" class="reply_input" size="10" name="title" placeholder="Тема">
+            <input id="submit" type="submit" class="reply_button" name="submit" value="Отправить">
+        </div>
+        <div class="reply_form_part">
+            <textarea id="message" class="reply_input" name="message" rows="10" placeholder="Сообщение"
+                      spellcheck="false" data-gramm="false" style="line-height: 17.55px;"></textarea>
+        </div>
+        <input type="hidden" name="@(Model.Action == ReplyFormAction.ReplyInTread ? "treadId" : "boardId")"
+               value="@Model.TargetId">
+        <div class="reply_form_part">
+            <div class="reply_options">
+                <label>Перейти к</label>
+                <select name="dest" asp-items="Html.GetEnumSelectList<Destination>()"></select>
+                <input type="checkbox" id="sage_check_box" name="sage">
+                <label title="Не поднимать тред">Sage</label>
+                <input id="file" class="reply_file" type="file" name="file">
+            </div>
+        </div>
+    </form>
 </div>
