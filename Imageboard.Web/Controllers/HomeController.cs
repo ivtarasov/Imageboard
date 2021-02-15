@@ -139,7 +139,7 @@ namespace Imageboard.Web.Controllers
                 tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             }
 
-            board.Treads = board.Treads.OrderByDescending(t => t.Posts.LastOrDefault(p => !p.IsSage)?.PostTime ?? new DateTime()).ToList();
+            board.Treads = board.Treads.OrderByDescending(t => t.Posts.LastOrDefault(p => !p.IsSage)?.PostTime ?? t.Posts.First().PostTime).ToList();
 
             return View(new BoardViewModel(board));
         }
