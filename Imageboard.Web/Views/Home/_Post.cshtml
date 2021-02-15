@@ -7,8 +7,8 @@
             <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
             <span class="post_title">@(Model.Post.Title ?? "")</span>
             <span class="poster_name">@(Model.Post.PosterName ?? "Anonymous")</span>
-            <span>@Model.Post.PostTime.ToString("dd.MM.yyyy (ddd) hh:mm:ss")</span>
-            <span class="post_link"> <a href="/#@Model.Post.Id">№.@Model.Post.Id</a> </span>
+            <span>@Model.Post.PostTime</span>
+            <span class="post_link"> <a href="/#@Model.Post.Id">@("id" + Model.Post.Id)</a> </span>
             @if (Model.IsOp)
             {
                 if (Model.IsFromShortcutTread)
