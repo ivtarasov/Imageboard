@@ -16,25 +16,28 @@ namespace Imageboard.Data.Enteties
         public string Message { get; set; }
         public string Title { get; set; }
         public int NumberInTread { get; set; }
+        public bool IsSage { get; set; }
         public Tread Tread { get; set; }
         public int TreadId { get; set; }
 
         public Post() { }
 
-        public Post(string message, string title, DateTime postTime, Tread tread, int numberInTread)
+        public Post(string message, string title, DateTime postTime, bool isSage, Tread tread, int numberInTread)
         {
             Message = message;
             Title = title;
             PostTime = postTime;
+            IsSage = isSage;
             Tread = tread;
             NumberInTread = numberInTread;
         }
 
-        public Post(string message, string title, DateTime postTime)
+        public Post(string message, string title, DateTime postTime, bool isSage)
         {
             Message = message;
             Title = title;
             PostTime = postTime;
+            IsSage = isSage;
         }
     }
 }

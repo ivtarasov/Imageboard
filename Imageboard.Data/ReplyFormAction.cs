@@ -3,7 +3,7 @@ namespace Imageboard.Data
 {
     public enum ReplyFormAction
     {
-        CreateTread,
-        ReplyInTread
+        StartNewTread,
+        ReplyToTread
     }
 }

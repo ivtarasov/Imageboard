@@ -3,12 +3,13 @@
 <div id="post-@Model.Post.Id" class="post">
     <div id="post-body-@Model.Post.Id" class=@(Model.IsOp ? "op_post_body" : "post_body")>
         <div id="post-details-@Model.Post.Id" class="post_details">
-            <input type="checkbox" name="ids[@(Model.Post.Id)]" value="@Model.Post.Id">
+            <input id="delete-post-checkbox" type="checkbox" name="ids[@(Model.Post.Id)]" value="@Model.Post.Id">
             <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
             <span class="post_title">@(Model.Post.Title ?? "")</span>
             <span class="poster_name">@(Model.Post.PosterName ?? "Anonymous")</span>
             <span>@Model.Post.PostTime</span>
             <span class="post_link"> <a href="/#@Model.Post.Id">@("id" + Model.Post.Id)</a> </span>
+            <span class="sage">@(Model.Post.IsSage ? "🠟" : "")</span>
             @if (Model.IsOp)
             {
                 if (Model.IsFromShortcutTread)
@@ -25,7 +26,7 @@
             {
                 <span class="post_number">#@(Model.Post.NumberInTread + 1)</span>
             }
-            </div>
+        </div>
         <article id="mesage-@Model.Post.Id" class="post_message">
             @Html.Raw(Model.Post.Message ?? "")
         </article>

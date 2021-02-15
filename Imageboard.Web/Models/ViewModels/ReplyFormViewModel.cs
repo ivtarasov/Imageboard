@@ -20,7 +20,7 @@ namespace Imageboard.Web.Models.ViewModels
             private set
             {
                 _action = value;
-                ActionNameInView = _action == ReplyFormAction.ReplyInTread ? "Reply to the Tread " : "Start a New Tread";
+                ActionNameInView = _action == ReplyFormAction.ReplyToTread ? "Reply to the Tread " : "Start a New Tread";
             }
         } 
     }

@@ -44,7 +44,7 @@ namespace Imageboard.Web.Controllers
                     {
                         posts.Add(new Post(j == 0 ? $"Opening post. {j}" : RandomString(_random.Next(10, 500)),
                                            j == 0 ? $"Title of opening post.{j}" : RandomString(_random.Next(0, 5)),
-                                           DateTime.Now, tread, j));
+                                           DateTime.Now, false, tread, j));
                     }
 
                     tread.Posts.AddRange(posts);
@@ -95,12 +95,12 @@ namespace Imageboard.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult ReplyToTread(string message, string title, int treadId, Destination dest)
+        public IActionResult ReplyToTread(string message, string title, bool isSage, int treadId, Destination dest)
         {
             var tread = _db.Treads.Single(t => t.Id == treadId);
             _db.Entry(tread).Collection(t => t.Posts).Load();
 
-            tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, tread, tread.Posts.Count));
+            tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, isSage, tread, tread.Posts.Count));
 
             _db.Update(tread);
             _db.SaveChanges();
@@ -109,12 +109,12 @@ namespace Imageboard.Web.Controllers
             else return RedirectToAction("DisplayBoard", new { id = tread.BoardId });
         }
 
-        public IActionResult StartNewTread(string message, string title, int boardId, Destination dest)
+        public IActionResult StartNewTread(string message, string title, bool isSage, int boardId, Destination dest)
         {
             var board = _db.Boards.Single(t => t.Id == boardId);
             _db.Entry(board).Collection(b => b.Treads).Load();
 
-            var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now);
+            var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now, isSage);
             var tread = new Tread(board, oPost);
 
             board.Treads.Add(tread);
@@ -138,6 +138,8 @@ namespace Imageboard.Web.Controllers
                 _db.Entry(tread).Collection(t => t.Posts).Load();
                 tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             }
+
+            board.Treads = board.Treads.OrderByDescending(t => t.Posts.LastOrDefault(p => !p.IsSage)?.PostTime ?? new DateTime()).ToList();
 
             return View(new BoardViewModel(board));
         }

@@ -3,7 +3,7 @@
     ViewData["Title"] = "Tread";
 }
 
-@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.ReplyInTread, Model.Tread.Id))
+@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(ReplyFormAction.ReplyToTread, Model.Tread.Id))
 
 <form id="delform" method="post" asp-action="Delete">
     @await Html.PartialAsync("_Tread", Model)
