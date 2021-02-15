@@ -6,19 +6,19 @@
             <input type="checkbox" name="ids[@(Model.Post.Id)]" value="@Model.Post.Id">
             <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
             <span class="post_title">@(Model.Post.Title ?? "")</span>
-            <span class="poster_name">@(Model.Post.PosterName ?? "Аноним")</span>
+            <span class="poster_name">@(Model.Post.PosterName ?? "Anonymous")</span>
             <span>@Model.Post.PostTime.ToString("dd.MM.yyyy (ddd) hh:mm:ss")</span>
             <span class="post_link"> <a href="/#@Model.Post.Id">№.@Model.Post.Id</a> </span>
             @if (Model.IsOp)
             {
                 if (Model.IsFromShortcutTread)
                 {
-                    @:[<a href="/Home/DisplayTread/@Model.Post.TreadId">Ответ</a>]
+                    @:[<a href="/Home/DisplayTread/@Model.Post.TreadId">Reply</a>]
                 }
                 else
                 {
                     <span class="post_number">#@(Model.Post.NumberInTread + 1)</span>
-                    @:[<a href="/Home/DisplayBoard/@Model.Post.Tread.BoardId">Назад</a>]
+                    @:[<a href="/Home/DisplayBoard/@Model.Post.Tread.BoardId">Back</a>]
                 }
             }
             else

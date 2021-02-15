@@ -10,7 +10,7 @@
 
     @if (Model.NumberOfOmittedPosts > 0)
     {
-    <span class="omitted_posts">@($"Пропущено {@Model.NumberOfOmittedPosts} сообщений. Для просмотра нажмите \"Ответ\".")</span>
+    <span class="omitted_posts">@($"Ommitted {@Model.NumberOfOmittedPosts} posts. To see click \"Reply\".")</span>
     }
 
     @foreach (var post in Model.Tread.Posts)

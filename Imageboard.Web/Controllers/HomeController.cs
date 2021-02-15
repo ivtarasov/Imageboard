@@ -95,7 +95,7 @@ namespace Imageboard.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult ReplyInTread(string message, string title, int treadId, Destination dest)
+        public IActionResult ReplyToTread(string message, string title, int treadId, Destination dest)
         {
             var tread = _db.Treads.Single(t => t.Id == treadId);
             _db.Entry(tread).Collection(t => t.Posts).Load();
@@ -109,7 +109,7 @@ namespace Imageboard.Web.Controllers
             else return RedirectToAction("DisplayBoard", new { id = tread.BoardId });
         }
 
-        public IActionResult CreateTread(string message, string title, int boardId, Destination dest)
+        public IActionResult StartNewTread(string message, string title, int boardId, Destination dest)
         {
             var board = _db.Boards.Single(t => t.Id == boardId);
             _db.Entry(board).Collection(b => b.Treads).Load();
