@@ -6,13 +6,15 @@ namespace Imageboard.Web.Models.ViewModels
     {
         public Post Post { get; private set; }
         public bool IsFromShortcutTread { get; private set; }
-        public bool IsOp {get ; private set; }
+        public bool IsOp 
+        {
+            get => Post.NumberInTread == 0;
+        }
 
-        public PostViewModel(Post post, bool isFromShrtcutTread, bool isOp)
+        public PostViewModel(Post post, bool isFromShrtcutTread)
         {
             Post = post;
             IsFromShortcutTread = isFromShrtcutTread;
-            IsOp = isOp;
         }
     }
 }

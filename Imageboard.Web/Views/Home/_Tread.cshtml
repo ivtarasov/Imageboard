@@ -6,7 +6,7 @@
 }
 
 <div id="tread-@openingPost.Tread.Id" class="tread">
-    @await Html.PartialAsync("_Post", new PostViewModel(openingPost, Model.IsShortcut, true))
+    @await Html.PartialAsync("_Post", new PostViewModel(openingPost, Model.IsShortcut))
 
     @if (Model.NumberOfOmittedPosts > 0)
     {
@@ -15,7 +15,7 @@
 
     @foreach (var post in Model.Tread.Posts)
     {
-        @await Html.PartialAsync("_Post", new PostViewModel(post, Model.IsShortcut, false))
+        @await Html.PartialAsync("_Post", new PostViewModel(post, Model.IsShortcut))
     }
 </div>
 
