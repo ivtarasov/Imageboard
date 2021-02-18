@@ -11,6 +11,9 @@ namespace Imageboard.Markup
     {
         public static string ToHtml(string value, ApplicationDbContext context)
         {
+            if (value == null) return "";
+            if (context == null) throw new NullReferenceException("ApplicaionDbContext is null in Parser.ToHtml method.");
+
             var mstack = new Stack<Mark>();
             var result = new StringBuilder();
 
