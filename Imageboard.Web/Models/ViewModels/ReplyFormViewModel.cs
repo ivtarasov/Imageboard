@@ -1,4 +1,4 @@
-﻿using Imageboard.Data;
+﻿using Imageboard.Data.Enums;
 
 namespace Imageboard.Web.Models.ViewModels
 {

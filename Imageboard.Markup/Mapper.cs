@@ -49,7 +49,7 @@ namespace Imageboard.Markup
                 Mark.ListElem => "<li>",
                 Mark.Quote => "<span style=\"color: #789922;\">&gt;",
 
-                Mark.End => "<article>",
+                Mark.End => "",
                 _ => "!"
             };
 
@@ -66,7 +66,7 @@ namespace Imageboard.Markup
                 Mark.ListElem => "</li>",
                 Mark.Quote => "</span>",
 
-                Mark.End => "</article>",
+                Mark.End => "",
                 _ => "!"
             };
 

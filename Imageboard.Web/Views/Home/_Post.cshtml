@@ -7,7 +7,7 @@
             <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
             <span class="post_title">@(Model.Post.Title ?? "")</span>
             <span class="poster_name">@(Model.Post.PosterName ?? "Anonymous")</span>
-            <span>@Model.Post.PostTime</span>
+            <span>@Model.Post.Time</span>
             <span class="post_link"> <a href="/#@Model.Post.Id">@("id" + Model.Post.Id)</a> </span>
             <span class="sage">@(Model.Post.IsSage ? "🠟" : "")</span>
             @if (Model.IsOp)
@@ -27,6 +27,10 @@
                 <span class="post_number">#@(Model.Post.NumberInTread + 1)</span>
             }
         </div>
+        @if (Model.Post.Picture != null)
+        {
+            @await Html.PartialAsync("_Picture", Model.Post.Picture)
+        }
         <article id="mesage-@Model.Post.Id" class="post_message">
             @Html.Raw(Model.Post.Message ?? "")
         </article>

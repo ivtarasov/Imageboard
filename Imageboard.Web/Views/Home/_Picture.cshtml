@@ -1,0 +1,7 @@
+﻿@model Picture
+
+<div id="post-picture" class="post_picture">
+    <a href="@Model.Path">
+        <img height="@Model.ViewHeight" width="@Model.ViewWidth" src="@Url.Content(Model.Path)">
+    </a>
+</div>

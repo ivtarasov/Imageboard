@@ -12,31 +12,35 @@ namespace Imageboard.Data.Enteties
         public int Id { get; set; }
         public string PosterName { get; set; }
         [DisplayFormat(DataFormatString = "G")]
-        public DateTime PostTime { get; set; }
+        public DateTime Time { get; set; }
         public string Message { get; set; }
         public string Title { get; set; }
-        public int NumberInTread { get; set; }
         public bool IsSage { get; set; }
+        public int NumberInTread { get; set; }
+        public Picture Picture { get; set; }
+        public int? PictureId { get; set; }
         public Tread Tread { get; set; }
         public int TreadId { get; set; }
 
         public Post() { }
 
-        public Post(string message, string title, DateTime postTime, bool isSage, Tread tread, int numberInTread)
+        public Post(string message, string title, DateTime postTime, Picture pic, bool isSage, Tread tread, int numberInTread)
         {
             Message = message;
             Title = title;
-            PostTime = postTime;
+            Time = postTime;
+            Picture = pic;
             IsSage = isSage;
             Tread = tread;
             NumberInTread = numberInTread;
         }
 
-        public Post(string message, string title, DateTime postTime, bool isSage)
+        public Post(string message, string title, DateTime postTime, Picture pic, bool isSage)
         {
             Message = message;
             Title = title;
-            PostTime = postTime;
+            Time = postTime;
+            Picture = pic;
             IsSage = isSage;
         }
     }

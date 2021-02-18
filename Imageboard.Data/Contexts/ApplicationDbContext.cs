@@ -19,6 +19,7 @@ namespace Imageboard.Data.Contexts
         public DbSet<Board> Boards { get; set; }
         public DbSet<Tread> Treads { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Picture> Images { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

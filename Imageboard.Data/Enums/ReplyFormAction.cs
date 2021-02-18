@@ -1,5 +1,5 @@
 ﻿
-namespace Imageboard.Data
+namespace Imageboard.Data.Enums
 {
     public enum ReplyFormAction
     {

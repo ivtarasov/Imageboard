@@ -1,14 +1,19 @@
 ﻿using Imageboard.Data.Contexts;
 using Imageboard.Data.Enteties;
-using Imageboard.Data;
+using Imageboard.Data.Enums;
 using Imageboard.Markup;
 using Imageboard.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System;
+
+using SixLabors.ImageSharp;
 
 
 namespace Imageboard.Web.Controllers
@@ -16,11 +21,13 @@ namespace Imageboard.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly IWebHostEnvironment _appEnvironment;
         private readonly Random _random = new Random();
         
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, IWebHostEnvironment appEnvironment)
         {
             _db = context;
+            _appEnvironment = appEnvironment;
             if (!(_db.Treads.Any() && _db.Boards.Any()))
             {
                 Board board;
@@ -44,7 +51,7 @@ namespace Imageboard.Web.Controllers
                     {
                         posts.Add(new Post(j == 0 ? $"Opening post. {j}" : RandomString(_random.Next(10, 500)),
                                            j == 0 ? $"Title of opening post.{j}" : RandomString(_random.Next(0, 5)),
-                                           DateTime.Now, false, tread, j));
+                                           DateTime.Now, null, false, tread, j));
                     }
 
                     tread.Posts.AddRange(posts);
@@ -95,12 +102,40 @@ namespace Imageboard.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult ReplyToTread(string message, string title, bool isSage, int treadId, Destination dest)
+        public IActionResult ReplyToTread(string message, string title, bool isSage, int treadId, IFormFile file, Destination dest)
         {
             var tread = _db.Treads.Single(t => t.Id == treadId);
             _db.Entry(tread).Collection(t => t.Posts).Load();
 
-            tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, isSage, tread, tread.Posts.Count));
+            Picture pic = null;
+            if (file != null && file.ContentType.Split("/")[0] == "image")
+            {
+                string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                using var fileStream = file.OpenReadStream();
+                using var image = Image.Load(fileStream);
+
+                double h = image.Height;
+                double w = image.Width;
+                double tmp = 300.0;
+                if (image.Height > tmp || image.Width > tmp)
+                {
+                    if (image.Height > image.Width)
+                    {
+                        h = tmp;
+                        w = (tmp / image.Height) * image.Width;
+                    }
+                    else
+                    {
+                        w = tmp;
+                        h = (tmp / image.Width) * image.Height;
+                    }
+                }
+
+                image.Save(_appEnvironment.WebRootPath + path);
+                pic = new Picture(path, file.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
+            }
+
+            tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, isSage, tread, tread.Posts.Count));
 
             _db.Update(tread);
             _db.SaveChanges();
@@ -109,12 +144,40 @@ namespace Imageboard.Web.Controllers
             else return RedirectToAction("DisplayBoard", new { id = tread.BoardId });
         }
 
-        public IActionResult StartNewTread(string message, string title, bool isSage, int boardId, Destination dest)
+        public IActionResult StartNewTread(string message, string title, bool isSage, int boardId, IFormFile file, Destination dest)
         {
             var board = _db.Boards.Single(t => t.Id == boardId);
             _db.Entry(board).Collection(b => b.Treads).Load();
 
-            var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now, isSage);
+            Picture pic = null;
+            if (file != null && file.ContentType.Split("/")[0] == "image")
+            {
+                string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                using var fileStream = file.OpenReadStream();
+                using var image = Image.Load(fileStream);
+
+                double h = image.Height;
+                double w = image.Width;
+                double tmp = 300.0;
+                if (image.Height > tmp || image.Width > tmp)
+                {
+                    if (image.Height > image.Width)
+                    {
+                        h = tmp;
+                        w = (tmp / image.Height) * image.Width;
+                    }
+                    else
+                    { 
+                        w = tmp;
+                        h = (tmp / image.Width) * image.Height;
+                    }
+                }
+
+                image.Save(_appEnvironment.WebRootPath + path);
+                pic = new Picture(path, file.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
+            }
+
+            var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, isSage);
             var tread = new Tread(board, oPost);
 
             board.Treads.Add(tread);
@@ -136,10 +199,11 @@ namespace Imageboard.Web.Controllers
             foreach (var tread in board.Treads)
             {
                 _db.Entry(tread).Collection(t => t.Posts).Load();
+                foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Picture).Load();
                 tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             }
 
-            board.Treads = board.Treads.OrderByDescending(t => t.Posts.LastOrDefault(p => !p.IsSage)?.PostTime ?? t.Posts.First().PostTime).ToList();
+            board.Treads = board.Treads.OrderByDescending(t => t.Posts.LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.First().Time).ToList();
 
             return View(new BoardViewModel(board));
         }
@@ -151,6 +215,7 @@ namespace Imageboard.Web.Controllers
 
             _db.Entry(tread).Collection(t => t.Posts).Load();
             _db.Entry(tread).Reference(t => t.Board).Load();
+            foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Picture).Load();
 
             tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
             return View(new TreadViewModel(tread));
