@@ -48,7 +48,8 @@ ul, ol {
 	border: 1px solid #80000040;
 	border-radius: 10px;
 	color: #800000;
-	display: inline-block;
+	display: table;
+	overflow: hidden;
 	margin: 0;
 	margin-left: 15px;
 	padding: 4px;
@@ -58,6 +59,7 @@ ul, ol {
 .op_post_body {
 	color: #800000;
 	display: inline;
+	overflow: hidden;
 	position: relative;
 }
 
@@ -75,6 +77,7 @@ ul, ol {
 	margin: 16px;
 	word-break: break-word;
 	word-wrap: break-word;
+	display: block;
 }
 
 .post_details {
@@ -169,9 +172,6 @@ a:hover {
 .reply_options {
 }
 
-.reply_file {
-}
-
 .post_area::after {
 	content: '';
 	border-top: 1px solid #80000040;
@@ -226,10 +226,20 @@ a:hover {
 	clear: both;
 }
 
+.attachment {
+	display: block
+}
+
 .post_picture {
 	float: left;
-	margin-top: 16px;
-	margin-right: 28px;
-	margin-bottom: 0;
+	margin-top: 0;
+	margin-right: 24px;
+	margin-bottom: 8px;
 	margin-left: 16px;
+}
+
+.picture_meta {
+	font-size: 12px;
+	margin-left: 16px;
+	margin-top: 8px;
 }

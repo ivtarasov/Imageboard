@@ -1,7 +1,11 @@
 ﻿@model Picture
 
-<div id="post-picture" class="post_picture">
-    <a href="@Model.Path">
+<div id="post-picture" class="attachment">
+    <div id="picture-meta" class="picture_meta">
+        <a href="@Url.Content(Model.Path)">@Model.Name</a>
+        <em>@(" — " + Model.Size + " Байт " + Model.Height + "×" + Model.Width + " " + Model.Format)</em>
+    </div>
+    <a href="@Model.Path" class="post_picture">
         <img height="@Model.ViewHeight" width="@Model.ViewWidth" src="@Url.Content(Model.Path)">
     </a>
 </div>

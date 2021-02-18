@@ -7,6 +7,7 @@ namespace Imageboard.Data.Enteties
     {
         public int Id { get; set; }
         public string Path { get; set; }
+        public string Format { get; set; }
         public string Name { get; set; }
         public int Size { get; set; }
         public int Height { get; set; }
@@ -16,10 +17,11 @@ namespace Imageboard.Data.Enteties
 
         public Picture() { }
 
-        public Picture(string path, string name, int length, int height, int width, int vheight, int vwidth)
+        public Picture(string path, string name, string format, int length, int height, int width, int vheight, int vwidth)
         {
             Path = path;
             Name = name;
+            Format = format;
             Size = length;
             Height = height;
             Width = width;

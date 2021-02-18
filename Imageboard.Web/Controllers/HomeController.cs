@@ -14,6 +14,7 @@ using System.IO;
 using System;
 
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 
 
 namespace Imageboard.Web.Controllers
@@ -112,11 +113,11 @@ namespace Imageboard.Web.Controllers
             {
                 string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 using var fileStream = file.OpenReadStream();
-                using var image = Image.Load(fileStream);
+                using var image = Image.Load(fileStream, out IImageFormat format);
 
                 double h = image.Height;
                 double w = image.Width;
-                double tmp = 300.0;
+                double tmp = 200.0;
                 if (image.Height > tmp || image.Width > tmp)
                 {
                     if (image.Height > image.Width)
@@ -132,7 +133,7 @@ namespace Imageboard.Web.Controllers
                 }
 
                 image.Save(_appEnvironment.WebRootPath + path);
-                pic = new Picture(path, file.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
+                pic = new Picture(path, file.FileName, format.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
             }
 
             tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, isSage, tread, tread.Posts.Count));
@@ -154,7 +155,7 @@ namespace Imageboard.Web.Controllers
             {
                 string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 using var fileStream = file.OpenReadStream();
-                using var image = Image.Load(fileStream);
+                using var image = Image.Load(fileStream, out IImageFormat format);
 
                 double h = image.Height;
                 double w = image.Width;
@@ -174,7 +175,7 @@ namespace Imageboard.Web.Controllers
                 }
 
                 image.Save(_appEnvironment.WebRootPath + path);
-                pic = new Picture(path, file.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
+                pic = new Picture(path, file.FileName, format.Name,(int)file.Length, image.Height, image.Width, (int)h, (int)w);
             }
 
             var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, isSage);

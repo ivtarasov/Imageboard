@@ -31,8 +31,8 @@
         {
             @await Html.PartialAsync("_Picture", Model.Post.Picture)
         }
-        <article id="mesage-@Model.Post.Id" class="post_message">
+        <blockquote id="message-@Model.Post.Id" class="post_message">
             @Html.Raw(Model.Post.Message ?? "")
-        </article>
+        </blockquote>
     </div>
 </div>
