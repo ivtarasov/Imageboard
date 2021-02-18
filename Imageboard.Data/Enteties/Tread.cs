@@ -24,7 +24,6 @@ namespace Imageboard.Data.Enteties
         public Tread(Board board, Post OPost)
         {
             Board = board;
-            OPost.Tread = this;
             Posts = new List<Post>{ OPost };
         }
     }

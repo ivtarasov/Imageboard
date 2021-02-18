@@ -4,7 +4,7 @@ namespace Imageboard.Web.Models.ViewModels
 {
     public class TreadViewModel
     {
-        int _numberOfOmittedPosts;
+        private int _numberOfOmittedPosts;
         public Tread Tread { get; private set; }
         public bool IsShortcut { get; private set; }
         //public int BoardId { get; private set; }
