@@ -25,7 +25,6 @@ namespace Imageboard.Data.Enteties
         {
             Board = board;
             OPost.Tread = this;
-            OPost.NumberInTread = 0;
             Posts = new List<Post>{ OPost };
         }
     }

@@ -1,21 +1,22 @@
 ﻿@model TreadViewModel
 
 @{
-    var openingPost = Model.Tread.Posts.First();
+    var oPost = Model.Tread.Posts.First();
     Model.Tread.Posts.RemoveAt(0);
+    int i = 1;
 }
 
-<div id="tread-@openingPost.Tread.Id" class="tread">
-    @await Html.PartialAsync("_Post", new PostViewModel(openingPost, Model.IsShortcut))
+<div id="tread-@Model.Tread.Id" class="tread">
+    @await Html.PartialAsync("_Post", new PostViewModel(oPost, i, Model.IsShortcut))
 
     @if (Model.NumberOfOmittedPosts > 0)
     {
-    <span class="omitted_posts">@($"Ommitted {@Model.NumberOfOmittedPosts} posts. To see click \"Reply\".")</span>
+        <span class="omitted_posts">@($"Ommitted {@Model.NumberOfOmittedPosts} posts. To see click \"Reply\".")</span>
     }
 
     @foreach (var post in Model.Tread.Posts)
     {
-        @await Html.PartialAsync("_Post", new PostViewModel(post, Model.IsShortcut))
+        @await Html.PartialAsync("_Post", new PostViewModel(post, ++i, Model.IsShortcut))
     }
 </div>
 

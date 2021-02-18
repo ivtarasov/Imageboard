@@ -15,8 +15,8 @@ namespace Imageboard.Data.Enteties
         public DateTime Time { get; set; }
         public string Message { get; set; }
         public string Title { get; set; }
+        public bool IsOp { get; set; }
         public bool IsSage { get; set; }
-        public int NumberInTread { get; set; }
         public Picture Picture { get; set; }
         public int? PictureId { get; set; }
         public Tread Tread { get; set; }
@@ -24,23 +24,24 @@ namespace Imageboard.Data.Enteties
 
         public Post() { }
 
-        public Post(string message, string title, DateTime postTime, Picture pic, bool isSage, Tread tread, int numberInTread)
+        public Post(string message, string title, DateTime postTime, Picture pic, bool isOp, bool isSage, Tread tread, int numberInTread)
         {
             Message = message;
             Title = title;
             Time = postTime;
             Picture = pic;
+            IsOp = isOp;
             IsSage = isSage;
             Tread = tread;
-            NumberInTread = numberInTread;
         }
 
-        public Post(string message, string title, DateTime postTime, Picture pic, bool isSage)
+        public Post(string message, string title, DateTime postTime, Picture pic, bool isOp, bool isSage)
         {
             Message = message;
             Title = title;
             Time = postTime;
             Picture = pic;
+            IsOp = isOp;
             IsSage = isSage;
         }
     }

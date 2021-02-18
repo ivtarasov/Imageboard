@@ -52,7 +52,7 @@ namespace Imageboard.Web.Controllers
                     {
                         posts.Add(new Post(j == 0 ? $"Opening post. {j}" : RandomString(_random.Next(10, 500)),
                                            j == 0 ? $"Title of opening post.{j}" : RandomString(_random.Next(0, 5)),
-                                           DateTime.Now, null, false, tread, j));
+                                           DateTime.Now, null, j == 0, false, tread, j));
                     }
 
                     tread.Posts.AddRange(posts);
@@ -78,7 +78,7 @@ namespace Imageboard.Web.Controllers
         public IActionResult Delete(Dictionary<int, int> ids, int boardId)
         {
             var posts = _db.Posts.Where(p => ids.Values.Contains(p.Id));
-            var openingPosts = posts.Where(p => p.NumberInTread == 0);
+            var openingPosts = posts.Where(p => p.IsOp);
 
             DeleteTreads(openingPosts);
             DeletePosts(posts.Except(openingPosts));
@@ -136,7 +136,7 @@ namespace Imageboard.Web.Controllers
                 pic = new Picture(path, file.FileName, format.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
             }
 
-            tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, isSage, tread, tread.Posts.Count));
+            tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, false, isSage, tread, tread.Posts.Count));
 
             _db.Update(tread);
             _db.SaveChanges();
@@ -178,7 +178,7 @@ namespace Imageboard.Web.Controllers
                 pic = new Picture(path, file.FileName, format.Name,(int)file.Length, image.Height, image.Width, (int)h, (int)w);
             }
 
-            var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, isSage);
+            var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, true, isSage);
             var tread = new Tread(board, oPost);
 
             board.Treads.Add(tread);
@@ -201,7 +201,7 @@ namespace Imageboard.Web.Controllers
             {
                 _db.Entry(tread).Collection(t => t.Posts).Load();
                 foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Picture).Load();
-                tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
+                tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
             }
 
             board.Treads = board.Treads.OrderByDescending(t => t.Posts.LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.First().Time).ToList();
@@ -218,7 +218,7 @@ namespace Imageboard.Web.Controllers
             _db.Entry(tread).Reference(t => t.Board).Load();
             foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Picture).Load();
 
-            tread.Posts = tread.Posts.OrderBy(p => p.NumberInTread).ToList();
+            tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
             return View(new TreadViewModel(tread));
         }
     }
