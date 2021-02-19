@@ -3,38 +3,20 @@ namespace Imageboard.Markup
 {
     class Mapper
     {
-        public static Mark ToMark(string sourse, ref int pos, bool isNewLine)
-        {
-            (char, char) mark;
-            mark = (pos + 1 < sourse.Length) ? (sourse[pos], sourse[pos + 1]) : (sourse[pos], '!');
-            switch (mark)
+        public static Mark ToMark((char, char) mark, bool isNewLine) =>
+            mark switch
             {
-                case ('`', _):
-                    return Mark.Monospace;
-                case ('*', _):
-                    return Mark.Bold;
-                case ('_', _):
-                    return Mark.Italic;
-                case ('#', _):
-                    return Mark.Spoler;
-
-                case ('\n', _):
-                    return Mark.NewLine;
-                case ('>', '>'):
-                    pos++;
-                    return Mark.Link;
-
-                case ('№', _) when isNewLine:
-                    return Mark.OList;
-                case ('+', _) when isNewLine:
-                    return Mark.UnList;
-                case ('>', _) when isNewLine:
-                    return Mark.Quote;
-
-                default:
-                    return Mark.None;
+                ('`', _) => Mark.Monospace,
+                ('*', _) => Mark.Bold,
+                ('_', _) => Mark.Italic,
+                ('#', _) => Mark.Spoler,
+                ('\n', _) => Mark.NewLine,
+                ('>', '>') => Mark.Link,
+                ('№', _) when isNewLine => Mark.OList,
+                ('+', _) when isNewLine => Mark.UnList,
+                ('>', _) when isNewLine => Mark.Quote,
+                _ => Mark.None,
             };
-        }
 
         public static string ToOpeningHtml(Mark value) =>
             value switch

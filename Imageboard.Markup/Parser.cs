@@ -12,7 +12,7 @@ namespace Imageboard.Markup
         public static string ToHtml(string value, ApplicationDbContext context)
         {
             if (value == null) return "";
-            if (context == null) throw new NullReferenceException("ApplicaionDbContext is null in Parser.ToHtml method.");
+            if (context == null) throw new NullReferenceException("ApplicaionDbContext instance is null in Parser.ToHtml method.");
 
             var mstack = new Stack<Mark>();
             var result = new StringBuilder();
@@ -23,14 +23,19 @@ namespace Imageboard.Markup
                 Mark mvalue;
                 if (i == 0)
                 {
-                    mvalue = Mark.NewLine;
                     i--;
+                    mvalue = Mark.NewLine;
                 }
-                else mvalue = Mapper.ToMark(value, ref i, false);
+                else
+                {
+                    var smark = (i + 1 < value.Length) ? (value[i], value[i + 1]) : (value[i], '!');
+                    mvalue = Mapper.ToMark(smark, false);
+                }
 
                 if (mvalue == Mark.NewLine)
                 {
-                    if (HadleNewLine(value, result, mstack, ref i, ref mvalue)) continue;
+                    if (i == value.Length - 1) continue;
+                    if (HadleNewLine(value, result, mstack, ++i, ref mvalue)) continue;
                 }
 
                 switch (mvalue)
@@ -39,6 +44,7 @@ namespace Imageboard.Markup
                         result.Append(Mapper.NewLine());
                         break;
                     case Mark.Link:
+                        i++;
                         HadleLink(result, value, ref i, context);
                         break;
                     case not Mark.None:
@@ -54,13 +60,12 @@ namespace Imageboard.Markup
             return result.ToString();
         }
 
-        static private bool HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack, ref int pos, ref Mark value)
+        static private bool HadleNewLine(string sourse, StringBuilder result, Stack<Mark> mstack, int pos, ref Mark value)
         {
-            if (pos == sourse.Length - 1) return true;
-            var isFirst = pos == -1;
+            var isFirst = pos == 0;
             CheckForListsAndQuoteInStack(result, mstack);
-            pos++;
-            value = Mapper.ToMark(sourse, ref pos, true);
+            var smark = (pos + 1 < sourse.Length) ? (sourse[pos], sourse[pos + 1]) : (sourse[pos], '!');
+            value = Mapper.ToMark(smark, true);
 
             switch (value)
             {
