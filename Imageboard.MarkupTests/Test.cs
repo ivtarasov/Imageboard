@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using Imageboard.Data.Contexts;
 
-namespace MarkupTests
+namespace Tests
 {
     class Test
     {
