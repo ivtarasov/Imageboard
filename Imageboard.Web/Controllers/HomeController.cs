@@ -1,8 +1,8 @@
 ﻿using Imageboard.Data.Contexts;
 using Imageboard.Data.Enteties;
 using Imageboard.Data.Enums;
-using Imageboard.Markup;
 using Imageboard.Web.Models.ViewModels;
+using Imageboard.Services.Markup;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
@@ -21,13 +21,16 @@ namespace Imageboard.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly IParser _parser;
         private readonly IWebHostEnvironment _appEnvironment;
         private readonly Random _random = new Random();
         
-        public HomeController(ApplicationDbContext context, IWebHostEnvironment appEnvironment)
+        public HomeController(ApplicationDbContext context, IParser parser, IWebHostEnvironment appEnvironment)
         {
             _db = context;
             _appEnvironment = appEnvironment;
+            _parser = parser;
+
             if (!(_db.Treads.Any() && _db.Boards.Any()))
             {
                 Board board;
@@ -135,7 +138,7 @@ namespace Imageboard.Web.Controllers
                 pic = new Picture(path, file.FileName, format.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
             }
 
-            tread.Posts.Add(new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, false, isSage, tread, tread.Posts.Count));
+            tread.Posts.Add(new Post(_parser.ToHtml(message, _db), title, DateTime.Now, pic, false, isSage, tread, tread.Posts.Count));
 
             _db.Update(tread);
             _db.SaveChanges();
@@ -177,7 +180,7 @@ namespace Imageboard.Web.Controllers
                 pic = new Picture(path, file.FileName, format.Name,(int)file.Length, image.Height, image.Width, (int)h, (int)w);
             }
 
-            var oPost = new Post(Parser.ToHtml(message, _db), title, DateTime.Now, pic, true, isSage);
+            var oPost = new Post(_parser.ToHtml(message, _db), title, DateTime.Now, pic, true, isSage);
             var tread = new Tread(board, oPost);
 
             board.Treads.Add(tread);

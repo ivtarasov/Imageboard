@@ -1,5 +1,5 @@
 ﻿using System;
-using Imageboard.Markup;
+using Imageboard.Services.Markup;
 using System.Text;
 using System.Collections.Generic;
 using Imageboard.Data.Contexts;
@@ -38,7 +38,7 @@ namespace MarkupTests
 
         static private void TestParser()
         {
-
+            var parser = new Parser(new Mapper());
             var contex = ApplicationDbContextFactory.CreateDbContext();
 
             var testOutput = new StringBuilder();
@@ -47,7 +47,7 @@ namespace MarkupTests
             var i = 0;
             foreach (var testPair in _testData)
             {
-                result = Parser.ToHtml(testPair.Key, contex);
+                result = parser.ToHtml(testPair.Key, contex);
 
                 if (result == testPair.Value)
                 {

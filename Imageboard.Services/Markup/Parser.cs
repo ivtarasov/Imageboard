@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using Imageboard.Data.Contexts;
 using System.Web;
-using Imageboard.Services;
 
-namespace Imageboard.Markup
+namespace Imageboard.Services.Markup
 {
-    public class Parser
+    public class Parser: IParser
     {
         private readonly IMapper _mapper;
+
+        public Parser(IMapper mapper) => _mapper = mapper;
 
         public string ToHtml(string value, ApplicationDbContext context)
         {
@@ -32,7 +33,7 @@ namespace Imageboard.Markup
                 else
                 {
                     var smark = (i + 1 < value.Length) ? (value[i], value[i + 1]) : (value[i], '!');
-                    mvalue = Mapper.ToMark(smark, false);
+                    mvalue = _mapper.ToMark(smark, false);
                 }
 
                 if (mvalue == Mark.NewLine)
@@ -44,7 +45,7 @@ namespace Imageboard.Markup
                 switch (mvalue)
                 {
                     case Mark.NewLine:
-                        result.Append(Mapper.NewLine());
+                        result.Append(_mapper.NewLine());
                         break;
                     case Mark.Link:
                         i++;
@@ -68,7 +69,7 @@ namespace Imageboard.Markup
             var isFirst = pos == 0;
             CheckForListsAndQuoteInStack(result, mstack);
             var smark = (pos + 1 < sourse.Length) ? (sourse[pos], sourse[pos + 1]) : (sourse[pos], '!');
-            value = Mapper.ToMark(smark, true);
+            value = _mapper.ToMark(smark, true);
 
             switch (value)
             {
@@ -77,7 +78,7 @@ namespace Imageboard.Markup
                     if (mstack.Contains(Mark.OList)) FixSyntax(result, mstack, Mark.OList);
                     if (mstack.Contains(Mark.UnList)) FixSyntax(result, mstack, Mark.UnList);
 
-                    if (!isFirst) result.Append(Mapper.NewLine());
+                    if (!isFirst) result.Append(_mapper.NewLine());
 
                     OpenMark(result, mstack, Mark.Quote);
                     return true;
@@ -105,13 +106,13 @@ namespace Imageboard.Markup
                         isAfterClosingList = true;
                     }
 
-                    if (!isFirst && !isAfterClosingList) result.Append(Mapper.NewLine());
+                    if (!isFirst && !isAfterClosingList) result.Append(_mapper.NewLine());
 
                     return false;
             }
         }
 
-        static private void HadleLink(StringBuilder result, string sourse, ref int pos, 
+        private void HadleLink(StringBuilder result, string sourse, ref int pos, 
                                       ApplicationDbContext context)
         {
             var digits = new Stack<int>();
@@ -124,7 +125,7 @@ namespace Imageboard.Markup
 
             if (!digits.Any())
             {
-                result.Append(Mapper.BlankLink());
+                result.Append(_mapper.BlankLink());
                 return;
             }
 
@@ -142,30 +143,30 @@ namespace Imageboard.Markup
                 context.Entry(post.Tread).Reference(t => t.Board).Load();
 
                 string href = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
-                result.Append($"{Mapper.HtmlForLink(href, postId)}");
+                result.Append($"{_mapper.HtmlForLink(href, postId)}");
 
                 return;
             }
             else
             {
-                result.Append(Mapper.BlankLink() + postId);
+                result.Append(_mapper.BlankLink() + postId);
                 return;
             }
         }
 
-        static private void OpenList(StringBuilder result, Stack<Mark> mstack, Mark value)
+        private void OpenList(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
             if (!mstack.Contains(value)) OpenMark(result, mstack, value);
             OpenMark(result, mstack, Mark.ListElem);
         }
 
-        static private void HandleMark(StringBuilder result, Stack<Mark> mstack, Mark value)
+        private void HandleMark(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
             if (mstack.Contains(value)) FixSyntax(result, mstack, value);
             else OpenMark(result, mstack, value);
         }
 
-        static private void CloseMarkup(StringBuilder result, Stack<Mark> mstack)
+        private void CloseMarkup(StringBuilder result, Stack<Mark> mstack)
         {
             CheckForListsAndQuoteInStack(result, mstack);
             if (mstack.Contains(Mark.OList)) FixSyntax(result, mstack, Mark.OList);
@@ -173,13 +174,13 @@ namespace Imageboard.Markup
             FixSyntax(result, mstack, Mark.Edge);
         }
 
-        private static void CheckForListsAndQuoteInStack(StringBuilder result, Stack<Mark> mstack)
+        void CheckForListsAndQuoteInStack(StringBuilder result, Stack<Mark> mstack)
         {
             if (mstack.Contains(Mark.Quote)) FixSyntax(result, mstack, Mark.Quote);
             if (mstack.Contains(Mark.OList) || mstack.Contains(Mark.UnList))  FixSyntax(result, mstack, Mark.ListElem);
         }
 
-        private static void FixSyntax(StringBuilder result, Stack<Mark> mstack, Mark value)
+        private void FixSyntax(StringBuilder result, Stack<Mark> mstack, Mark value)
         {
             Mark mark;
             var tmpstack = new Stack<Mark>();
@@ -189,8 +190,8 @@ namespace Imageboard.Markup
                 CloseMark(result, tmpstack, mark);
             }
 
-            CloseMark(result, value);
 
+            CloseMark(result, value);
             if (value != Mark.Edge)
             {
                 while (tmpstack.TryPop(out mark))
@@ -200,21 +201,21 @@ namespace Imageboard.Markup
             }
         }
 
-        static private void OpenMark(StringBuilder result, Stack<Mark> stack, Mark value)
+        private void OpenMark(StringBuilder result, Stack<Mark> stack, Mark value)
         {
-            result.Append(Mapper.ToOpeningHtml(value));
+            result.Append(_mapper.ToOpeningHtml(value));
             stack.Push(value);
         }
 
-        static private void CloseMark(StringBuilder result, Stack<Mark> stack, Mark value)
+        private void CloseMark(StringBuilder result, Stack<Mark> stack, Mark value)
         {
-            result.Append(Mapper.ToClosingHtml(value));
+            result.Append(_mapper.ToClosingHtml(value));
             stack.Push(value);
         }
 
-        static private void CloseMark(StringBuilder result, Mark value)
+        private void CloseMark(StringBuilder result, Mark value)
         {
-            result.Append(Mapper.ToClosingHtml(value));
+            result.Append(_mapper.ToClosingHtml(value));
         }
     }
 }

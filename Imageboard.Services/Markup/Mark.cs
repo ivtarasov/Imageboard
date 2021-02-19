@@ -1,5 +1,5 @@
 ﻿
-namespace Imageboard.Markup
+namespace Imageboard.Services.Markup
 {
     public enum Mark
     {
@@ -8,14 +8,13 @@ namespace Imageboard.Markup
         Italic,
         Spoler,
 
-        NewLine,
-
         Link,
         OList,
         UnList,
         ListElem,
         Quote,
 
+        NewLine,
         Edge,
         None
     }

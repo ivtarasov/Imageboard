@@ -1,4 +1,5 @@
 using Imageboard.Data.Contexts;
+using Imageboard.Services.Markup;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,9 @@ namespace Imageboard.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connection));
             services.AddControllersWithViews();
+
+            services.AddSingleton<IMapper, Mapper>();
+            services.AddSingleton<IParser, Parser>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
