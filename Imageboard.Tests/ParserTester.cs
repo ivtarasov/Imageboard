@@ -1,76 +1,71 @@
-﻿using System;
+﻿using Imageboard.Data.Contexts;
 using Imageboard.Services.Markup;
-using System.Text;
 using System.Collections.Generic;
-using Imageboard.Data.Contexts;
+using Xunit;
 
 namespace Tests
 {
-    class ParserTester
+    public class ParserTester
     {
-        private static readonly Dictionary<string, string> _testData = new Dictionary<string, string>
+        private static readonly Parser _parser = new Parser(new Mapper());
+        private static readonly ApplicationDbContext _db = ApplicationDbContextFactory.CreateDbContext();
+
+        [Fact]
+        public void BlankStringTest()
         {
-            { "**", "<b></b>" },
-            { "*_*_", "<b><i></i></b><i></i>" },
-            { "*_#*_#", "<b><i><span></span></i></b><i><span></span></i><span></span>"},
-            { "", "" },
-            { "*#qq\n*_#_", "<b><span>qq<br></span></b><span><i></i></span><i></i>" },
-            { "_", "<i></i>" },
-            { ">qweqwe", "<span style=\"color: #789922;\">&gt;qweqwe</span>" },
-            { "+w\n+ww\n+www", "<ul><li>w</li><li>ww</li><li>www</li></ul>" },
-            { "№w\n№ww\n№www", "<ol><li>w</li><li>ww</li><li>www</li></ol>" },
-            { "№w\n№w*w\n№www\n", "<ol><li>w</li><li>w<b>w</b></li><b><li>www</li></b></ol><b></b>" },
-            { "№w*\n№ww", "<ol><li>w<b></b></li><b><li>ww</li></b></ol><b></b>" },
-            { "+w\n№ww", "<ul><li>w</li></ul><ol><li>ww</li></ol>" },
-            { ">>107 qqq", "<a href=\"/Home/DisplayTread/6/#107\">&gt;&gt;107</a> qqq"},
-            { ">>1000000000", "&gt;&gt;1000000000" },
-            { ">>100", "<a href=\"/Home/DisplayTread/7/#100\">&gt;&gt;100</a>" },
-            { ">test\n>test", "<span style=\"color: #789922;\">&gt;test</span><br><span style=\"color: #789922;\">&gt;test</span>" },
-            { ">>123\n>qq", "<a href=\"/Home/DisplayTread/6/#123\">&gt;&gt;123</a><br><span style=\"color: #789922;\">&gt;qq</span>" },
-            { "+123\nttt", "<ul><li>123</li></ul>ttt" },
-            { ">>r", "&gt;&gt;r" },
-            { "*\n+123", "<b><ul><li>123</li></ul></b>" },
-            { "*>>" , "<b>&gt;&gt;</b>"},
-            { "\n\n\n\n", "<br><br><br>" },
-            { ">>\n\nq", "&gt;&gt;<br><br>q" },
-
-        };
-
-        static private void TestParser()
-        {
-            var parser = new Parser(new Mapper());
-            var contex = ApplicationDbContextFactory.CreateDbContext();
-
-            var testOutput = new StringBuilder();
-            string result;
-
-            var i = 0;
-            foreach (var testPair in _testData)
-            {
-                result = parser.ToHtml(testPair.Key, contex);
-
-                if (result == testPair.Value)
-                {
-                    testOutput.Append($"Test №{i} passed.\n")
-                                 .Append($"#########\n");
-                }
-                else
-                {
-                    testOutput.Append($"Test №{i} failed.\n")
-                                 .Append($"Expected result: {testPair.Value}\n")
-                                 .Append($"The result: {result}\n")
-                                 .Append($"#########\n");
-                }
-
-                Console.WriteLine(testOutput.ToString());
-                testOutput.Clear();
-                i++;
-            }
+            Assert.Equal("", _parser.ToHtml("", _db));
         }
 
-        public static void Main()
+        [Fact]
+        public void MultipleLineBreaks()
         {
-            TestParser();
+            Assert.Equal("<br><br><br>", _parser.ToHtml("\n\n\n\n", _db));
+        }
+
+        [Fact]
+        public void NotNewLileMarksTest()
+        {
+            Assert.Equal("<b></b>", _parser.ToHtml("**", _db));
+            Assert.Equal("<i></i>", _parser.ToHtml("_", _db));
+            Assert.Equal("<b><i></i></b><i></i>", _parser.ToHtml("*_*_", _db));
+            Assert.Equal("<b><span class=\"spoler\">qq<br></span>" +
+                "</b><span class=\"spoler\"><i></i></span><i></i>", _parser.ToHtml("*#qq\n*_#_", _db));
+            Assert.Equal("<b><i><span class=\"spoler\"></span></i></b><i>" +
+                "<span class=\"spoler\"></span></i><span class=\"spoler\"></span>", _parser.ToHtml("*_#*_#", _db));
+        }
+
+        [Fact]
+        public void QuoteMarkTest()
+        {
+            Assert.Equal("<span class=\"quote\">&gt;qweqwe</span>", _parser.ToHtml(">qweqwe", _db));
+            Assert.Equal("<span class=\"quote\">&gt;test</span><br>" +
+                "<span class=\"quote\">&gt;test</span>", _parser.ToHtml(">test\n>test", _db));
+            Assert.Equal("<span class=\"quote\">&gt;qw<b>eqwe</b></span><b></b>", _parser.ToHtml(">qw*eqwe", _db));
+        }
+
+        [Fact]
+        public void LinkMarkTest()
+        {
+            Assert.Equal("<a href=\"/Home/DisplayTread/6/#107\">&gt;&gt;107</a> qqq", _parser.ToHtml(">>107 qqq", _db));
+            Assert.Equal("&gt;&gt;1000000000", _parser.ToHtml(">>1000000000", _db));
+            Assert.Equal("<a href=\"/Home/DisplayTread/7/#100\">&gt;&gt;100</a>", _parser.ToHtml(">>100", _db));
+            Assert.Equal("<a href=\"/Home/DisplayTread/6/#123\">&gt;&gt;123</a><br>" +
+                "<span class=\"quote\">&gt;qq</span>", _parser.ToHtml(">>123\n>qq", _db));
+            Assert.Equal("&gt;&gt;r", _parser.ToHtml(">>r", _db));
+            Assert.Equal("<b>&gt;&gt;</b>", _parser.ToHtml("*>>", _db));
+            Assert.Equal("&gt;&gt;<br><br>q", _parser.ToHtml(">>\n\nq", _db));
+        }
+
+        [Fact]
+        public void ListMarksTest()
+        {
+            Assert.Equal("<ul><li>w</li><li>ww</li><li>www</li></ul>", _parser.ToHtml("+w\n+ww\n+www", _db));
+            Assert.Equal("<ol><li>w</li><li>ww</li><li>www</li></ol>", _parser.ToHtml("№w\n№ww\n№www", _db));
+            Assert.Equal("<ol><li>w</li><li>w<b>w</b></li><b><li>www</li></b></ol><b></b>", _parser.ToHtml("№w\n№w*w\n№www\n", _db));
+            Assert.Equal("<ul><li>w</li><li>ww</li></ul><ol><li>w</li></ol>", _parser.ToHtml("+w\n+ww\n№w", _db));
+            Assert.Equal("<ol><li>w<b></b></li><b><li>ww</li></b></ol><b></b>", _parser.ToHtml("№w*\n№ww", _db));
+            Assert.Equal("<b><ul><li>123</li></ul></b>", _parser.ToHtml("*\n+123", _db));
+            Assert.Equal("<ul><li>123</li></ul>ttt", _parser.ToHtml("+123\nttt", _db));
         }
     }
 }
