@@ -27,9 +27,9 @@
                 <span class="post_number">#@(Model.NumberInTread)</span>
             }
         </div>
-        @if (Model.Post.Picture != null)
+        @if (Model.Post.Image != null)
         {
-            @await Html.PartialAsync("_Picture", Model.Post.Picture)
+            @await Html.PartialAsync("_Image", Model.Post.Image)
         }
         <blockquote id="message-@Model.Post.Id" class="post_message">
             @Html.Raw(Model.Post.Message ?? "")

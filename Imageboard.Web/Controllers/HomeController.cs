@@ -3,18 +3,14 @@ using Imageboard.Data.Enteties;
 using Imageboard.Data.Enums;
 using Imageboard.Web.Models.ViewModels;
 using Imageboard.Services.Markup;
+using Imageboard.Services.ImageHandling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using System;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-
 
 namespace Imageboard.Web.Controllers
 {
@@ -22,14 +18,18 @@ namespace Imageboard.Web.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IParser _parser;
+        private readonly IImageHandler _imageHandler;
         private readonly IWebHostEnvironment _appEnvironment;
+
         private readonly Random _random = new Random();
         
-        public HomeController(ApplicationDbContext context, IParser parser, IWebHostEnvironment appEnvironment)
+        public HomeController(ApplicationDbContext context, IParser parser, 
+                IImageHandler imageHandler, IWebHostEnvironment appEnvironment)
         {
             _db = context;
-            _appEnvironment = appEnvironment;
             _parser = parser;
+            _imageHandler = imageHandler;
+            _appEnvironment = appEnvironment;
 
             if (!(_db.Treads.Any() && _db.Boards.Any()))
             {
@@ -110,35 +110,8 @@ namespace Imageboard.Web.Controllers
             var tread = _db.Treads.Single(t => t.Id == treadId);
             _db.Entry(tread).Collection(t => t.Posts).Load();
 
-            Picture pic = null;
-            if (file != null && file.ContentType.Split("/")[0] == "image")
-            {
-                string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                using var fileStream = file.OpenReadStream();
-                using var image = Image.Load(fileStream, out IImageFormat format);
-
-                double h = image.Height;
-                double w = image.Width;
-                double tmp = 200.0;
-                if (image.Height > tmp || image.Width > tmp)
-                {
-                    if (image.Height > image.Width)
-                    {
-                        h = tmp;
-                        w = (tmp / image.Height) * image.Width;
-                    }
-                    else
-                    {
-                        w = tmp;
-                        h = (tmp / image.Width) * image.Height;
-                    }
-                }
-
-                image.Save(_appEnvironment.WebRootPath + path);
-                pic = new Picture(path, file.FileName, format.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
-            }
-
-            tread.Posts.Add(new Post(_parser.ToHtml(message, _db), title, DateTime.Now, pic, false, isSage, tread, tread.Posts.Count));
+            Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
+            tread.Posts.Add(new Post(_parser.ToHtml(message, _db), title, DateTime.Now, img, false, isSage, tread, tread.Posts.Count));
 
             _db.Update(tread);
             _db.SaveChanges();
@@ -152,35 +125,8 @@ namespace Imageboard.Web.Controllers
             var board = _db.Boards.Single(t => t.Id == boardId);
             _db.Entry(board).Collection(b => b.Treads).Load();
 
-            Picture pic = null;
-            if (file != null && file.ContentType.Split("/")[0] == "image")
-            {
-                string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                using var fileStream = file.OpenReadStream();
-                using var image = Image.Load(fileStream, out IImageFormat format);
-
-                double h = image.Height;
-                double w = image.Width;
-                double tmp = 300.0;
-                if (image.Height > tmp || image.Width > tmp)
-                {
-                    if (image.Height > image.Width)
-                    {
-                        h = tmp;
-                        w = (tmp / image.Height) * image.Width;
-                    }
-                    else
-                    { 
-                        w = tmp;
-                        h = (tmp / image.Width) * image.Height;
-                    }
-                }
-
-                image.Save(_appEnvironment.WebRootPath + path);
-                pic = new Picture(path, file.FileName, format.Name,(int)file.Length, image.Height, image.Width, (int)h, (int)w);
-            }
-
-            var oPost = new Post(_parser.ToHtml(message, _db), title, DateTime.Now, pic, true, isSage);
+            Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
+            var oPost = new Post(_parser.ToHtml(message, _db), title, DateTime.Now, img, true, isSage);
             var tread = new Tread(board, oPost);
 
             board.Treads.Add(tread);
@@ -202,7 +148,7 @@ namespace Imageboard.Web.Controllers
             foreach (var tread in board.Treads)
             {
                 _db.Entry(tread).Collection(t => t.Posts).Load();
-                foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Picture).Load();
+                foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Image).Load();
                 tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
             }
 
@@ -218,7 +164,7 @@ namespace Imageboard.Web.Controllers
 
             _db.Entry(tread).Collection(t => t.Posts).Load();
             _db.Entry(tread).Reference(t => t.Board).Load();
-            foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Picture).Load();
+            foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Image).Load();
 
             tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
             return View(new TreadViewModel(tread));

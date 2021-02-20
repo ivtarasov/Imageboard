@@ -1,5 +1,6 @@
 using Imageboard.Data.Contexts;
 using Imageboard.Services.Markup;
+using Imageboard.Services.ImageHandling;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace Imageboard.Web
 
             services.AddSingleton<IMapper, Mapper>();
             services.AddSingleton<IParser, Parser>();
+            services.AddSingleton<IImageHandler, ImageHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

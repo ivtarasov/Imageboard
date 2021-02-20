@@ -3,7 +3,7 @@
 namespace Imageboard.Data.Enteties
 {
     [Table("Picture")]
-    public class Picture
+    public class Image
     {
         public int Id { get; set; }
         public string Path { get; set; }
@@ -15,9 +15,9 @@ namespace Imageboard.Data.Enteties
         public int ViewHeight { get; set; }
         public int ViewWidth { get; set; }
 
-        public Picture() { }
+        public Image() { }
 
-        public Picture(string path, string name, string format, int length, int height, int width, int vheight, int vwidth)
+        public Image(string path, string name, string format, int length, int height, int width, int vheight, int vwidth)
         {
             Path = path;
             Name = name;
