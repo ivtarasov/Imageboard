@@ -112,7 +112,7 @@ namespace Imageboard.Web.Controllers
                 tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
             }
 
-            board.Treads = board.Treads.OrderByDescending(t => t.Posts.LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.First().Time).ToList();
+            board.Treads = board.Treads.OrderByDescending(t => t.Posts.LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.Single(p => p.IsOp).Time).ToList();
 
             return View(new BoardViewModel(board));
         }
@@ -126,7 +126,7 @@ namespace Imageboard.Web.Controllers
             _db.Entry(tread).Reference(t => t.Board).Load();
             foreach (var post in tread.Posts) _db.Entry(post).Reference(p => p.Image).Load();
 
-            tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
+            //tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
             return View(new TreadViewModel(tread));
         }
     }
