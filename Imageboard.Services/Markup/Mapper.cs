@@ -24,12 +24,12 @@ namespace Imageboard.Services.Markup
                 Mark.Monospace => "<code>",
                 Mark.Bold => "<b>",
                 Mark.Italic => "<i>",
-                Mark.Spoler => "<span>",
+                Mark.Spoler => "<span class=\"spoler\">",
 
                 Mark.UnList => "<ul>",
                 Mark.OList => "<ol>",
                 Mark.ListElem => "<li>",
-                Mark.Quote => "<span style=\"color: #789922;\">&gt;",
+                Mark.Quote => "<span class=\"quote\">&gt;",
 
                 Mark.Edge => "",
                 _ => "!"
