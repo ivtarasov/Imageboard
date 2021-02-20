@@ -4,6 +4,7 @@ using Imageboard.Data.Enums;
 using Imageboard.Web.Models.ViewModels;
 using Imageboard.Services.Markup;
 using Imageboard.Services.ImageHandling;
+using Imageboard.Tests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
@@ -20,60 +21,19 @@ namespace Imageboard.Web.Controllers
         private readonly IParser _parser;
         private readonly IImageHandler _imageHandler;
         private readonly IWebHostEnvironment _appEnvironment;
-
-        private readonly Random _random = new Random();
         
-        public HomeController(ApplicationDbContext context, IParser parser, 
-                IImageHandler imageHandler, IWebHostEnvironment appEnvironment)
+        public HomeController(ApplicationDbContext context, IParser parser, IImageHandler imageHandler, IWebHostEnvironment appEnvironment)
         {
             _db = context;
             _parser = parser;
             _imageHandler = imageHandler;
             _appEnvironment = appEnvironment;
 
-            if (!(_db.Treads.Any() && _db.Boards.Any()))
+            if (!_db.Boards.Any())
             {
-                Board board;
-
-                if (_db.Boards.Any())
-                {
-                    board = _db.Boards.First();
-                } 
-                else
-                {
-                    board = new Board();
-                }
-
-                var treads = new List<Tread>();
-                for (int i = 0; i < 10; i++) 
-                {
-                    var tread = new Tread(board);
-                    var posts = new List<Post>();
-
-                    for (int j = 0; j < 50; j++)
-                    {
-                        posts.Add(new Post(j == 0 ? $"Opening post. {j}" : RandomString(_random.Next(10, 500)),
-                                           j == 0 ? $"Title of opening post.{j}" : RandomString(_random.Next(0, 5)),
-                                           DateTime.Now, null, j == 0, false, tread, j));
-                    }
-
-                    tread.Posts.AddRange(posts);
-                    treads.Add(tread);
-                }
-
-                board.Treads.AddRange(treads);
-                _db.Boards.Update(board);
+                _db.Boards.Add(TestDataGenerator.GenerateData());
                 _db.SaveChanges();
             }
-        }
-
-        private string RandomString(int length)
-        {
-            var chars = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
-                                 "абвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789" + "\n\n";
-            return new string(Enumerable.Repeat(chars, length)
-                                        .Select(s => s[_random.Next(s.Length)])
-                                        .ToArray());
         }
 
         [HttpPost]
@@ -111,7 +71,7 @@ namespace Imageboard.Web.Controllers
             _db.Entry(tread).Collection(t => t.Posts).Load();
 
             Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-            tread.Posts.Add(new Post(_parser.ToHtml(message, _db), title, DateTime.Now, img, false, isSage, tread, tread.Posts.Count));
+            tread.Posts.Add(new Post(_parser.ToHtml(message, _db), title, DateTime.Now, img, false, isSage, tread));
 
             _db.Update(tread);
             _db.SaveChanges();

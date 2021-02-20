@@ -24,7 +24,7 @@ namespace Imageboard.Data.Enteties
 
         public Post() { }
 
-        public Post(string message, string title, DateTime postTime, Image pic, bool isOp, bool isSage, Tread tread, int numberInTread)
+        public Post(string message, string title, DateTime postTime, Image pic, bool isOp, bool isSage, Tread tread)
         {
             Message = message;
             Title = title;

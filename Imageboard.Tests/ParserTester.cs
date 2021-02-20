@@ -6,7 +6,7 @@ using Imageboard.Data.Contexts;
 
 namespace Tests
 {
-    class Test
+    class ParserTester
     {
         private static readonly Dictionary<string, string> _testData = new Dictionary<string, string>
         {
