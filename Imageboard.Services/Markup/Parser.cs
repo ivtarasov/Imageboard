@@ -9,10 +9,6 @@ namespace Imageboard.Services.Markup
 {
     public class Parser: IParser
     {
-        private readonly IMapper _mapper;
-
-        public Parser(IMapper mapper) => _mapper = mapper;
-
         public string ToHtml(string value, ApplicationDbContext context)
         {
             if (value == null) return "";
@@ -33,7 +29,7 @@ namespace Imageboard.Services.Markup
                 else
                 {
                     var smark = (i + 1 < value.Length) ? (value[i], value[i + 1]) : (value[i], '!');
-                    mvalue = _mapper.ToMark(smark, false);
+                    mvalue = Mapper.ToMark(smark, false);
                 }
 
                 if (mvalue == Mark.NewLine)
@@ -45,7 +41,7 @@ namespace Imageboard.Services.Markup
                 switch (mvalue)
                 {
                     case Mark.NewLine:
-                        result.Append(_mapper.NewLine());
+                        result.Append(Mapper.NewLine());
                         break;
                     case Mark.Link:
                         i++;
@@ -69,7 +65,7 @@ namespace Imageboard.Services.Markup
             var isFirst = pos == 0;
             CheckForListsAndQuoteInStack(result, mstack);
             var smark = (pos + 1 < sourse.Length) ? (sourse[pos], sourse[pos + 1]) : (sourse[pos], '!');
-            value = _mapper.ToMark(smark, true);
+            value = Mapper.ToMark(smark, true);
 
             switch (value)
             {
@@ -78,7 +74,7 @@ namespace Imageboard.Services.Markup
                     if (mstack.Contains(Mark.OList)) FixSyntax(result, mstack, Mark.OList);
                     if (mstack.Contains(Mark.UnList)) FixSyntax(result, mstack, Mark.UnList);
 
-                    if (!isFirst) result.Append(_mapper.NewLine());
+                    if (!isFirst) result.Append(Mapper.NewLine());
 
                     OpenMark(result, mstack, Mark.Quote);
                     return true;
@@ -106,7 +102,7 @@ namespace Imageboard.Services.Markup
                         isAfterClosingList = true;
                     }
 
-                    if (!isFirst && !isAfterClosingList) result.Append(_mapper.NewLine());
+                    if (!isFirst && !isAfterClosingList) result.Append(Mapper.NewLine());
 
                     return false;
             }
@@ -125,7 +121,7 @@ namespace Imageboard.Services.Markup
 
             if (!digits.Any())
             {
-                result.Append(_mapper.BlankLink());
+                result.Append(Mapper.BlankLink());
                 return;
             }
 
@@ -143,13 +139,13 @@ namespace Imageboard.Services.Markup
                 context.Entry(post.Tread).Reference(t => t.Board).Load();
 
                 string href = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
-                result.Append($"{_mapper.HtmlForLink(href, postId)}");
+                result.Append($"{Mapper.HtmlForLink(href, postId)}");
 
                 return;
             }
             else
             {
-                result.Append(_mapper.BlankLink() + postId);
+                result.Append(Mapper.BlankLink() + postId);
                 return;
             }
         }
@@ -203,19 +199,19 @@ namespace Imageboard.Services.Markup
 
         private void OpenMark(StringBuilder result, Stack<Mark> stack, Mark value)
         {
-            result.Append(_mapper.ToOpeningHtml(value));
+            result.Append(Mapper.ToOpeningHtml(value));
             stack.Push(value);
         }
 
         private void CloseMark(StringBuilder result, Stack<Mark> stack, Mark value)
         {
-            result.Append(_mapper.ToClosingHtml(value));
+            result.Append(Mapper.ToClosingHtml(value));
             stack.Push(value);
         }
 
         private void CloseMark(StringBuilder result, Mark value)
         {
-            result.Append(_mapper.ToClosingHtml(value));
+            result.Append(Mapper.ToClosingHtml(value));
         }
     }
 }

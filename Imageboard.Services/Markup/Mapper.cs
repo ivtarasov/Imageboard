@@ -1,9 +1,9 @@
 ﻿
 namespace Imageboard.Services.Markup
 {
-    public class Mapper: IMapper
+    public class Mapper
     {
-        public Mark ToMark((char, char) mark, bool isNewLine) =>
+        static public Mark ToMark((char, char) mark, bool isNewLine) =>
             mark switch
             {
                 ('`', _) => Mark.Monospace,
@@ -18,7 +18,7 @@ namespace Imageboard.Services.Markup
                 _ => Mark.None,
             };
 
-        public string ToOpeningHtml(Mark value) =>
+        static public string ToOpeningHtml(Mark value) =>
             value switch
             {
                 Mark.Monospace => "<code>",
@@ -35,7 +35,7 @@ namespace Imageboard.Services.Markup
                 _ => "!"
             };
 
-        public string ToClosingHtml(Mark value) =>
+        static public string ToClosingHtml(Mark value) =>
             value switch
             {
                 Mark.Monospace => "</code>",
@@ -51,5 +51,9 @@ namespace Imageboard.Services.Markup
                 Mark.Edge => "",
                 _ => "!"
             };
+
+        static public string HtmlForLink(string href, int postId) => $"<a href=\"{href}\">&gt;&gt;{postId}</a>";
+        static public string BlankLink() => "&gt;&gt;";
+        static public string NewLine() => "<br>";
     }
 }

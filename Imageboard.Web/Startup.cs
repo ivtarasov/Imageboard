@@ -26,7 +26,6 @@ namespace Imageboard.Web
                 options.UseSqlServer(connection));
             services.AddControllersWithViews();
 
-            services.AddSingleton<IMapper, Mapper>();
             services.AddSingleton<IParser, Parser>();
             services.AddSingleton<IImageHandler, ImageHandler>();
         }

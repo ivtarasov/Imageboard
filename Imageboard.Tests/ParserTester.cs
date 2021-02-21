@@ -1,13 +1,13 @@
 ﻿using Imageboard.Data.Contexts;
 using Imageboard.Services.Markup;
-using System.Collections.Generic;
 using Xunit;
+using Moq;
 
 namespace Tests
 {
     public class ParserTester
     {
-        private static readonly Parser _parser = new Parser(new Mapper());
+        private static readonly Parser _parser = new Parser();
         private static readonly ApplicationDbContext _db = ApplicationDbContextFactory.CreateDbContext();
 
         [Fact]
@@ -17,7 +17,7 @@ namespace Tests
         }
 
         [Fact]
-        public void MultipleLineBreaks()
+        public void MultipleLineBreaksTest()
         {
             Assert.Equal("<br><br><br>", _parser.ToHtml("\n\n\n\n", _db));
         }
