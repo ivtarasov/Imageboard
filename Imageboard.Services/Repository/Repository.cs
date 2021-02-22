@@ -13,7 +13,7 @@ namespace Imageboard.Services.Repository
         public Repository(ApplicationDbContext context)
         {
             _context = context;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             if (!_context.Boards.Any())
             {
@@ -82,6 +82,7 @@ namespace Imageboard.Services.Repository
 
             _context.Entry(tread).Collection(t => t.Posts).Load();
             foreach (var post in tread.Posts) _context.Entry(post).Reference(p => p.Image).Load();
+            Console.WriteLine();
 
             tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
 
