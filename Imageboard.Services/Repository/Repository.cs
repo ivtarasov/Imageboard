@@ -13,7 +13,6 @@ namespace Imageboard.Services.Repository
         public Repository(ApplicationDbContext context)
         {
             _context = context;
-            //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             if (!_context.Boards.Any())
             {
@@ -51,7 +50,6 @@ namespace Imageboard.Services.Repository
             Board board = _context.Boards.Single(t => t.Id == boardId);
             board.Treads.Add(tread);
 
-            _context.Update(board);
             _context.SaveChanges();
         }
 
@@ -60,7 +58,6 @@ namespace Imageboard.Services.Repository
             Tread tread = _context.Treads.Single(t => t.Id == treadId);
             tread.Posts.Add(post);
 
-            _context.Update(tread);
             _context.SaveChanges();
         }
 
