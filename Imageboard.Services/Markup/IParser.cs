@@ -4,6 +4,6 @@ namespace Imageboard.Services.Markup
 {
     public interface IParser
     {
-        public string ToHtml(string sourse, ApplicationDbContext context);
+        public string ToHtml(string sourse);
     }
 }

@@ -9,10 +9,12 @@ namespace Imageboard.Services.Markup
 {
     public class Parser: IParser
     {
-        public string ToHtml(string value, ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        public Parser(ApplicationDbContext context) => _context = context;
+
+        public string ToHtml(string value)
         {
             if (value == null) return "";
-            if (context == null) throw new NullReferenceException("ApplicaionDbContext instance is null in Parser.ToHtml method.");
 
             var mstack = new Stack<Mark>();
             var result = new StringBuilder();
@@ -45,7 +47,7 @@ namespace Imageboard.Services.Markup
                         break;
                     case Mark.Link:
                         i++;
-                        HadleLink(result, value, ref i, context);
+                        HadleLink(result, value, ref i);
                         break;
                     case not Mark.None:
                         HandleMark(result, mstack, mvalue);
@@ -108,8 +110,7 @@ namespace Imageboard.Services.Markup
             }
         }
 
-        private void HadleLink(StringBuilder result, string sourse, ref int pos, 
-                                      ApplicationDbContext context)
+        private void HadleLink(StringBuilder result, string sourse, ref int pos)
         {
             var digits = new Stack<int>();
             int digit;
@@ -132,11 +133,11 @@ namespace Imageboard.Services.Markup
                 postId += digit * (int) Math.Pow(10, i++);
             }
 
-            var post = context.Posts.Find(postId);
+            var post = _context.Posts.Find(postId);
             if (post != null)
             {
-                context.Entry(post).Reference(p => p.Tread).Load();
-                context.Entry(post.Tread).Reference(t => t.Board).Load();
+                _context.Entry(post).Reference(p => p.Tread).Load();
+                _context.Entry(post.Tread).Reference(t => t.Board).Load();
 
                 string href = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
                 result.Append($"{Mapper.HtmlForLink(href, postId)}");
