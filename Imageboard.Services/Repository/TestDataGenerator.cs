@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace Imageboard.Tests
+namespace Imageboard.Services.Repository
 {
     public class TestDataGenerator
     {
