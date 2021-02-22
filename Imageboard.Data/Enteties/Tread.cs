@@ -15,16 +15,6 @@ namespace Imageboard.Data.Enteties
 
         public Tread() => Posts = new List<Post>();
 
-        public Tread(Board board)
-        {
-            Board = board;
-            Posts = new List<Post>();
-        }
-
-        public Tread(Board board, Post OPost)
-        {
-            Board = board;
-            Posts = new List<Post>{ OPost };
-        }
+        public Tread(Post OPost) => Posts = new List<Post>{ OPost };
     }
 }

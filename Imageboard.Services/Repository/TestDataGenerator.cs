@@ -17,12 +17,12 @@ namespace Imageboard.Services.Repository
 
             for (int i = 0; i < 10; i++)
             {
-                var tread = new Tread(board);
+                var tread = new Tread();
                 var posts = new List<Post>();
 
                 for (int j = 0; j < 50; j++)
                     posts.Add(new Post(RandomString(_random.Next(10, 500)), RandomString(_random.Next(0, 5)),
-                                       DateTime.Now, null, j == 0, false, tread));
+                                       DateTime.Now, null, j == 0, false));
 
                 tread.Posts.AddRange(posts);
                 treads.Add(tread);

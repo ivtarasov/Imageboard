@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Imageboard.Services.Repository;
 
 namespace Imageboard.Web
 {
@@ -26,7 +27,8 @@ namespace Imageboard.Web
                 options.UseSqlServer(connection));
             services.AddControllersWithViews();
 
-            services.AddSingleton<IParser, Parser>();
+            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IParser, Parser>();
             services.AddSingleton<IImageHandler, ImageHandler>();
         }
 
@@ -51,8 +53,15 @@ namespace Imageboard.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=DisplayBoard}/{id?}");
+                    name: "DisplayTread",
+                    pattern: "{controller=Home}/{action=DisplayTread}/{id=1}");
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "DisplayBoard",
+                    pattern: "{controller=Home}/{action=DisplayBoard}/{id=1}");
             });
         }
     }
