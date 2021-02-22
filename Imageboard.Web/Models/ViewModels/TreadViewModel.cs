@@ -5,14 +5,13 @@ namespace Imageboard.Web.Models.ViewModels
     public class TreadViewModel
     {
         private int _numberOfOmittedPosts;
-        public Tread Tread { get; private set; }
-        public bool IsShortcut { get; private set; }
-        //public int BoardId { get; private set; }
+        public Tread Tread { get; init; }
+        public bool IsShortcut { get; init; }
 
         public int NumberOfOmittedPosts
         {
             get => _numberOfOmittedPosts;
-            private set
+            init
             {
                 if (value < 0) _numberOfOmittedPosts = 0;
                 else _numberOfOmittedPosts = value;

@@ -5,8 +5,8 @@ namespace Imageboard.Web.Models.ViewModels
     public class ReplyFormViewModel
     {
         private ReplyFormAction _action;
-        public string ActionNameInView { get; private set; }
-        public int TargetId { get; private set; }
+        public string ActionNameInView { get; init; }
+        public int TargetId { get; init; }
 
         public ReplyFormViewModel(ReplyFormAction act, int targetId)
         {
@@ -17,7 +17,7 @@ namespace Imageboard.Web.Models.ViewModels
         public ReplyFormAction Action
         {
             get => _action;
-            private set
+            init
             {
                 _action = value;
                 ActionNameInView = _action == ReplyFormAction.ReplyToTread ? "Reply to the Tread " : "Start a New Tread";
