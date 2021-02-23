@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Imageboard.Data.Contexts;
 using System.Web;
+using Imageboard.Services.Repository;
 
 namespace Imageboard.Services.Markup
 {
     public class Parser: IParser
     {
-        private readonly ApplicationDbContext _context;
-        public Parser(ApplicationDbContext context) => _context = context;
+        private readonly IRepository _repository;
+        public Parser(IRepository repository) => _repository = repository;
 
         public string ToHtml(string value)
         {
@@ -114,7 +114,7 @@ namespace Imageboard.Services.Markup
         {
             var digits = new Stack<int>();
             int digit;
-            while (++pos < sourse.Length && (digit = (int) char.GetNumericValue(sourse[pos])) != -1.0)
+            while (++pos < sourse.Length && (digit = (int) char.GetNumericValue(sourse[pos])) != -1)
             {
                 digits.Push(digit);
             }
@@ -133,15 +133,11 @@ namespace Imageboard.Services.Markup
                 postId += digit * (int) Math.Pow(10, i++);
             }
 
-            var post = _context.Posts.Find(postId);
+            var post = _repository.FindPost(postId);
             if (post != null)
             {
-                _context.Entry(post).Reference(p => p.Tread).Load();
-                _context.Entry(post.Tread).Reference(t => t.Board).Load();
-
                 string href = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
                 result.Append($"{Mapper.HtmlForLink(href, postId)}");
-
                 return;
             }
             else
@@ -186,7 +182,6 @@ namespace Imageboard.Services.Markup
             {
                 CloseMark(result, tmpstack, mark);
             }
-
 
             CloseMark(result, value);
             if (value != Mark.Edge)
