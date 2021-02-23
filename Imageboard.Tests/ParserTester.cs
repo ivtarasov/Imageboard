@@ -1,5 +1,8 @@
-﻿using Imageboard.Data.Contexts;
+﻿using Imageboard.Data.Enteties;
 using Imageboard.Services.Markup;
+using Imageboard.Services.Repository;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 using Moq;
 
@@ -7,7 +10,14 @@ namespace Tests
 {
     public class ParserTester
     {
-        private static readonly Parser _parser = new Parser(ApplicationDbContextFactory.CreateDbContext());
+        private readonly Parser _parser;
+        public ParserTester()
+        {
+            var testPosts = new List<Post> { new() { Id = 100, TreadId = 2 }, new() { Id = 107, TreadId = 4 }, new() { Id = 123, TreadId = 111 } };
+            var mock = new Mock<IRepository>();
+            mock.Setup(rep => rep.FindPost(It.IsAny<int>())).Returns<int>(id => testPosts.FirstOrDefault(p => p.Id == id));
+            _parser = new Parser(mock.Object);
+        }
 
         [Fact]
         public void BlankStringTest()
@@ -45,10 +55,10 @@ namespace Tests
         [Fact]
         public void LinkMarkTest()
         {
-            Assert.Equal("<a href=\"/Home/DisplayTread/6/#107\">&gt;&gt;107</a> qqq", _parser.ToHtml(">>107 qqq"));
+            Assert.Equal("<a href=\"/Home/DisplayTread/4/#107\">&gt;&gt;107</a> qqq", _parser.ToHtml(">>107 qqq"));
             Assert.Equal("&gt;&gt;1000000000", _parser.ToHtml(">>1000000000"));
-            Assert.Equal("<a href=\"/Home/DisplayTread/7/#100\">&gt;&gt;100</a>", _parser.ToHtml(">>100"));
-            Assert.Equal("<a href=\"/Home/DisplayTread/6/#123\">&gt;&gt;123</a><br>" +
+            Assert.Equal("<a href=\"/Home/DisplayTread/2/#100\">&gt;&gt;100</a>", _parser.ToHtml(">>100"));
+            Assert.Equal("<a href=\"/Home/DisplayTread/111/#123\">&gt;&gt;123</a><br>" +
                 "<span class=\"quote\">&gt;qq</span>", _parser.ToHtml(">>123\n>qq"));
             Assert.Equal("&gt;&gt;r", _parser.ToHtml(">>r"));
             Assert.Equal("<b>&gt;&gt;</b>", _parser.ToHtml("*>>"));
