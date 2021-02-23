@@ -21,6 +21,11 @@ namespace Imageboard.Services.Repository
             }
         }
 
+        public Post FindPost(int postId)
+        {
+            return _context.Posts.Find(postId);
+        }
+
         public void Delete(IEnumerable<int> postIds)
         {
             var posts = _context.Posts.Where(p => postIds.Contains(p.Id));
