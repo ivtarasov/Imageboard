@@ -43,25 +43,19 @@ namespace Imageboard.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "DisplayTread",
-                    pattern: "{controller=Home}/{action=DisplayTread}/{id=1}");
-            });
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "DisplayBoard",
                     pattern: "{controller=Home}/{action=DisplayBoard}/{id=1}");
+                endpoints.MapControllerRoute(
+                    name: "DisplayTread",
+                    pattern: "{controller=Home}/{action=DisplayTread}/{id=1}");
             });
         }
     }
