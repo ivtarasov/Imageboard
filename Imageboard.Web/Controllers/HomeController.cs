@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
-using System.Linq;
 using System;
 
 namespace Imageboard.Web.Controllers
@@ -39,7 +38,7 @@ namespace Imageboard.Web.Controllers
         public IActionResult ReplyToTread(string message, string title, bool isSage, int treadId, IFormFile file, Destination dest)
         {
             Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-            Post post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage);
+            var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage);
             _repository.AddNewPost(post, treadId);
 
             if (dest == Destination.Tread) return RedirectToAction("DisplayTread", new { id = treadId });
