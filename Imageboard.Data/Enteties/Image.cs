@@ -9,7 +9,7 @@ namespace Imageboard.Data.Enteties
         public string Path { get; set; }
         public string Format { get; set; }
         public string Name { get; set; }
-        public int Size { get; set; }
+        public string SizeDesc { get; set; }
         public int Height { get; set; }
         public int Width { get; set; }
         public int ViewHeight { get; set; }
@@ -17,12 +17,12 @@ namespace Imageboard.Data.Enteties
 
         public Image() { }
 
-        public Image(string path, string name, string format, int length, int height, int width, int vheight, int vwidth)
+        public Image(string path, string name, string format, string sizeDesc, int height, int width, int vheight, int vwidth)
         {
             Path = path;
             Name = name;
             Format = format;
-            Size = length;
+            SizeDesc = sizeDesc;
             Height = height;
             Width = width;
             ViewHeight = vheight;

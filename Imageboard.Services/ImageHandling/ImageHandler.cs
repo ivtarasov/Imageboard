@@ -35,7 +35,7 @@ namespace Imageboard.Services.ImageHandling
                 }
 
                 image.Save(webRootPath + path);
-                return new EntetyImage(path, file.FileName, format.Name, (int)file.Length, image.Height, image.Width, (int)h, (int)w);
+                return new EntetyImage(path, file.FileName, format.Name, SizeReformer.ToReadableForm(file.Length), image.Height, image.Width, (int)h, (int)w);
             } 
             else
             {
