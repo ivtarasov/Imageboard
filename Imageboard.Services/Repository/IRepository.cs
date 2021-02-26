@@ -7,7 +7,7 @@ namespace Imageboard.Services.Repository
     {
         public Post FindPost(int postId);
 
-        public void Delete(IEnumerable<int> postIds);
+        public void Delete(IEnumerable<int> postIds, string ip, string password);
 
         public void AddNewTread(Tread tread, int boardId);
         public void AddNewPost(Post post, int treadId);

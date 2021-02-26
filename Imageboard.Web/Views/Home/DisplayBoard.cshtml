@@ -9,7 +9,7 @@
     var NumberOfDisplayedPosts = 11;
 }
 
-<form id="del-post-form" class="delete_form" method="post" asp-action="Delete">
+<form id="del-form" class="delete_form" method="post" asp-action="Delete">
     @foreach (var tread in Model.Board.Treads)
     {
         var NumberOfOmittedPosts = tread.Posts.Count - NumberOfDisplayedPosts;

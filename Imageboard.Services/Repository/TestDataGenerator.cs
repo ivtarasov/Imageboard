@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Net;
 
 namespace Imageboard.Services.Repository
 {
@@ -22,7 +23,7 @@ namespace Imageboard.Services.Repository
 
                 for (int j = 0; j < 50; j++)
                     posts.Add(new Post(RandomString(_random.Next(10, 500)), RandomString(_random.Next(0, 5)),
-                                       DateTime.Now, null, j == 0, false));
+                                       DateTime.Now, null, j == 0, false, "127.0.0.1", "12345"));
 
                 tread.Posts.AddRange(posts);
                 treads.Add(tread);

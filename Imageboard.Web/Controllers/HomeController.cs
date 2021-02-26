@@ -28,17 +28,17 @@ namespace Imageboard.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(Dictionary<int, int> ids, int boardId)
+        public IActionResult Delete(Dictionary<int, int> ids, int boardId, string password)
         {
-            _repository.Delete(ids.Values);
+            _repository.Delete(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             return RedirectToAction("DisplayBoard", new { id = boardId });
         }
 
         [HttpPost]
-        public IActionResult ReplyToTread(string message, string title, bool isSage, int treadId, IFormFile file, Destination dest)
+        public IActionResult ReplyToTread(string message, string title, bool isSage, string password, int treadId, IFormFile file, Destination dest)
         {
             Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-            var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage);
+            var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             _repository.AddNewPost(post, treadId);
 
             if (dest == Destination.Tread) return RedirectToAction("DisplayTread", new { id = treadId });
@@ -46,10 +46,10 @@ namespace Imageboard.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult StartNewTread(string message, string title, bool isSage, int boardId, IFormFile file, Destination dest)
+        public IActionResult StartNewTread(string message, string title, bool isSage, string password,int boardId, IFormFile file, Destination dest)
         {
             Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-            var oPost = new Post(_parser.ToHtml(message), title, DateTime.Now, img, true, isSage);
+            var oPost = new Post(_parser.ToHtml(message), title, DateTime.Now, img, true, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             var tread = new Tread(oPost);
             _repository.AddNewTread(tread, boardId);
 

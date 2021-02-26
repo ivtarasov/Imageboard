@@ -15,6 +15,9 @@
             <textarea id="message" class="reply_input" name="message" rows="10" placeholder="Message" spellcheck="false"></textarea>
         </div>
         <div class="form_part">
+            <input id="password" type="password" class="reply_input" name="password" placeholder="Password">
+        </div>
+        <div class="form_part">
             <div class="reply_options">
                 <label>Go to</label>
                 <select name="dest" asp-items="Html.GetEnumSelectList<Destination>()"></select>

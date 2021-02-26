@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Imageboard.Data.Enteties
 {
@@ -17,6 +19,7 @@ namespace Imageboard.Data.Enteties
         public string Title { get; set; }
         public bool IsOp { get; set; }
         public bool IsSage { get; set; }
+        public byte[] IpAndPasswordHash { get; set; }
         public Image Image { get; set; }
         public int? PictureId { get; set; }
         public Tread Tread { get; set; }
@@ -24,7 +27,7 @@ namespace Imageboard.Data.Enteties
 
         public Post() { }
 
-        public Post(string message, string title, DateTime postTime, Image pic, bool isOp, bool isSage)
+        public Post(string message, string title, DateTime postTime, Image pic, bool isOp, bool isSage, string ip, string password)
         {
             Message = message;
             Title = title;
@@ -32,6 +35,7 @@ namespace Imageboard.Data.Enteties
             Image = pic;
             IsOp = isOp;
             IsSage = isSage;
+            IpAndPasswordHash = MD5.HashData(Encoding.UTF8.GetBytes(ip + (password ?? "12345")));
         }
     }
 }

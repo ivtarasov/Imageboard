@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Imageboard.Data\Imageboard.Data.csproj" />
-    <ProjectReference Include="..\Imageboard.Pass\Imageboard.Pass.csproj" />
     <ProjectReference Include="..\Imageboard.Services\Imageboard.Services.csproj" />
     <ProjectReference Include="..\Imageboard.Tests\Imageboard.Tests.csproj" />
   </ItemGroup>
