@@ -4,7 +4,7 @@ namespace Netaba.Web.Models.ViewModels
 {
     public class BoardViewModel
     {
-        public Board Board { get; init; }
+        public Board Board { get; private set; }
 
         public BoardViewModel(Board board) => Board = board;
     }

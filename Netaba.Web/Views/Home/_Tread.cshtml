@@ -9,16 +9,10 @@
 <div id="tread-@Model.Tread.Id" class="tread">
     @await Html.PartialAsync("_Post", new PostViewModel(oPost, i, Model.IsShortcut))
 
-    @if (Model.NumberOfOmittedPosts > 0)
+    @if (Model.NumberOfOmittedPosts != 0)
     {
         <span class="omitted_posts">@($"Ommitted {@Model.NumberOfOmittedPosts} posts. To see click \"Reply\".")</span>
     }
 
-    @foreach (var post in Model.Tread.Posts)
-    {
-        @await Html.PartialAsync("_Post", new PostViewModel(post, ++i, Model.IsShortcut))
-    }
+    @foreach (var post in Model.Tread.Posts) @await Html.PartialAsync("_Post", new PostViewModel(post, ++i, Model.IsShortcut))
 </div>
-
-
-

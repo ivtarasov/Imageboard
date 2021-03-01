@@ -36,7 +36,8 @@ namespace Netaba.Web
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Home/Error");
             }
             else
             {
@@ -51,11 +52,8 @@ namespace Netaba.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "DisplayBoard",
-                    pattern: "{controller=Home}/{action=DisplayBoard}/{id=1}");
-                endpoints.MapControllerRoute(
-                    name: "DisplayTread",
-                    pattern: "{controller=Home}/{action=DisplayTread}/{id=1}");
+                    name: "CreatePost",
+                    pattern: "{controller=Home}/{action=CreatePost}/{boardId=1}/{treadId?}");
             });
         }
     }

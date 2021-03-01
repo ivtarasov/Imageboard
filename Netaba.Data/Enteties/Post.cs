@@ -15,7 +15,9 @@ namespace Netaba.Data.Enteties
         public string PosterName { get; set; }
         [DisplayFormat(DataFormatString = "G")]
         public DateTime Time { get; set; }
+        [Required]
         public string Message { get; set; }
+        [Required]
         public string Title { get; set; }
         public bool IsOp { get; set; }
         public bool IsSage { get; set; }

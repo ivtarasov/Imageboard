@@ -27,7 +27,7 @@ namespace Netaba.Services.Repository
             return _context.Posts.Find(postId);
         }
 
-        public void Delete(IEnumerable<int> postIds, string ip, string password)
+        public void DeletePosts(IEnumerable<int> postIds, string ip, string password)
         {
             var posts = _context.Posts.Where(p => postIds.Contains(p.Id));
             var oPosts = posts.Where(p => p.IsOp);
@@ -51,7 +51,7 @@ namespace Netaba.Services.Repository
             _context.Posts.RemoveRange(posts.Where(p => Checker.Check(p, ip, password)));
         }
 
-        public void AddNewTread(Tread tread, int boardId)
+        public void AddNewTreadToBoard(Tread tread, int boardId)
         {
             Board board = _context.Boards.Single(t => t.Id == boardId);
             board.Treads.Add(tread);
@@ -69,7 +69,8 @@ namespace Netaba.Services.Repository
 
         public Board LoadBoard(int boardId)
         {
-            var board = _context.Boards.Single(b => b.Id == boardId);
+            var board = _context.Boards.FirstOrDefault(b => b.Id == boardId);
+            if (board == null) return null;
 
             _context.Entry(board).Collection(b => b.Treads).Load();
             foreach (var tread in board.Treads) LoadTread(tread.Id);
@@ -81,7 +82,8 @@ namespace Netaba.Services.Repository
 
         public Tread LoadTread(int treadId)
         {
-            var tread = _context.Treads.Single(t => t.Id == treadId);
+            var tread = _context.Treads.FirstOrDefault(t => t.Id == treadId);
+            if (tread == null) return null;
 
             _context.Entry(tread).Collection(t => t.Posts).Load();
             foreach (var post in tread.Posts) _context.Entry(post).Reference(p => p.Image).Load();

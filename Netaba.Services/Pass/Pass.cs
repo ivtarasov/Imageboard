@@ -8,6 +8,6 @@ namespace Netaba.Services.Pass
     public class Checker
     {
         static public bool Check(Post post, string ip, string password) =>
-            Enumerable.SequenceEqual(MD5.HashData(Encoding.ASCII.GetBytes(ip + password)), post.IpAndPasswordHash);
+            Enumerable.SequenceEqual(MD5.HashData(Encoding.UTF8.GetBytes(ip + password)), post.IpAndPasswordHash);
     }
 }

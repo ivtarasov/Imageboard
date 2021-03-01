@@ -8,7 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System;
+using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Netaba.Web.Controllers
 {
@@ -27,40 +30,86 @@ namespace Netaba.Web.Controllers
             _appEnvironment = appEnvironment;
         }
 
-        [HttpPost]
-        public IActionResult Delete(Dictionary<int, int> ids, int boardId, string password)
+        [HttpGet]
+        public IActionResult CreatePost(int? boardId = null, int? treadId = null)
         {
-            _repository.Delete(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
-            return RedirectToAction("DisplayBoard", new { id = boardId });
+            if (treadId == null) return StartNewTread(boardId.Value);
+            else return ReplyToTread(treadId.Value);
         }
 
         [HttpPost]
-        public IActionResult ReplyToTread(string message, string title, bool isSage, string password, int treadId, IFormFile file, Destination dest)
+        public IActionResult CreatePost(Post post, string password, IFormFile file, int targetId, Destination dest)
         {
-            Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-            var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+            if (post.IsOp) return StartNewTread(post, password, file, targetId, dest);
+            else return ReplyToTread(post, password, file, targetId, dest);
+        }
+
+        [HttpPost]
+        public IActionResult DeletePosts(Dictionary<int, int> ids, int boardId, string password)
+        {
+            _repository.DeletePosts(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+            return StartNewTread(boardId);
+        }
+
+        [NonAction]
+        public IActionResult ReplyToTread(int id)
+        {
+            var tread = _repository.LoadTread(id);
+            if (tread == null) return NotFound("Not found");
+            else return View(new CreatePostViewModel( new List<TreadViewModel>{ new TreadViewModel(tread) }, ReplyFormAction.ReplyToTread, id));
+        }
+
+        [NonAction]
+        public IActionResult ReplyToTread(Post post, string password, IFormFile file, int treadId, Destination dest)
+        {
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("HeheTread");
+                return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, post, treadId));
+            }
+
+            post.Time = DateTime.Now;
+            post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
+
+            //Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
+            //var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             _repository.AddNewPost(post, treadId);
 
-            if (dest == Destination.Tread) return RedirectToAction("DisplayTread", new { id = treadId });
-            else return RedirectToAction("DisplayBoard", new { id = post.Tread.BoardId });
+            if (dest == Destination.Tread) return View(new CreatePostViewModel(new List<TreadViewModel> { new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, treadId));
+            else return StartNewTread(post.Tread.BoardId);
         }
 
-        [HttpPost]
-        public IActionResult StartNewTread(string message, string title, bool isSage, string password,int boardId, IFormFile file, Destination dest)
+        [NonAction]
+        public IActionResult StartNewTread(int id)
         {
-            Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-            var oPost = new Post(_parser.ToHtml(message), title, DateTime.Now, img, true, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
-            var tread = new Tread(oPost);
-            _repository.AddNewTread(tread, boardId);
-
-            if (dest == Destination.Board) return RedirectToAction("DisplayBoard", new { id = boardId });
-            else return RedirectToAction("DisplayTread", new { id = tread.Id });
+            var board = _repository.LoadBoard(id);
+            if (board == null) return NotFound("Not found");
+            else return View(new CreatePostViewModel(board.Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, id));
         }
 
-        [HttpGet]
-        public IActionResult DisplayBoard(int id) => View(new BoardViewModel(_repository.LoadBoard(id)));
+        [NonAction]
+        public IActionResult StartNewTread(Post post, string password, IFormFile file, int boardId, Destination dest)
+        {
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("HeheBoard");
+                return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, post, boardId));
+            }
 
-        [HttpGet]
-        public IActionResult DisplayTread(int id) => View(new TreadViewModel(_repository.LoadTread(id)));
+            post.Time = DateTime.Now;
+            post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
+            //var oPost = new Post(_parser.ToHtml(message), title, DateTime.Now, img, true, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+            var tread = new Tread(post);
+            _repository.AddNewTreadToBoard(tread, boardId);
+
+            if (dest == Destination.Board) return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, boardId));
+            else return RedirectToAction("ReplyToTread", new { id = tread.Id });
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }
