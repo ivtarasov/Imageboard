@@ -3,10 +3,6 @@
     ViewData["Title"] = "Board";
 }
 
-@{
-    if (Model.TreadViewModels.Count > 1)
-}
-
 @await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(Model.Action, Model.TargetId, Model.Post))
 
 <form id="del-form" class="delete_form" method="post" asp-action="Delete">

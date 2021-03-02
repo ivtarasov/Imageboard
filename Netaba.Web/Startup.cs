@@ -53,7 +53,8 @@ namespace Netaba.Web
             {
                 endpoints.MapControllerRoute(
                     name: "CreatePost",
-                    pattern: "{controller=Home}/{action=CreatePost}/{boardId=1}/{treadId?}");
+                    pattern: "{boardId=1}/{treadId?}",
+                    defaults: new { Controller = "Home", Action = "CreatePost" });
             });
         }
     }

@@ -1,17 +1,16 @@
-﻿using Netaba.Data.Enteties;
-using Netaba.Data.Enums;
-using Netaba.Web.Models.ViewModels;
-using Netaba.Services.Markup;
-using Netaba.Services.ImageHandling;
-using Netaba.Services.Repository;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Netaba.Data.Enteties;
+using Netaba.Data.Enums;
+using Netaba.Services.ImageHandling;
+using Netaba.Services.Markup;
+using Netaba.Services.Repository;
+using Netaba.Web.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System;
 using System.Linq;
-using System.ComponentModel.DataAnnotations;
 
 namespace Netaba.Web.Controllers
 {
@@ -31,16 +30,20 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreatePost(int? boardId = null, int? treadId = null)
+        public IActionResult CreatePost(int boardId, int? treadId)
         {
-            if (treadId == null) return StartNewTread(boardId.Value);
-            else return ReplyToTread(treadId.Value);
+            if (treadId == null) return StartNewTread(boardId);
+            else
+            {
+                if (_repository.IsThereBoard(boardId)) return ReplyToTread(treadId.Value);
+                else return NotFound("Not found");
+            }
         }
 
         [HttpPost]
         public IActionResult CreatePost(Post post, string password, IFormFile file, int targetId, Destination dest)
         {
-            if (post.IsOp) return StartNewTread(post, password, file, targetId, dest);
+            if (post?.IsOp ?? true) return StartNewTread(post, password, file, targetId, dest);
             else return ReplyToTread(post, password, file, targetId, dest);
         }
 

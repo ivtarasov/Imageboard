@@ -22,10 +22,9 @@ namespace Netaba.Services.Repository
             }
         }
 
-        public Post FindPost(int postId)
-        {
-            return _context.Posts.Find(postId);
-        }
+        public bool IsThereBoard(int boardId) => _context.Boards.Find(boardId) != null;
+
+        public Post FindPost(int postId) => _context.Posts.Find(postId);
 
         public void DeletePosts(IEnumerable<int> postIds, string ip, string password)
         {
