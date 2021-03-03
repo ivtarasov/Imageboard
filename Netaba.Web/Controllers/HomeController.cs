@@ -67,8 +67,7 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("HeheTread");
-                return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, post, treadId));
+                return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, treadId));
             }
 
             post.Time = DateTime.Now;
@@ -79,7 +78,7 @@ namespace Netaba.Web.Controllers
             _repository.AddNewPost(post, treadId);
 
             if (dest == Destination.Tread) return View(new CreatePostViewModel(new List<TreadViewModel> { new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, treadId));
-            else return StartNewTread(post.Tread.BoardId);
+            else return RedirectToAction("CreatePost", new { boardId = post.Tread.BoardId });
         }
 
         [NonAction]
@@ -95,8 +94,7 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("HeheBoard");
-                return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, post, boardId));
+                return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, boardId));
             }
 
             post.Time = DateTime.Now;
@@ -106,7 +104,7 @@ namespace Netaba.Web.Controllers
             _repository.AddNewTreadToBoard(tread, boardId);
 
             if (dest == Destination.Board) return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, boardId));
-            else return RedirectToAction("ReplyToTread", new { id = tread.Id });
+            else return RedirectToAction("CreatePost", new { boardId, post.TreadId });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -14,12 +14,12 @@
             {
                 if (Model.IsFromShortcutTread)
                 {
-                    @:[<a href="/Home/CreatePost/@Model.Post.Tread.BoardId/@Model.Post.TreadId">Reply</a>]
+                    @:[<a href="@Model.Post.Tread.BoardId/@Model.Post.TreadId">Reply</a>]
                 }
                 else
                 {
                     <span class="post_number">#@(Model.NumberInTread)</span>
-                    @:[<a href="/Home/CreatePost/@Model.Post.Tread.BoardId">Back</a>]
+                    @:[<a href="@Model.Post.Tread.BoardId">Back</a>]
                 }
             }
             else if (!Model.IsFromShortcutTread)
