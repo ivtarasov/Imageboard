@@ -6,7 +6,7 @@ namespace Netaba.Services.Repository
     public interface IRepository
     {
         public bool IsThereBoard(int boardId);
-        public Post FindPost(int postId);
+        public bool TryFindPost(int postId, out (int BoardId, int TreadId) postPlace);
 
         public void DeletePosts(IEnumerable<int> postIds, string ip, string password);
 

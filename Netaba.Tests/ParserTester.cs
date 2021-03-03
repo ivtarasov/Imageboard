@@ -15,7 +15,8 @@ namespace Tests
         {
             var testPosts = new List<Post> { new() { Id = 100, TreadId = 2 }, new() { Id = 107, TreadId = 4 }, new() { Id = 123, TreadId = 111 } };
             var mock = new Mock<IRepository>();
-            mock.Setup(rep => rep.FindPost(It.IsAny<int>())).Returns<int>(id => testPosts.FirstOrDefault(p => p.Id == id));
+            var postPlace = (1, 11);
+            mock.Setup(rep => rep.TryFindPost(It.IsAny<int>(), out postPlace)).Returns<int, (int , int)>((id, postPlace) => testPosts.FirstOrDefault(p => p.Id == id) != null);
             _parser = new Parser(mock.Object);
         }
 
@@ -55,10 +56,10 @@ namespace Tests
         [Fact]
         public void LinkMarkTest()
         {
-            Assert.Equal("<a href=\"/Home/DisplayTread/4/#107\">&gt;&gt;107</a> qqq", _parser.ToHtml(">>107 qqq"));
+            Assert.Equal("<a href=\"1/11/#107\">&gt;&gt;107</a> qqq", _parser.ToHtml(">>107 qqq"));
             Assert.Equal("&gt;&gt;1000000000", _parser.ToHtml(">>1000000000"));
-            Assert.Equal("<a href=\"/Home/DisplayTread/2/#100\">&gt;&gt;100</a>", _parser.ToHtml(">>100"));
-            Assert.Equal("<a href=\"/Home/DisplayTread/111/#123\">&gt;&gt;123</a><br>" +
+            Assert.Equal("<a href=\"1/11/#100\">&gt;&gt;100</a>", _parser.ToHtml(">>100"));
+            Assert.Equal("<a href=\"1/11/#123\">&gt;&gt;123</a><br>" +
                 "<span class=\"quote\">&gt;qq</span>", _parser.ToHtml(">>123\n>qq"));
             Assert.Equal("&gt;&gt;r", _parser.ToHtml(">>r"));
             Assert.Equal("<b>&gt;&gt;</b>", _parser.ToHtml("*>>"));

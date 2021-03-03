@@ -133,11 +133,9 @@ namespace Netaba.Services.Markup
                 postId += digit * (int) Math.Pow(10, i++);
             }
 
-            var post = _repository.FindPost(postId);
-            if (post != null)
+            if (_repository.TryFindPost(postId, out (int BoardId, int TreadId) postPlace))
             {
-                string href = $"/Home/DisplayTread/{post.TreadId}/#{post.Id}";
-                result.Append($"{Mapper.HtmlForLink(href, postId)}");
+                result.Append($"{Mapper.HtmlForLink(postPlace.BoardId, postPlace.TreadId, postId)}");
                 return;
             }
             else

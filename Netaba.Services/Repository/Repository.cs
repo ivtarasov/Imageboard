@@ -24,7 +24,19 @@ namespace Netaba.Services.Repository
 
         public bool IsThereBoard(int boardId) => _context.Boards.Find(boardId) != null;
 
-        public Post FindPost(int postId) => _context.Posts.Find(postId);
+        public bool TryFindPost(int postId, out (int BoardId, int TreadId) postPlace)
+        {
+            var post = _context.Posts.Find(postId);
+            if (post == null)
+            {
+                postPlace = (0, 0);
+                return false;
+            }
+
+            _context.Entry(post).Reference(p => p.Tread);
+            postPlace = (post.Tread.BoardId, post.TreadId);
+            return true;
+        }
 
         public void DeletePosts(IEnumerable<int> postIds, string ip, string password)
         {
@@ -39,7 +51,7 @@ namespace Netaba.Services.Repository
 
         private void DeleteTreads(IEnumerable<Post> oPosts, string ip, string password)
         {
-            var treadIds = oPosts.Where(p => Checker.Check(p, ip, password)).Select(p => p.TreadId);
+            var treadIds = oPosts.Where(p => PassChecker.Check(p, ip, password)).Select(p => p.TreadId);
             var treads = _context.Treads.Where(t => treadIds.Contains(t.Id));
 
             _context.Treads.RemoveRange(treads);
@@ -47,7 +59,7 @@ namespace Netaba.Services.Repository
 
         private void DeletePosts(IEnumerable<Post> posts, string ip, string password)
         {
-            _context.Posts.RemoveRange(posts.Where(p => Checker.Check(p, ip, password)));
+            _context.Posts.RemoveRange(posts.Where(p => PassChecker.Check(p, ip, password)));
         }
 
         public void AddNewTreadToBoard(Tread tread, int boardId)

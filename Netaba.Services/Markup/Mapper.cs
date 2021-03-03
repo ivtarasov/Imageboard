@@ -52,7 +52,7 @@ namespace Netaba.Services.Markup
                 _ => "!"
             };
 
-        static public string HtmlForLink(string href, int postId) => $"<a href=\"{href}\">&gt;&gt;{postId}</a>";
+        static public string HtmlForLink(int boardId, int treadId, int postId) => $"<a href=\"{boardId}/{treadId}/#{postId}\">&gt;&gt;{postId}</a>";
         static public string BlankLink() => "&gt;&gt;";
         static public string NewLine() => "<br>";
     }
