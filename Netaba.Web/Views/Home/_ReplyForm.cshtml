@@ -2,11 +2,7 @@
 
 <div id="post-area" class="post_area">
     <form id="reply-form" class="reply_form" method="post" enctype="multipart/form-data" asp-action="CreatePost">
-
-        <div class="validation" asp-validation-summary="ModelOnly"></div>
-        <span asp-validation-for="Post.Message"></span><br>
-        <span asp-validation-for="Post.Title"></span>
-
+        <div class="validation" asp-validation-summary="All"></div>
         <div id="action" class="action">
             <label>@Model.ActionNameInView</label>
         </div>

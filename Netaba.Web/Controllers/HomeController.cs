@@ -67,7 +67,7 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, treadId));
+                return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, post, treadId));
             }
 
             post.Time = DateTime.Now;
@@ -77,7 +77,7 @@ namespace Netaba.Web.Controllers
             //var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             _repository.AddNewPost(post, treadId);
 
-            if (dest == Destination.Tread) return View(new CreatePostViewModel(new List<TreadViewModel> { new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, treadId));
+            if (dest == Destination.Tread) return RedirectToAction("CreatePost", new { boardId = post.Tread.BoardId , treadId});
             else return RedirectToAction("CreatePost", new { boardId = post.Tread.BoardId });
         }
 
@@ -94,7 +94,7 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, boardId));
+                return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, post, boardId));
             }
 
             post.Time = DateTime.Now;
@@ -103,7 +103,7 @@ namespace Netaba.Web.Controllers
             var tread = new Tread(post);
             _repository.AddNewTreadToBoard(tread, boardId);
 
-            if (dest == Destination.Board) return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, boardId));
+            if (dest == Destination.Board) return RedirectToAction("CreatePost", new { boardId });
             else return RedirectToAction("CreatePost", new { boardId, post.TreadId });
         }
 
