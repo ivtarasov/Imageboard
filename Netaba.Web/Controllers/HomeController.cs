@@ -30,6 +30,8 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpGet]
+        [Route("{boardId:int}", Name = "Board")]
+        [Route("{boardId:int}/{treadId:int}", Name = "Tread")]
         public IActionResult CreatePost(int boardId, int? treadId)
         {
             if (treadId == null) return StartNewTread(boardId);
@@ -38,20 +40,28 @@ namespace Netaba.Web.Controllers
                 if (_repository.IsThereBoard(boardId)) return ReplyToTread(treadId.Value);
                 else return NotFound("Not found");
             }
-        }
+        }   
 
         [HttpPost]
-        public IActionResult CreatePost(Post post, string password, IFormFile file, int targetId, Destination dest)
+        [Route("CreatePost", Name = "CreatePost")]
+        public IActionResult CreatePost(Post post, IFormFile file, int targetId, Destination dest)
         {
-            if (post?.IsOp ?? true) return StartNewTread(post, password, file, targetId, dest);
-            else return ReplyToTread(post, password, file, targetId, dest);
+            if (post?.IsOp ?? true) return StartNewTread(post, file, targetId, dest);
+            else return ReplyToTread(post, file, targetId, dest);
         }
 
         [HttpPost]
+        [Route("DeletePosts", Name = "DeletePosts")]
         public IActionResult DeletePosts(Dictionary<int, int> ids, int boardId, string password)
         {
+            if (ids == null)
+            {
+                Console.WriteLine("null");
+                return RedirectToRoute("Board", new { boardId });
+            }
+
             _repository.DeletePosts(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
-            return StartNewTread(boardId);
+            return RedirectToRoute("Board", new { boardId });
         }
 
         [NonAction]
@@ -59,26 +69,28 @@ namespace Netaba.Web.Controllers
         {
             var tread = _repository.LoadTread(id);
             if (tread == null) return NotFound("Not found");
-            else return View(new CreatePostViewModel( new List<TreadViewModel>{ new TreadViewModel(tread) }, ReplyFormAction.ReplyToTread, id));
+            else return View(new CreatePostViewModel( new List<TreadViewModel>{ new TreadViewModel(tread) }, 
+                ReplyFormAction.ReplyToTread, id, tread.BoardId));
         }
 
         [NonAction]
-        public IActionResult ReplyToTread(Post post, string password, IFormFile file, int treadId, Destination dest)
+        public IActionResult ReplyToTread(Post post, IFormFile file, int treadId, Destination dest)
         {
             if (!ModelState.IsValid)
             {
-                return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(_repository.LoadTread(treadId)) }, ReplyFormAction.ReplyToTread, post, treadId));
+                var tread = _repository.LoadTread(treadId);
+                return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(tread) }, 
+                    ReplyFormAction.ReplyToTread, post, treadId, tread.BoardId));
             }
 
-            post.Time = DateTime.Now;
             post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
 
             //Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
             //var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             _repository.AddNewPost(post, treadId);
 
-            if (dest == Destination.Tread) return RedirectToAction("CreatePost", new { boardId = post.Tread.BoardId , treadId});
-            else return RedirectToAction("CreatePost", new { boardId = post.Tread.BoardId });
+            if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardId = post.Tread.BoardId , treadId});
+            else return RedirectToRoute("Board", new { boardId = post.Tread.BoardId });
         }
 
         [NonAction]
@@ -86,25 +98,27 @@ namespace Netaba.Web.Controllers
         {
             var board = _repository.LoadBoard(id);
             if (board == null) return NotFound("Not found");
-            else return View(new CreatePostViewModel(board.Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, id));
+            else return View(new CreatePostViewModel(board.Treads.Select(t => new TreadViewModel(t, 11)).ToList(), 
+                ReplyFormAction.StartNewTread, id, board.Id));
         }
 
         [NonAction]
-        public IActionResult StartNewTread(Post post, string password, IFormFile file, int boardId, Destination dest)
+        public IActionResult StartNewTread(Post post, IFormFile file, int boardId, Destination dest)
         {
             if (!ModelState.IsValid)
             {
-                return View(new CreatePostViewModel(_repository.LoadBoard(boardId).Treads.Select(t => new TreadViewModel(t, 11)).ToList(), ReplyFormAction.StartNewTread, post, boardId));
+                var board = _repository.LoadBoard(boardId);
+                return View(new CreatePostViewModel(board.Treads.Select(t => new TreadViewModel(t, 11)).ToList(), 
+                    ReplyFormAction.StartNewTread, post, boardId, boardId));
             }
 
-            post.Time = DateTime.Now;
             post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
             //var oPost = new Post(_parser.ToHtml(message), title, DateTime.Now, img, true, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             var tread = new Tread(post);
             _repository.AddNewTreadToBoard(tread, boardId);
 
-            if (dest == Destination.Board) return RedirectToAction("CreatePost", new { boardId });
-            else return RedirectToAction("CreatePost", new { boardId, post.TreadId });
+            if (dest == Destination.Board) return RedirectToRoute("Board", new { boardId });
+            else return RedirectToRoute("Tread", new { boardId, post.TreadId });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

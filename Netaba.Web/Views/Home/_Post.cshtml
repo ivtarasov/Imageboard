@@ -3,8 +3,7 @@
 <div id="post-@Model.Post.Id" class="post">
     <div id="post-body-@Model.Post.Id" class=@(Model.Post.IsOp ? "op_post_body" : "post_body")>
         <div id="post-details-@Model.Post.Id" class="post_details">
-            <input id="delete-post-checkbox" type="checkbox" name="ids[@(Model.Post.Id)]" value="@Model.Post.Id">
-            <input type="hidden" name="boardId" value="@Model.Post.Tread.BoardId">
+            <input id="delete-post-checkbox" type="checkbox" name="ids[@(Model.Post.Id)]" value=@Model.Post.Id>
             <span class="post_title">@(Model.Post.Title ?? "")</span>
             <span class="poster_name">@(Model.Post.PosterName ?? "Anonymous")</span>
             <span>@Model.Post.Time</span>
@@ -14,23 +13,16 @@
             {
                 if (Model.IsFromShortcutTread)
                 {
-                    @:[<a href="@Model.Post.Tread.BoardId/@Model.Post.TreadId">Reply</a>]
+                    @("[")<a asp-route="Tread" asp-route-boardId=@Model.Post.Tread.BoardId asp-route-treadId=@Model.Post.TreadId>Reply</a>@("]")
                 }
                 else
                 {
                     <span class="post_number">#@(Model.NumberInTread)</span>
-                    @:[<a href="@Model.Post.Tread.BoardId">Back</a>]
+                    @("[")<a asp-route="Board" asp-route-boardId=@Model.Post.Tread.BoardId>Back</a>@("]")
                 }
             }
-            else if (!Model.IsFromShortcutTread)
-            {
-                <span class="post_number">#@(Model.NumberInTread)</span>
-            }
         </div>
-        @if (Model.Post.Image != null)
-        {
-            @await Html.PartialAsync("_Image", Model.Post.Image)
-        }
+        @if (Model.Post.Image != null) @await Html.PartialAsync("_Image", Model.Post.Image)
         <blockquote id="message-@Model.Post.Id" class="post_message">
             @Html.Raw(Model.Post.Message ?? "")
         </blockquote>

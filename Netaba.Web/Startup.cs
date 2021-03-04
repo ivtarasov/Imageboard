@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Netaba.Services.Repository;
+using Netaba.Web.Infrastructure.Binders;
 
 namespace Netaba.Web
 {
@@ -25,7 +26,12 @@ namespace Netaba.Web
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connection));
-            services.AddControllersWithViews();
+
+            services.AddControllersWithViews(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new TimeBinderProvider());
+                options.ModelBinderProviders.Insert(1, new PassHashBinderProvider());
+            });
 
             services.AddScoped<IRepository, Repository>();
             services.AddScoped<IParser, Parser>();
@@ -49,13 +55,7 @@ namespace Netaba.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "CreatePost",
-                    pattern: "{boardId=1}/{treadId?}",
-                    defaults: new { Controller = "Home", Action = "CreatePost" });
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }
