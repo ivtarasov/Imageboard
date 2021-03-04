@@ -21,7 +21,7 @@ namespace Netaba.Data.Enteties
         public string Title { get; set; }
         public bool IsOp { get; set; }
         public bool IsSage { get; set; }
-        public byte[] IpAndPasswordHash { get; set; }
+        public byte[] PassHash { get; set; }
         public Image Image { get; set; }
         public int? PictureId { get; set; }
         public Tread Tread { get; set; }
@@ -37,7 +37,7 @@ namespace Netaba.Data.Enteties
             Image = pic;
             IsOp = isOp;
             IsSage = isSage;
-            IpAndPasswordHash = MD5.HashData(Encoding.UTF8.GetBytes(ip + (password ?? "12345")));
+            PassHash = MD5.HashData(Encoding.UTF8.GetBytes(ip + (password ?? "12345")));
         }
     }
 }

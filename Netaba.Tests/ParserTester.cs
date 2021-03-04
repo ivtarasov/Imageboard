@@ -16,7 +16,8 @@ namespace Tests
             var testPosts = new List<Post> { new() { Id = 100, TreadId = 2 }, new() { Id = 107, TreadId = 4 }, new() { Id = 123, TreadId = 111 } };
             var mock = new Mock<IRepository>();
             var postPlace = (1, 11);
-            mock.Setup(rep => rep.TryFindPost(It.IsAny<int>(), out postPlace)).Returns<int, (int , int)>((id, postPlace) => testPosts.FirstOrDefault(p => p.Id == id) != null);
+            mock.Setup(rep => rep.TryFindPost(It.IsAny<int>(), out postPlace))
+                .Returns<int, (int , int)>((id, postPlace) => testPosts.FirstOrDefault(p => p.Id == id) != null);
             _parser = new Parser(mock.Object);
         }
 
