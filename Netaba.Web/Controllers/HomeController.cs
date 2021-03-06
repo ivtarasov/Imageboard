@@ -24,8 +24,8 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{boardId:int}", Name = "Board")]
-        [Route("{boardId:int}/{treadId:int}", Name = "Tread")]
+        [Route("{boardId}", Name = "Board")]
+        [Route("{boardId}/{treadId}", Name = "Tread")]
         public IActionResult CreatePost(int boardId, int? treadId)
         {
             if (treadId == null) return StartNewTread(boardId);
@@ -63,8 +63,11 @@ namespace Netaba.Web.Controllers
         {
             var tread = _repository.LoadTread(treadId);
             if (tread == null) return NotFound("Not found");
-            else return View(new CreatePostViewModel( new List<TreadViewModel>{ new TreadViewModel(tread) }, 
-                ReplyFormAction.ReplyToTread, tread.BoardId.Value, tread.Id));
+            else
+            {
+                var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => new PostViewModel(p, ++i, false)).ToList(), treadId);
+                return View(new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, ReplyFormAction.ReplyToTread, tread.BoardId.Value, tread.Id));
+            }
         }
 
         [NonAction]
@@ -73,8 +76,8 @@ namespace Netaba.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var tread = _repository.LoadTread(treadId);
-                return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(tread) }, 
-                    ReplyFormAction.ReplyToTread, post, tread.BoardId.Value, treadId));
+                var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => new PostViewModel(p, ++i, false)).ToList(), treadId);
+                return View(new CreatePostViewModel(new List<TreadViewModel>{ treadViewModel }, ReplyFormAction.ReplyToTread, post, tread.BoardId.Value, treadId));
             }
 
             post.Message = _parser.ToHtml(post.Message);
@@ -89,8 +92,11 @@ namespace Netaba.Web.Controllers
         {
             var board = _repository.LoadBoard(boardId);
             if (board == null) return NotFound("Not found");
-            else return View(new CreatePostViewModel(board.Treads.Select(t => new TreadViewModel(t, 11)).ToList(), 
-                ReplyFormAction.StartNewTread, board.Id));
+            else
+            {
+                var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
+                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, board.Id));
+            }
         }
 
         [NonAction]
@@ -99,8 +105,8 @@ namespace Netaba.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var board = _repository.LoadBoard(boardId);
-                return View(new CreatePostViewModel(board.Treads.Select(t => new TreadViewModel(t, 11)).ToList(), 
-                    ReplyFormAction.StartNewTread, post, boardId));
+                var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
+                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, post, boardId));
             }
 
             post.Message = _parser.ToHtml(post.Message);

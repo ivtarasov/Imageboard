@@ -8,7 +8,7 @@
             <span class="poster_name">@(Model.Post.PosterName ?? "Anonymous")</span>
             <span>@Model.Post.Time</span>
             <span class="post_link"> <a href="/#@Model.Post.Id">№@Model.Post.Id</a> </span>
-            <span class="sage">@(Model.Post.IsSage ? "🠟" : "")</span>
+            <span class="sage">@(Model.Post.IsSage ? "▼" : "")</span>
             @if (!Model.IsFromShortcutTread)
             {
                 <span class="post_number">#@(Model.NumberInTread)</span>

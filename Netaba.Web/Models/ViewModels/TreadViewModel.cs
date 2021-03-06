@@ -1,27 +1,33 @@
-﻿using Netaba.Data.Models;
+﻿using System.Collections.Generic;
 
 namespace Netaba.Web.Models.ViewModels
 {
     public class TreadViewModel
     {
         public int NumberOfOmittedPosts { get; set; }
-        public Tread Tread { get; private set; }
+        public List<PostViewModel> PostViewModels { get; private set; }
         public bool IsShortcut { get; private set; }
+        public int TreadId { get; private set; }
 
-        public TreadViewModel(Tread tread) => Tread = tread;
+        public TreadViewModel(List<PostViewModel> postViewModels, int treadId)
+        {
+            PostViewModels = postViewModels;
+            TreadId = treadId;
+        }
 
-        public TreadViewModel(Tread tread, int numberOfDisplayedPosts)
+        public TreadViewModel(List<PostViewModel> postViewModels, int numberOfDisplayedPosts, int treadId)
         {
             IsShortcut = true;
+            TreadId = treadId;
 
-            var numberOfOmittedPosts = tread.Posts.Count - numberOfDisplayedPosts;
+            var numberOfOmittedPosts = postViewModels.Count - numberOfDisplayedPosts;
             if (numberOfOmittedPosts > 0)
             {
                 NumberOfOmittedPosts = numberOfOmittedPosts;
-                tread.Posts.RemoveRange(1, numberOfOmittedPosts);
+                postViewModels.RemoveRange(1, numberOfOmittedPosts);
             }
 
-            Tread = tread;
+            PostViewModels = postViewModels;
         }
     }
 }
