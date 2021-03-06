@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Threading.Tasks;
-using System.Linq;
 using Netaba.Data.Models;
 using Netaba.Services.Pass;
 using Netaba.Services.ImageHandling;
@@ -27,12 +26,12 @@ namespace Netaba.Web.Infrastructure.Binders
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var messageValue = bindingContext.ValueProvider.GetValue("Post.Message");
-            var titleValue = bindingContext.ValueProvider.GetValue("Post.Title");
-            var isOpValue = bindingContext.ValueProvider.GetValue("Post.IsOp");
-            var isSageValue = bindingContext.ValueProvider.GetValue("Post.IsSage");
-            var passHashValue = bindingContext.ValueProvider.GetValue("Pass");
-            var formFile = bindingContext.ActionContext.HttpContext.Request.Form.Files.GetFile("File");
+            var messageValue = bindingContext.ValueProvider.GetValue("mssage");
+            var titleValue = bindingContext.ValueProvider.GetValue("title");
+            var isOpValue = bindingContext.ValueProvider.GetValue("isop");
+            var isSageValue = bindingContext.ValueProvider.GetValue("issage");
+            var passHashValue = bindingContext.ValueProvider.GetValue("pass");
+            var formFile = bindingContext.ActionContext.HttpContext.Request.Form.Files.GetFile("file");
 
             string message = messageValue.FirstValue;
             string title = titleValue.FirstValue;

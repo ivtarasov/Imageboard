@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Netaba.Data.Models
 {
     public class Tread
     {
-        [BindNever]
         public int Id { get; private set; }
         public List<Post> Posts { get; private set; }
         public int? BoardId { get; private set; }

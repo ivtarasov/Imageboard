@@ -7,12 +7,12 @@
             <label>@Model.ActionNameInView</label>
         </div>
         <div class="form_part form_part_flex">
-            <input id="title" type="text" class="reply_input" size="10" asp-for="Post.Title" placeholder="Subject">
-            <input type="hidden" asp-for="Post.IsOp" value="@(Model.Action == ReplyFormAction.ReplyToTread ? "false" : "true")">
+            <input id="title" type="text" class="reply_input" size="10" name="title" placeholder="Subject">
+            <input type="hidden" name="isop" value="@(Model.Action == ReplyFormAction.ReplyToTread ? "false" : "true")">
             <input id="submit" type="submit" class="reply_button" name="submit" value="Submit">
         </div>
         <div class="form_part">
-            <textarea id="message" class="reply_input" asp-for="Post.Message" rows="10" placeholder="Message" spellcheck="false"></textarea>
+            <textarea id="message" class="reply_input" name="message" rows="10" placeholder="Message" spellcheck="false"></textarea>
         </div>
         <div class="form_part">
             <input id="password" type="password" class="reply_input" name="Pass" value="12345" placeholder="Password">
@@ -21,7 +21,7 @@
             <div class="reply_options">
                 <label>Go to</label>
                 <select name="dest" asp-items="Html.GetEnumSelectList<Destination>()"></select>
-                <input type="checkbox" id="sage-check-box" asp-for="Post.IsSage" value="true">
+                <input type="checkbox" id="sage-check-box" name="issage" value="true">
                 <label>Sage</label>
                 <input id="file" class="reply_file" type="file" name="File">
             </div>
