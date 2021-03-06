@@ -8,7 +8,7 @@ namespace Netaba.Services.Repository
         public bool IsThereBoard(int boardId);
         public bool TryFindPost(int postId, out (int BoardId, int TreadId) postPlace);
 
-        public void DeletePosts(IEnumerable<int> postIds, string ip, string password);
+        public void Delete(IEnumerable<int> postIds, string ip, string password);
 
         public int AddNewTreadToBoard(Tread tread, int boardId);
         public int AddNewPostToTread(Post post, int treadId);

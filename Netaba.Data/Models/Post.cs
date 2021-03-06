@@ -12,7 +12,7 @@ namespace Netaba.Data.Models
         [DisplayFormat(DataFormatString = "G")]
         public DateTime Time { get; private set; }
         [Required]
-        public string Message { get; private set; }
+        public string Message { get; set; }
         [Required]
         public string Title { get; private set; }
         public bool IsOp { get; private set; }

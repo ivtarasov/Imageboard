@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Netaba.Data.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using System;
 
 namespace Netaba.Web.Infrastructure.Binders
 {
-    public class PassHashBinderProvider : IModelBinderProvider
+    public class PostBinderProvider : IModelBinderProvider
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
@@ -13,9 +14,9 @@ namespace Netaba.Web.Infrastructure.Binders
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.Metadata.ModelType == typeof(byte[]))
+            if (context.Metadata.ModelType == typeof(Post))
             {
-                return new BinderTypeModelBinder(typeof(PassHashBinder));
+                return new BinderTypeModelBinder(typeof(PostBinder));
             }
 
             return null;

@@ -1,7 +1,7 @@
 ﻿@model ReplyFormViewModel
 
 <div id="post-area" class="post_area">
-    <form id="reply-form" class="reply_form" asp-route="CreatePost" asp-route-targetId=@(Model.TargetId)>
+    <form id="reply-form" class="reply_form"  enctype="multipart/form-data" asp-route="CreatePost" asp-route-targetId=@(Model.TargetId)>
         <div class="validation" asp-validation-summary="All"></div>
         <div id="action" class="action">
             <label>@Model.ActionNameInView</label>
@@ -15,7 +15,7 @@
             <textarea id="message" class="reply_input" asp-for="Post.Message" rows="10" placeholder="Message" spellcheck="false"></textarea>
         </div>
         <div class="form_part">
-            <input id="password" type="password" class="reply_input" asp-for="Post.PassHash" value="12345" placeholder="Password">
+            <input id="password" type="password" class="reply_input" name="Pass" value="12345" placeholder="Password">
         </div>
         <div class="form_part">
             <div class="reply_options">
@@ -23,7 +23,7 @@
                 <select name="dest" asp-items="Html.GetEnumSelectList<Destination>()"></select>
                 <input type="checkbox" id="sage-check-box" asp-for="Post.IsSage" value="true">
                 <label>Sage</label>
-                <input id="file" class="reply_file" type="file" name="file">
+                <input id="file" class="reply_file" type="file" name="File">
             </div>
         </div>
     </form>

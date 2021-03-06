@@ -42,7 +42,7 @@ namespace Netaba.Services.Repository
             return true;
         }
 
-        public void DeletePosts(IEnumerable<int> postIds, string ip, string password)
+        public void Delete(IEnumerable<int> postIds, string ip, string password)
         {
             var posts = _context.Posts.Where(p => postIds.Contains(p.Id));
             var oPosts = posts.Where(p => p.IsOp);

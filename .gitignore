@@ -360,4 +360,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/Imageboard.Web/wwwroot/src/Images
+/Netaba.Web/wwwroot/src/Images

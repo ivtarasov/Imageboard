@@ -5,7 +5,7 @@
 
 @await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(Model.Action, Model.TargetId, Model.Post))
 
-<form id="del-form" class="delete_form" asp-route="DeletePosts" asp-route-boardId=@Model.BoardId>
+<form id="del-form" class="delete_form" asp-route="Delete" asp-route-boardId=@Model.BoardId>
     @foreach (var treadModel in Model.TreadViewModels) @await Html.PartialAsync("_Tread", treadModel)
     @await Html.PartialAsync("_DeleteForm")
 </form>

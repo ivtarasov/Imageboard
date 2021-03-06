@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Netaba.Data.Enums;
 using Netaba.Data.Models;
-using Netaba.Services.ImageHandling;
-using Netaba.Services.Markup;
 using Netaba.Services.Repository;
+using Netaba.Services.Markup;
 using Netaba.Web.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -18,15 +16,11 @@ namespace Netaba.Web.Controllers
     {
         private readonly IRepository _repository;
         private readonly IParser _parser;
-        private readonly IImageHandler _imageHandler;
-        private readonly IWebHostEnvironment _appEnvironment;
-        
-        public HomeController(IRepository repository, IParser parser, IImageHandler imageHandler, IWebHostEnvironment appEnvironment)
+
+        public HomeController(IRepository repository, IParser parser)
         {
             _repository = repository;
             _parser = parser;
-            _imageHandler = imageHandler;
-            _appEnvironment = appEnvironment;
         }
 
         [HttpGet]
@@ -44,14 +38,14 @@ namespace Netaba.Web.Controllers
 
         [HttpPost]
         [Route("CreatePost", Name = "CreatePost")]
-        public IActionResult CreatePost(Post post, IFormFile file, int targetId, Destination dest)
+        public IActionResult CreatePost(Post post, int targetId, Destination dest)
         {
-            if (post.IsOp) return StartNewTread(post, file, targetId, dest);
-            else return ReplyToTread(post, file, targetId, dest);
+            if (post.IsOp) return StartNewTread(post, targetId, dest);
+            else return ReplyToTread(post, targetId, dest);
         }
 
         [HttpPost]
-        [Route("DeletePosts", Name = "DeletePosts")]
+        [Route("Delete", Name = "Delete")]
         public IActionResult DeletePosts(Dictionary<int, int> ids, int boardId, string password)
         {
             if (ids == null)
@@ -60,7 +54,7 @@ namespace Netaba.Web.Controllers
                 return RedirectToRoute("Board", new { boardId });
             }
 
-            _repository.DeletePosts(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+            _repository.Delete(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             return RedirectToRoute("Board", new { boardId });
         }
 
@@ -74,7 +68,7 @@ namespace Netaba.Web.Controllers
         }
 
         [NonAction]
-        public IActionResult ReplyToTread(Post post, IFormFile file, int treadId, Destination dest)
+        public IActionResult ReplyToTread(Post post, int treadId, Destination dest)
         {
             if (!ModelState.IsValid)
             {
@@ -83,10 +77,7 @@ namespace Netaba.Web.Controllers
                     ReplyFormAction.ReplyToTread, post, tread.BoardId.Value, treadId));
             }
 
-            //post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-
-            //Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-            //var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+            post.Message = _parser.ToHtml(post.Message);
             var  boardId = _repository.AddNewPostToTread(post, treadId);
 
             if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardId, treadId});
@@ -103,7 +94,7 @@ namespace Netaba.Web.Controllers
         }
 
         [NonAction]
-        public IActionResult StartNewTread(Post post, IFormFile file, int boardId, Destination dest)
+        public IActionResult StartNewTread(Post post, int boardId, Destination dest)
         {
             if (!ModelState.IsValid)
             {
@@ -112,8 +103,7 @@ namespace Netaba.Web.Controllers
                     ReplyFormAction.StartNewTread, post, boardId));
             }
 
-            //post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
-            //var oPost = new Post(_parser.ToHtml(message), title, DateTime.Now, img, true, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+            post.Message = _parser.ToHtml(post.Message);
             var tread = new Tread(new List<Post> { post });
             var treadId = _repository.AddNewTreadToBoard(tread, boardId);
 
