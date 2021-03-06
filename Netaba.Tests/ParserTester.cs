@@ -1,7 +1,5 @@
-﻿using Netaba.Data.Enteties;
-using Netaba.Services.Markup;
+﻿using Netaba.Services.Markup;
 using Netaba.Services.Repository;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using Moq;
@@ -13,7 +11,7 @@ namespace Tests
         private readonly Parser _parser;
         public ParserTester()
         {
-            var testPosts = new List<Post> { new() { Id = 100, TreadId = 2 }, new() { Id = 107, TreadId = 4 }, new() { Id = 123, TreadId = 111 } };
+            var testPosts = new [] { new { Id = 100, TreadId = 2 }, new { Id = 107, TreadId = 4 }, new { Id = 123, TreadId = 111 } };
             var mock = new Mock<IRepository>();
             var postPlace = (1, 11);
             mock.Setup(rep => rep.TryFindPost(It.IsAny<int>(), out postPlace))

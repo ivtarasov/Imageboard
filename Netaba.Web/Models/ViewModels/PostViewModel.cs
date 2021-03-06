@@ -1,4 +1,4 @@
-﻿using Netaba.Data.Enteties;
+﻿using Netaba.Data.Models;
 
 namespace Netaba.Web.Models.ViewModels
 {

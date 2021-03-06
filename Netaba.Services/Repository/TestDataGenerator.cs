@@ -1,4 +1,5 @@
 ﻿using Netaba.Data.Enteties;
+using Netaba.Services.Pass;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -12,18 +13,27 @@ namespace Netaba.Services.Repository
 
         public static Board GenerateData()
         {
-            Board board = new Board();
+            var board = new Board() { Treads = new List<Tread>() };
             var treads = new List<Tread>();
 
             for (int i = 0; i < 10; i++)
             {
-                var tread = new Tread();
+                var tread = new Tread { Posts = new List<Post>() };
                 var posts = new List<Post>();
 
                 for (int j = 0; j < 50; j++)
-                    posts.Add(new Post(RandomString(_random.Next(10, 500)), RandomString(_random.Next(1, 5)),
-                                       DateTime.Now, null, j == 0, false, "127.0.0.1", "12345"));
-
+                    posts.Add(new Post
+                    {
+                        Message = RandomString(_random.Next(1, 50)),
+                        Title = RandomString(_random.Next(1, 5)),
+                        Time = DateTime.Now,
+                        IsOp = j == 0,
+                        IsSage = false,
+                        Tread = tread,
+                        Image = null,
+                        PassHash = HashGenerator.GetHash("127.0.0.1", "12345")
+                    });
+                               
                 tread.Posts.AddRange(posts);
                 treads.Add(tread);
             }

@@ -1,4 +1,4 @@
-﻿using Netaba.Data.Enteties;
+﻿using Netaba.Data.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace Netaba.Services.ImageHandling

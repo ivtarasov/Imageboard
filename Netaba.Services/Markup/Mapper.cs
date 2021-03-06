@@ -1,7 +1,7 @@
 ﻿
 namespace Netaba.Services.Markup
 {
-    public class Mapper
+    public static class Mapper
     {
         static public Mark ToMark((char, char) mark, bool isNewLine) =>
             mark switch

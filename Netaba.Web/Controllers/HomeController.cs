@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Netaba.Data.Enteties;
 using Netaba.Data.Enums;
+using Netaba.Data.Models;
 using Netaba.Services.ImageHandling;
 using Netaba.Services.Markup;
 using Netaba.Services.Repository;
@@ -83,14 +83,14 @@ namespace Netaba.Web.Controllers
                     ReplyFormAction.ReplyToTread, post, treadId, tread.BoardId));
             }
 
-            post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
+            //post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
 
             //Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
             //var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
-            _repository.AddNewPost(post, treadId);
+            _repository.AddNewPostToTread(post, treadId);
 
-            if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardId = post.Tread.BoardId , treadId});
-            else return RedirectToRoute("Board", new { boardId = post.Tread.BoardId });
+            if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardId = post.BoardId , treadId});
+            else return RedirectToRoute("Board", new { boardId = post.BoardId });
         }
 
         [NonAction]
@@ -112,9 +112,9 @@ namespace Netaba.Web.Controllers
                     ReplyFormAction.StartNewTread, post, boardId, boardId));
             }
 
-            post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
+            //post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
             //var oPost = new Post(_parser.ToHtml(message), title, DateTime.Now, img, true, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
-            var tread = new Tread(post);
+            var tread = new Tread(new List<Post> { post }, boardId);
             _repository.AddNewTreadToBoard(tread, boardId);
 
             if (dest == Destination.Board) return RedirectToRoute("Board", new { boardId });

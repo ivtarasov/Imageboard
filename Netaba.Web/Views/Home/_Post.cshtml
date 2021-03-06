@@ -7,18 +7,21 @@
             <span class="post_title">@(Model.Post.Title ?? "")</span>
             <span class="poster_name">@(Model.Post.PosterName ?? "Anonymous")</span>
             <span>@Model.Post.Time</span>
-            <span class="post_link"> <a href="/#@Model.Post.Id">@("id" + Model.Post.Id)</a> </span>
+            <span class="post_link"> <a href="/#@Model.Post.Id">№@Model.Post.Id</a> </span>
             <span class="sage">@(Model.Post.IsSage ? "🠟" : "")</span>
+            @if (!Model.IsFromShortcutTread)
+            {
+                <span class="post_number">#@(Model.NumberInTread)</span>
+            }
             @if (Model.Post.IsOp)
             {
                 if (Model.IsFromShortcutTread)
                 {
-                    @("[")<a asp-route="Tread" asp-route-boardId=@Model.Post.Tread.BoardId asp-route-treadId=@Model.Post.TreadId>Reply</a>@("]")
+                    @("[")<a asp-route="Tread" asp-route-boardId=@Model.Post.BoardId asp-route-treadId=@Model.Post.TreadId>Reply</a>@("]")
                 }
                 else
                 {
-                    <span class="post_number">#@(Model.NumberInTread)</span>
-                    @("[")<a asp-route="Board" asp-route-boardId=@Model.Post.Tread.BoardId>Back</a>@("]")
+                    @("[")<a asp-route="Board" asp-route-boardId=@Model.Post.BoardId>Back</a>@("]")
                 }
             }
         </div>

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Netaba.Data.Enteties;
+using Netaba.Data.Models;
 
 namespace Netaba.Services.Repository
 {
@@ -11,7 +11,7 @@ namespace Netaba.Services.Repository
         public void DeletePosts(IEnumerable<int> postIds, string ip, string password);
 
         public void AddNewTreadToBoard(Tread tread, int boardId);
-        public void AddNewPost(Post post, int treadId);
+        public void AddNewPostToTread(Post post, int treadId);
 
         public Board LoadBoard(int boardId);
         public Tread LoadTread(int treadId);

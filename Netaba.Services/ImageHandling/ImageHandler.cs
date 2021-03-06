@@ -1,4 +1,4 @@
-﻿using EntetyImage = Netaba.Data.Enteties.Image;
+﻿using ImageModel = Netaba.Data.Models.Image;
 using Microsoft.AspNetCore.Http;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -9,7 +9,7 @@ namespace Netaba.Services.ImageHandling
 {
     public class ImageHandler: IImageHandler
     {
-        public EntetyImage HandleImage(IFormFile file, string webRootPath)
+        public ImageModel HandleImage(IFormFile file, string webRootPath)
         {
             if (file != null && file.ContentType.Split("/")[0] == "image")
             {
@@ -35,7 +35,7 @@ namespace Netaba.Services.ImageHandling
                 }
 
                 image.Save(webRootPath + path);
-                return new EntetyImage(path, file.FileName, format.Name, SizeReformer.ToReadableForm(file.Length), image.Height, image.Width, (int)h, (int)w);
+                return new ImageModel(path, file.FileName, format.Name, SizeReformer.ToReadableForm(file.Length), image.Height, image.Width, (int)h, (int)w);
             } 
             else
             {

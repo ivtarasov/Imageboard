@@ -1,10 +1,12 @@
-﻿using System;
+﻿using PostEntety = Netaba.Data.Enteties.Post;
+using Microsoft.EntityFrameworkCore;
+using Netaba.Data.Contexts;
+using Netaba.Data.Models;
+using Netaba.Services.Mappers;
+using Netaba.Services.Pass;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Netaba.Data.Contexts;
-using Netaba.Data.Enteties;
-using Microsoft.EntityFrameworkCore;
-using Netaba.Services.Pass;
 
 namespace Netaba.Services.Repository
 {
@@ -49,31 +51,33 @@ namespace Netaba.Services.Repository
             _context.SaveChanges();
         }
 
-        private void DeleteTreads(IEnumerable<Post> oPosts, string ip, string password)
+        private void DeleteTreads(IEnumerable<PostEntety> oPosts, string ip, string password)
         {
-            var treadIds = oPosts.Where(p => PassChecker.Check(p, ip, password)).Select(p => p.TreadId);
+            var treadIds = oPosts.Where(p => PassChecker.Check(p.PassHash, ip, password))
+                                    .Select(p => p.TreadId);
             var treads = _context.Treads.Where(t => treadIds.Contains(t.Id));
 
             _context.Treads.RemoveRange(treads);
         }
 
-        private void DeletePosts(IEnumerable<Post> posts, string ip, string password)
+        private void DeletePosts(IEnumerable<PostEntety> posts, string ip, string password)
         {
-            _context.Posts.RemoveRange(posts.Where(p => PassChecker.Check(p, ip, password)));
+            _context.Posts.RemoveRange(posts.Where(p => PassChecker.Check(p.PassHash, ip, password))
+                                                .Select(p => p));
         }
 
         public void AddNewTreadToBoard(Tread tread, int boardId)
         {
-            Board board = _context.Boards.Single(t => t.Id == boardId);
-            board.Treads.Add(tread);
+            var board = _context.Boards.Single(t => t.Id == boardId);
+            board.Treads.Add(ModelMapper.ToEntety(tread));
 
             _context.SaveChanges();
         }
 
-        public void AddNewPost(Post post, int treadId)
+        public void AddNewPostToTread(Post post, int treadId)
         {
-            Tread tread = _context.Treads.Single(t => t.Id == treadId);
-            tread.Posts.Add(post);
+            var tread = _context.Treads.Single(t => t.Id == treadId);
+            tread.Posts.Add(ModelMapper.ToEntety(post));
 
             _context.SaveChanges();
         }
@@ -88,7 +92,7 @@ namespace Netaba.Services.Repository
 
             board.Treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.Single(p => p.IsOp).Time).ToList();
 
-            return board;
+            return EntetyMapper.ToModel(board);
         }
 
         public Tread LoadTread(int treadId)
@@ -101,7 +105,7 @@ namespace Netaba.Services.Repository
 
             tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
 
-            return tread;
+            return EntetyMapper.ToModel(tread);
         }
     }
 }

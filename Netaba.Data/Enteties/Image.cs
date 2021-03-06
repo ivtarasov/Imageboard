@@ -14,19 +14,5 @@ namespace Netaba.Data.Enteties
         public int Width { get; set; }
         public int ViewHeight { get; set; }
         public int ViewWidth { get; set; }
-
-        public Image() { }
-
-        public Image(string path, string name, string format, string sizeDesc, int height, int width, int vheight, int vwidth)
-        {
-            Path = path;
-            Name = name;
-            Format = format;
-            SizeDesc = sizeDesc;
-            Height = height;
-            Width = width;
-            ViewHeight = vheight;
-            ViewWidth = vwidth;
-        }
     }
 }
