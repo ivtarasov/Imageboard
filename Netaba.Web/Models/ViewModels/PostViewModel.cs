@@ -7,7 +7,7 @@ namespace Netaba.Web.Models.ViewModels
         public Post Post { get; private set; }
         public int NumberInTread { get; private set; }
         public bool IsFromShortcutTread { get; private set; }
-
+        
         public PostViewModel(Post post, int numberInTread, bool isFromShrtcutTread)
         {
             Post = post;

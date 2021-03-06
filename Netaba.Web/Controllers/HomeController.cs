@@ -46,7 +46,7 @@ namespace Netaba.Web.Controllers
         [Route("CreatePost", Name = "CreatePost")]
         public IActionResult CreatePost(Post post, IFormFile file, int targetId, Destination dest)
         {
-            if (post?.IsOp ?? true) return StartNewTread(post, file, targetId, dest);
+            if (post.IsOp) return StartNewTread(post, file, targetId, dest);
             else return ReplyToTread(post, file, targetId, dest);
         }
 
@@ -65,12 +65,12 @@ namespace Netaba.Web.Controllers
         }
 
         [NonAction]
-        public IActionResult ReplyToTread(int id)
+        public IActionResult ReplyToTread(int treadId)
         {
-            var tread = _repository.LoadTread(id);
+            var tread = _repository.LoadTread(treadId);
             if (tread == null) return NotFound("Not found");
             else return View(new CreatePostViewModel( new List<TreadViewModel>{ new TreadViewModel(tread) }, 
-                ReplyFormAction.ReplyToTread, id, tread.BoardId));
+                ReplyFormAction.ReplyToTread, tread.BoardId.Value, tread.Id));
         }
 
         [NonAction]
@@ -80,26 +80,26 @@ namespace Netaba.Web.Controllers
             {
                 var tread = _repository.LoadTread(treadId);
                 return View(new CreatePostViewModel(new List<TreadViewModel>{ new TreadViewModel(tread) }, 
-                    ReplyFormAction.ReplyToTread, post, treadId, tread.BoardId));
+                    ReplyFormAction.ReplyToTread, post, tread.BoardId.Value, treadId));
             }
 
             //post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
 
             //Image img = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
             //var post = new Post(_parser.ToHtml(message), title, DateTime.Now, img, false, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
-            _repository.AddNewPostToTread(post, treadId);
+            var  boardId = _repository.AddNewPostToTread(post, treadId);
 
-            if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardId = post.BoardId , treadId});
-            else return RedirectToRoute("Board", new { boardId = post.BoardId });
+            if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardId, treadId});
+            else return RedirectToRoute("Board", new { boardId });
         }
 
         [NonAction]
-        public IActionResult StartNewTread(int id)
+        public IActionResult StartNewTread(int boardId)
         {
-            var board = _repository.LoadBoard(id);
+            var board = _repository.LoadBoard(boardId);
             if (board == null) return NotFound("Not found");
             else return View(new CreatePostViewModel(board.Treads.Select(t => new TreadViewModel(t, 11)).ToList(), 
-                ReplyFormAction.StartNewTread, id, board.Id));
+                ReplyFormAction.StartNewTread, board.Id));
         }
 
         [NonAction]
@@ -109,16 +109,16 @@ namespace Netaba.Web.Controllers
             {
                 var board = _repository.LoadBoard(boardId);
                 return View(new CreatePostViewModel(board.Treads.Select(t => new TreadViewModel(t, 11)).ToList(), 
-                    ReplyFormAction.StartNewTread, post, boardId, boardId));
+                    ReplyFormAction.StartNewTread, post, boardId));
             }
 
             //post.Image = _imageHandler.HandleImage(file, _appEnvironment.WebRootPath);
             //var oPost = new Post(_parser.ToHtml(message), title, DateTime.Now, img, true, isSage, HttpContext.Connection.RemoteIpAddress.ToString(), password);
-            var tread = new Tread(new List<Post> { post }, boardId);
-            _repository.AddNewTreadToBoard(tread, boardId);
+            var tread = new Tread(new List<Post> { post });
+            var treadId = _repository.AddNewTreadToBoard(tread, boardId);
 
             if (dest == Destination.Board) return RedirectToRoute("Board", new { boardId });
-            else return RedirectToRoute("Tread", new { boardId, post.TreadId });
+            else return RedirectToRoute("Tread", new { boardId, treadId });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

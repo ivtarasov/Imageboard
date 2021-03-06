@@ -19,8 +19,8 @@ namespace Netaba.Data.Models
         public bool IsSage { get; private set; }
         public byte[] PassHash { get; private set; }
         public Image Image { get; private set; }
-        public int TreadId { get; private set; }
-        public int BoardId { get; private set; }
+        public int? TreadId { get; private set; }
+        public int? BoardId { get; private set; }
 
         public Post(int id, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, int boardId)
             : this(message, title, postTime, image, isOp, isSage, hash, treadId, boardId)
@@ -29,6 +29,13 @@ namespace Netaba.Data.Models
         }
 
         public Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, int boardId)
+            : this(message, title, postTime, image, isOp, isSage, hash)
+        {
+            TreadId = treadId;
+            BoardId = boardId;
+        }
+
+        public Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash)
         {
             Message = message;
             Title = title;
@@ -37,8 +44,6 @@ namespace Netaba.Data.Models
             IsOp = isOp;
             IsSage = isSage;
             PassHash = hash;
-            TreadId = treadId;
-            BoardId = boardId;
         }
     }
 }

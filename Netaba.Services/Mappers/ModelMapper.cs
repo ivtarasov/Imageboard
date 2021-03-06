@@ -28,13 +28,16 @@ namespace Netaba.Services.Mappers
                 Title = post.Title,
                 Time = post.Time,
                 IsOp = post.IsOp,
-                IsSage = false,
+                IsSage = post.IsSage,
                 Image = ToEntety(post.Image),
                 PassHash = post.PassHash
             };
 
-        public static ImageEntety ToEntety(Image image) =>
-            new()
+        public static ImageEntety ToEntety(Image image)
+        {
+            if (image == null) return null;
+
+            return new()
             {
                 Name = image.Name,
                 SizeDesc = image.SizeDesc,
@@ -45,5 +48,6 @@ namespace Netaba.Services.Mappers
                 ViewHeight = image.ViewHeight,
                 ViewWidth = image.ViewWidth
             };
+        }
     }
 }

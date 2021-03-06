@@ -29,8 +29,7 @@ namespace Netaba.Web
 
             services.AddControllersWithViews(options =>
             {
-                options.ModelBinderProviders.Insert(0, new TimeBinderProvider());
-                options.ModelBinderProviders.Insert(1, new PassHashBinderProvider());
+                options.ModelBinderProviders.Insert(0, new PostBinderProvider());
             });
 
             services.AddScoped<IRepository, Repository>();

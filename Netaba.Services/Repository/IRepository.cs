@@ -10,8 +10,8 @@ namespace Netaba.Services.Repository
 
         public void DeletePosts(IEnumerable<int> postIds, string ip, string password);
 
-        public void AddNewTreadToBoard(Tread tread, int boardId);
-        public void AddNewPostToTread(Post post, int treadId);
+        public int AddNewTreadToBoard(Tread tread, int boardId);
+        public int AddNewPostToTread(Post post, int treadId);
 
         public Board LoadBoard(int boardId);
         public Tread LoadTread(int treadId);

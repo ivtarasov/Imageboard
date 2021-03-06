@@ -1,4 +1,6 @@
 ﻿using PostEntety = Netaba.Data.Enteties.Post;
+using TreadEntety = Netaba.Data.Enteties.Tread;
+using BoardEntety = Netaba.Data.Enteties.Board;
 using Microsoft.EntityFrameworkCore;
 using Netaba.Data.Contexts;
 using Netaba.Data.Models;
@@ -66,20 +68,24 @@ namespace Netaba.Services.Repository
                                                 .Select(p => p));
         }
 
-        public void AddNewTreadToBoard(Tread tread, int boardId)
+        public int AddNewTreadToBoard(Tread tread, int boardId)
         {
             var board = _context.Boards.Single(t => t.Id == boardId);
-            board.Treads.Add(ModelMapper.ToEntety(tread));
+            TreadEntety treadEntety = ModelMapper.ToEntety(tread);
+            board.Treads = new List<TreadEntety> { treadEntety };
 
             _context.SaveChanges();
+            return treadEntety.Id;
         }
 
-        public void AddNewPostToTread(Post post, int treadId)
+        public int AddNewPostToTread(Post post, int treadId)
         {
             var tread = _context.Treads.Single(t => t.Id == treadId);
-            tread.Posts.Add(ModelMapper.ToEntety(post));
+            PostEntety postEntety = ModelMapper.ToEntety(post);
+            tread.Posts = new List<PostEntety> { postEntety };
 
             _context.SaveChanges();
+            return tread.BoardId;
         }
 
         public Board LoadBoard(int boardId)
