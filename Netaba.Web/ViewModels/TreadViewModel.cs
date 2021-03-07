@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Netaba.Web.Models.ViewModels
+namespace Netaba.Web.ViewModels
 {
     public class TreadViewModel
     {

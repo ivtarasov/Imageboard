@@ -2,7 +2,7 @@
 using Netaba.Data.Models;
 using Netaba.Data.Enums;
 
-namespace Netaba.Web.Models.ViewModels
+namespace Netaba.Web.ViewModels
 {
     public class CreatePostViewModel
     {
