@@ -4,40 +4,38 @@ using Netaba.Data.Enums;
 using Netaba.Data.Models;
 using Netaba.Services.Repository;
 using Netaba.Services.Markup;
-using Netaba.Web.Models.ViewModels;
-using System;
+using Netaba.Web.ViewModels;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Netaba.Web.Controllers
 {
-    public class HomeController : Controller
+    public class BoardController : Controller
     {
         private readonly IRepository _repository;
         private readonly IParser _parser;
 
-        public HomeController(IRepository repository, IParser parser)
+        public BoardController(IRepository repository, IParser parser)
         {
             _repository = repository;
             _parser = parser;
         }
 
         [HttpGet]
-        [Route("{boardId}", Name = "Board")]
-        [Route("{boardId}/{treadId}", Name = "Tread")]
+        [Route("/{boardId}", Name = "Board")]
+        [Route("/{boardId}/{treadId}", Name = "Tread")]
         public IActionResult CreatePost(int boardId, int? treadId)
         {
             if (treadId == null) return StartNewTread(boardId);
             else
             {
                 if (_repository.IsThereBoard(boardId)) return ReplyToTread(treadId.Value);
-                else return NotFound("Not found");
+                else return NotFound();
             }
-        }   
+        }
 
         [HttpPost]
-        [Route("CreatePost", Name = "CreatePost")]
+        [Route("/CreatePost", Name = "CreatePost")]
         public IActionResult CreatePost(Post post, int targetId, Destination dest)
         {
             if (post.IsOp) return StartNewTread(post, targetId, dest);
@@ -45,14 +43,10 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpPost]
-        [Route("Delete", Name = "Delete")]
+        [Route("/Delete", Name = "Delete")]
         public IActionResult DeletePosts(Dictionary<int, int> ids, int boardId, string password)
         {
-            if (ids == null)
-            {
-                Console.WriteLine("null");
-                return RedirectToRoute("Board", new { boardId });
-            }
+            if (ids == null) return RedirectToRoute("Board", new { boardId });
 
             _repository.Delete(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
             return RedirectToRoute("Board", new { boardId });
@@ -62,7 +56,7 @@ namespace Netaba.Web.Controllers
         public IActionResult ReplyToTread(int treadId)
         {
             var tread = _repository.LoadTread(treadId);
-            if (tread == null) return NotFound("Not found");
+            if (tread == null) return NotFound();
             else
             {
                 var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => new PostViewModel(p, ++i, false)).ToList(), treadId);
@@ -91,7 +85,7 @@ namespace Netaba.Web.Controllers
         public IActionResult StartNewTread(int boardId)
         {
             var board = _repository.LoadBoard(boardId);
-            if (board == null) return NotFound("Not found");
+            if (board == null) return NotFound();
             else
             {
                 var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
@@ -115,12 +109,6 @@ namespace Netaba.Web.Controllers
 
             if (dest == Destination.Board) return RedirectToRoute("Board", new { boardId });
             else return RedirectToRoute("Tread", new { boardId, treadId });
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

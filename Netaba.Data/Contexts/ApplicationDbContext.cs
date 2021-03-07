@@ -3,7 +3,6 @@ using Netaba.Data.Enteties;
 
 namespace Netaba.Data.Contexts
 {
-
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Board> Boards { get; set; }
