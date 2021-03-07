@@ -1,8 +1,9 @@
-﻿@{
+﻿@model ErrorViewModel
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Error";
 }
 
 <div id="error" class="error">
-    <p>Something went wrong.</p>
+    <p>@(Model.ExceptionMessage ?? "Something went wrong.")</p>
 </div>

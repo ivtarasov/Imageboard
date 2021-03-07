@@ -7,6 +7,7 @@ using Netaba.Services.Markup;
 using Netaba.Web.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace Netaba.Web.Controllers
 {
@@ -38,6 +39,7 @@ namespace Netaba.Web.Controllers
         [Route("/CreatePost", Name = "CreatePost")]
         public IActionResult CreatePost(Post post, int targetId, Destination dest)
         {
+            if (post == null) throw new NullReferenceException("The received Post instance was null.");
             if (post.IsOp) return StartNewTread(post, targetId, dest);
             else return ReplyToTread(post, targetId, dest);
         }
@@ -70,6 +72,7 @@ namespace Netaba.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var tread = _repository.LoadTread(treadId);
+                if (tread == null) return NotFound();
                 var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => new PostViewModel(p, ++i, false)).ToList(), treadId);
                 return View(new CreatePostViewModel(new List<TreadViewModel>{ treadViewModel }, ReplyFormAction.ReplyToTread, post, tread.BoardId.Value, treadId));
             }
@@ -99,6 +102,7 @@ namespace Netaba.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var board = _repository.LoadBoard(boardId);
+                if (board == null) return NotFound();
                 var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
                 return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, post, boardId));
             }
