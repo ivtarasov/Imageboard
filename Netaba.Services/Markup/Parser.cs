@@ -133,7 +133,7 @@ namespace Netaba.Services.Markup
                 postId += digit * (int) Math.Pow(10, i++);
             }
 
-            if (_repository.TryFindPost(postId, out (int BoardId, int TreadId) postPlace))
+            if (_repository.TryGetPostLocation(postId, out (int BoardId, int TreadId) postPlace))
             {
                 result.Append($"{Mapper.HtmlForLink(postPlace.BoardId, postPlace.TreadId, postId)}");
                 return;

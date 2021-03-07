@@ -232,7 +232,7 @@ a:hover {
 .post_picture {
 	float: left;
 	margin-top: 1px;
-	margin-right: 18px;
+	margin-right: 22px;
 	margin-bottom: 8px;
 	margin-left: 16px;
 }
@@ -259,4 +259,16 @@ a:hover {
 
 .validation {
 	color: red;
+}
+
+.error {
+	font-size: xx-large;
+	height: 5em;
+	display: flex;
+	align-items: center;
+	justify-content: center
+}
+
+.error p {
+	margin: 0
 }

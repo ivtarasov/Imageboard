@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using ImageModel = Netaba.Data.Models.Image;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Threading.Tasks;
 using Netaba.Data.Models;
 using Netaba.Services.Pass;
 using Netaba.Services.ImageHandling;
+using SixLabors.ImageSharp;
 
 namespace Netaba.Web.Infrastructure.Binders
 {
@@ -26,7 +28,7 @@ namespace Netaba.Web.Infrastructure.Binders
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var messageValue = bindingContext.ValueProvider.GetValue("mssage");
+            var messageValue = bindingContext.ValueProvider.GetValue("message");
             var titleValue = bindingContext.ValueProvider.GetValue("title");
             var isOpValue = bindingContext.ValueProvider.GetValue("isop");
             var isSageValue = bindingContext.ValueProvider.GetValue("issage");
@@ -40,7 +42,20 @@ namespace Netaba.Web.Infrastructure.Binders
             bool.TryParse(isSageValue.FirstValue, out bool isSage);
 
             byte[] passHash = HashGenerator.GetHash(bindingContext.HttpContext.Connection.RemoteIpAddress?.ToString(), passHashValue.FirstValue ?? "12345");
-            Image image = _imageHandler.HandleImage(formFile, _appEnvironment.WebRootPath);
+
+            ImageModel image = null;
+            try
+            {
+                image = _imageHandler.HandleImage(formFile, _appEnvironment.WebRootPath);
+            }
+            catch(UnknownImageFormatException)
+            {
+                bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, "Unknown image format. Supported formats: Jpeg, Png, Bmp, Gif, Tga.");
+            }
+            catch
+            {
+                bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, "Unable to upload this image.");
+            }
 
             bindingContext.Result = ModelBindingResult.Success(new Post(message, title, DateTime.Now, image, isOp, isSage, passHash));
             return Task.CompletedTask;

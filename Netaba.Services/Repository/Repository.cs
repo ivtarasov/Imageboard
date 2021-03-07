@@ -28,14 +28,11 @@ namespace Netaba.Services.Repository
 
         public bool IsThereBoard(int boardId) => _context.Boards.Find(boardId) != null;
 
-        public bool TryFindPost(int postId, out (int BoardId, int TreadId) postPlace)
+        public bool TryGetPostLocation(int postId, out (int BoardId, int TreadId) postPlace)
         {
+            postPlace = (0, 0);
             var post = _context.Posts.Find(postId);
-            if (post == null)
-            {
-                postPlace = (0, 0);
-                return false;
-            }
+            if (post == null) return false;
 
             _context.Entry(post).Reference(p => p.Tread);
             postPlace = (post.Tread.BoardId, post.TreadId);
@@ -68,24 +65,34 @@ namespace Netaba.Services.Repository
                                                 .Select(p => p));
         }
 
-        public int AddNewTreadToBoard(Tread tread, int boardId)
+        public bool TryAddNewTreadToBoard(Tread tread, int boardId, out int treadId)
         {
-            var board = _context.Boards.Single(t => t.Id == boardId);
+            treadId = 0;
+            var board = _context.Boards.FirstOrDefault(t => t.Id == boardId);
+            if (board == null) return false;
+
             TreadEntety treadEntety = ModelMapper.ToEntety(tread);
             board.Treads = new List<TreadEntety> { treadEntety };
 
             _context.SaveChanges();
-            return treadEntety.Id;
+
+            treadId = treadEntety.Id;
+            return true;
         }
 
-        public int AddNewPostToTread(Post post, int treadId)
+        public bool TryAddNewPostToTread(Post post, int treadId, out int boardId)
         {
-            var tread = _context.Treads.Single(t => t.Id == treadId);
+            boardId = 0;
+            var tread = _context.Treads.FirstOrDefault(t => t.Id == treadId);
+            if (tread == null) return false;
+
             PostEntety postEntety = ModelMapper.ToEntety(post);
             tread.Posts = new List<PostEntety> { postEntety };
 
             _context.SaveChanges();
-            return tread.BoardId;
+
+            boardId = tread.BoardId;
+            return true;
         }
 
         public Board LoadBoard(int boardId)

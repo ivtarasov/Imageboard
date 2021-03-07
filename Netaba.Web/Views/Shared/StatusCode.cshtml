@@ -1,0 +1,9 @@
+﻿@model StatusCodeViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = Model.ErrorStatusCode;
+}
+
+<div id="error" class="error">
+    <p>@Model.ErrorStatusCode</p>
+</div>

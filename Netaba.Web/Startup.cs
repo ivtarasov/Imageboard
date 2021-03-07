@@ -41,14 +41,15 @@ namespace Netaba.Web
         {
             if (env.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();
-                app.UseExceptionHandler("/Home/Error");
+                app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithReExecute("/StatusCode", "?code={0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

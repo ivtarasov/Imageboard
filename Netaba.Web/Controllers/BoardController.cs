@@ -75,7 +75,7 @@ namespace Netaba.Web.Controllers
             }
 
             post.Message = _parser.ToHtml(post.Message);
-            var  boardId = _repository.AddNewPostToTread(post, treadId);
+            if (!_repository.TryAddNewPostToTread(post, treadId, out int boardId)) return NotFound();
 
             if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardId, treadId});
             else return RedirectToRoute("Board", new { boardId });
@@ -105,7 +105,7 @@ namespace Netaba.Web.Controllers
 
             post.Message = _parser.ToHtml(post.Message);
             var tread = new Tread(new List<Post> { post });
-            var treadId = _repository.AddNewTreadToBoard(tread, boardId);
+            if (!_repository.TryAddNewTreadToBoard(tread, boardId, out int treadId)) return NotFound();
 
             if (dest == Destination.Board) return RedirectToRoute("Board", new { boardId });
             else return RedirectToRoute("Tread", new { boardId, treadId });
