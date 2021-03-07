@@ -49,17 +49,17 @@ namespace Netaba.Data.Models
 
             if (string.IsNullOrEmpty(Message) && Image == null)
             {
-                errors.Add(new ValidationResult("Message and Image cannot be empty at the same time."));
+                errors.Add(new ValidationResult("Post must contain Message or Image."));
             }
 
-            if ((Message?.Length ?? 0) > 1000)
+            if ((Message?.Length ?? 0) > 15_000)
             {
-                errors.Add(new ValidationResult("Message length must be less than 1000 characters."));
+                errors.Add(new ValidationResult("Too long Message. Limit: 15000 characters."));
             }
 
-            if ((Title?.Length ?? 0) > 25)
+            if ((Title?.Length ?? 0) > 30)
             {
-                errors.Add(new ValidationResult("Message length must be less than 1000 characters."));
+                errors.Add(new ValidationResult("Too long Title. Limit: 30 characters."));
             }
 
             return errors;
