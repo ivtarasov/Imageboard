@@ -7,13 +7,15 @@ namespace Netaba.Web.ViewModels
     {
         private ReplyFormAction _action;
         public string ActionNameInView { get; private set; }
-        public int TargetId { get; private set; }
+        public string BoardName { get; private set; }
+        public int? TreadId { get; private set; }
         public Post Post { get; private set; }
 
-        public ReplyFormViewModel(ReplyFormAction act, int targetId, Post post)
+        public ReplyFormViewModel(ReplyFormAction act, string boardName, int? treadId, Post post)
         {
             Action = act;
-            TargetId = targetId;
+            BoardName = boardName;
+            TreadId = treadId;
             Post = post;
         }
 

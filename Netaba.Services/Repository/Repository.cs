@@ -21,22 +21,96 @@ namespace Netaba.Services.Repository
 
             if (!_context.Boards.Any())
             {
-                _context.Boards.Add(TestDataGenerator.GenerateData());
+                _context.Boards.AddRange(TestDataGenerator.GenerateData());
                 _context.SaveChanges();
             }
         }
 
-        public bool IsThereBoard(int boardId) => _context.Boards.Find(boardId) != null;
-
-        public bool TryGetPostLocation(int postId, out (int BoardId, int TreadId) postPlace)
+        public bool TryGetPostLocation(int postId, string boardName, out int treadId)
         {
-            postPlace = (0, 0);
-            var post = _context.Posts.Find(postId);
+            treadId = 0;
+            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
+            if (board == null) return false;
+
+            var post = _context.Posts.Find(board.Id, postId);
             if (post == null) return false;
 
             _context.Entry(post).Reference(p => p.Tread);
-            postPlace = (post.Tread.BoardId, post.TreadId);
+            treadId = post.TreadId;
             return true;
+        }
+
+        public bool TryAddNewTreadToBoard(Tread tread, string boardName, out int treadId)
+        {
+            treadId = 0;
+            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
+            if (board == null) return false;
+
+            TreadEntety treadEntety = ModelMapper.ToEntety(tread);
+            treadEntety.Board = board;
+
+            _context.Treads.Add(treadEntety);
+            _context.SaveChanges();
+
+            treadId = treadEntety.Id;
+            return true;
+        }
+
+        public bool TryAddNewPostToTread(Post post, string boardName, int treadId, out int postId)
+        {
+            postId = 0;
+            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
+            if (board == null) return false;
+
+            var tread = _context.Treads.Find(board.Id, treadId);
+            if (tread == null) return false;
+
+            PostEntety postEntety = ModelMapper.ToEntety(post);
+            postEntety.Tread = tread;
+
+            _context.Posts.Add(postEntety);
+            _context.SaveChanges();
+
+            postId = postEntety.Id;
+            return true;
+        }
+
+        public Board FindAndLoadBoard(string boardName)
+        {
+            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
+            if (board == null) return null;
+            else return LoadBoard(board);
+        }
+
+        public Board LoadBoard(BoardEntety board)
+        {
+            _context.Entry(board).Collection(b => b.Treads).Load();
+            foreach (var tread in board.Treads) LoadTread(tread);
+
+            board.Treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.Single(p => p.IsOp).Time).ToList();
+
+            return EntetyMapper.ToModel(board);
+        }
+
+        public Tread FindAndLoadTread(string boardName, int treadId)
+        {
+            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
+            if (board == null) return null;
+            
+            var tread = _context.Treads.Find(board.Id, treadId);
+            if (tread == null) return null;
+            else return LoadTread(tread);
+        }
+
+        public Tread LoadTread(TreadEntety tread)
+        {
+            _context.Entry(tread).Collection(t => t.Posts).Load();
+
+            foreach (var post in tread.Posts) _context.Entry(post).Reference(p => p.Image).Load();
+
+            tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
+
+            return EntetyMapper.ToModel(tread);
         }
 
         public void Delete(IEnumerable<int> postIds, string ip, string password)
@@ -63,62 +137,6 @@ namespace Netaba.Services.Repository
         {
             _context.Posts.RemoveRange(posts.Where(p => PassChecker.Check(p.PassHash, ip, password))
                                                 .Select(p => p));
-        }
-
-        public bool TryAddNewTreadToBoard(Tread tread, int boardId, out int treadId)
-        {
-            treadId = 0;
-            var board = _context.Boards.FirstOrDefault(t => t.Id == boardId);
-            if (board == null) return false;
-
-            TreadEntety treadEntety = ModelMapper.ToEntety(tread);
-            board.Treads = new List<TreadEntety> { treadEntety };
-
-            _context.SaveChanges();
-
-            treadId = treadEntety.Id;
-            return true;
-        }
-
-        public bool TryAddNewPostToTread(Post post, int treadId, out int boardId)
-        {
-            boardId = 0;
-            var tread = _context.Treads.FirstOrDefault(t => t.Id == treadId);
-            if (tread == null) return false;
-
-            PostEntety postEntety = ModelMapper.ToEntety(post);
-            tread.Posts = new List<PostEntety> { postEntety };
-
-            _context.SaveChanges();
-
-            boardId = tread.BoardId;
-            return true;
-        }
-
-        public Board LoadBoard(int boardId)
-        {
-            var board = _context.Boards.FirstOrDefault(b => b.Id == boardId);
-            if (board == null) return null;
-
-            _context.Entry(board).Collection(b => b.Treads).Load();
-            foreach (var tread in board.Treads) LoadTread(tread.Id);
-
-            board.Treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.Single(p => p.IsOp).Time).ToList();
-
-            return EntetyMapper.ToModel(board);
-        }
-
-        public Tread LoadTread(int treadId)
-        {
-            var tread = _context.Treads.FirstOrDefault(t => t.Id == treadId);
-            if (tread == null) return null;
-
-            _context.Entry(tread).Collection(t => t.Posts).Load();
-            foreach (var post in tread.Posts) _context.Entry(post).Reference(p => p.Image).Load();
-
-            tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
-
-            return EntetyMapper.ToModel(tread);
         }
     }
 }

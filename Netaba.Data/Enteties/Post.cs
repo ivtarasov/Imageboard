@@ -1,9 +1,7 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Netaba.Data.Enteties
 {
-    [Table("Post")]
     public class Post
     {
         public int Id { get; set; }
@@ -18,5 +16,6 @@ namespace Netaba.Data.Enteties
         public int? PictureId { get; set; }
         public Tread Tread { get; set; }
         public int TreadId { get; set; }
+        public int BoardId { get; set; }
     }
 }

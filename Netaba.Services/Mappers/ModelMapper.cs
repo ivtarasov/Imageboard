@@ -12,6 +12,8 @@ namespace Netaba.Services.Mappers
         public static BoardEntety ToEntety(Board board) =>
             new()
             {
+                Name = board.Name,
+                Description = board.Description,
                 Treads = board.Treads.Select(t => ToEntety(t)).ToList()
             };
 

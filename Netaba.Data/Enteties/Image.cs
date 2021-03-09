@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
+﻿
 namespace Netaba.Data.Enteties
 {
-    [Table("Picture")]
     public class Image
     {
         public int Id { get; set; }

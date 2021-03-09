@@ -12,7 +12,7 @@ namespace Netaba.Services.Markup
         private readonly IRepository _repository;
         public Parser(IRepository repository) => _repository = repository;
 
-        public string ToHtml(string value)
+        public string ToHtml(string value, string boardName)
         {
             if (value == null) return "";
 
@@ -47,7 +47,7 @@ namespace Netaba.Services.Markup
                         break;
                     case Mark.Link:
                         i++;
-                        HadleLink(result, value, ref i);
+                        HadleLink(result, value, ref i, boardName);
                         break;
                     case not Mark.None:
                         HandleMark(result, mstack, mvalue);
@@ -110,7 +110,7 @@ namespace Netaba.Services.Markup
             }
         }
 
-        private void HadleLink(StringBuilder result, string sourse, ref int pos)
+        private void HadleLink(StringBuilder result, string sourse, ref int pos, string boardName)
         {
             var digits = new Stack<int>();
             int digit;
@@ -133,9 +133,9 @@ namespace Netaba.Services.Markup
                 postId += digit * (int) Math.Pow(10, i++);
             }
 
-            if (_repository.TryGetPostLocation(postId, out (int BoardId, int TreadId) postPlace))
+            if (_repository.TryGetPostLocation(postId, boardName, out int treadId))
             {
-                result.Append($"{Mapper.HtmlForLink(postPlace.BoardId, postPlace.TreadId, postId)}");
+                result.Append($"{Mapper.HtmlForLink(boardName, treadId, postId)}");
                 return;
             }
             else

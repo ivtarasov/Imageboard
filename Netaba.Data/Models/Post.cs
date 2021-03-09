@@ -16,20 +16,20 @@ namespace Netaba.Data.Models
         public bool IsSage { get; private set; }
         public byte[] PassHash { get; private set; }
         public Image Image { get; private set; }
+        public string BoardName { get; private set; }
         public int? TreadId { get; private set; }
-        public int? BoardId { get; private set; }
-
-        public Post(int id, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, int boardId)
-            : this(message, title, postTime, image, isOp, isSage, hash, treadId, boardId)
+        
+        public Post(int id, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, string boardName)
+            : this(message, title, postTime, image, isOp, isSage, hash, treadId, boardName)
         {
             Id = id;
         }
 
-        public Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, int boardId)
+        public Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, string boardName)
             : this(message, title, postTime, image, isOp, isSage, hash)
         {
             TreadId = treadId;
-            BoardId = boardId;
+            BoardName = boardName;
         }
 
         public Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash)
@@ -57,9 +57,9 @@ namespace Netaba.Data.Models
                 errors.Add(new ValidationResult("Too long Message. Limit: 15000 characters."));
             }
 
-            if ((Title?.Length ?? 0) > 30)
+            if ((Title?.Length ?? 0) > 35)
             {
-                errors.Add(new ValidationResult("Too long Title. Limit: 30 characters."));
+                errors.Add(new ValidationResult("Too long Title. Limit: 35 characters."));
             }
 
             return errors;

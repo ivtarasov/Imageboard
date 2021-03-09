@@ -17,11 +17,11 @@
             {
                 if (Model.IsFromShortcutTread)
                 {
-                    @("[")<a asp-route="Tread" asp-route-boardId=@Model.Post.BoardId asp-route-treadId=@Model.Post.TreadId>Reply</a>@("]")
+                    @("[")<a asp-route="Tread" asp-route-boardName=@Model.Post.BoardName asp-route-treadId=@Model.Post.TreadId>Reply</a>@("]")
                 }
                 else
                 {
-                    @("[")<a asp-route="Board" asp-route-boardId=@Model.Post.BoardId>Back</a>@("]")
+                    @("[")<a asp-route="Board" asp-route-boardName=@Model.Post.BoardName>Back</a>@("]")
                 }
             }
         </div>

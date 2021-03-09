@@ -23,96 +23,92 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpGet]
-        [Route("/{boardId}", Name = "Board")]
-        [Route("/{boardId}/{treadId}", Name = "Tread")]
-        public IActionResult CreatePost(int boardId, int? treadId)
+        [Route("/{boardName}", Name = "Board")]
+        [Route("/{boardName}/{treadId}", Name = "Tread")]
+        public IActionResult CreatePost(string boardName, int? treadId)
         {
-            if (treadId == null) return StartNewTread(boardId);
-            else
-            {
-                if (_repository.IsThereBoard(boardId)) return ReplyToTread(treadId.Value);
-                else return NotFound();
-            }
+            if (treadId == null) return StartNewTread(boardName);
+            else return ReplyToTread(boardName, treadId.Value);
         }
 
         [HttpPost]
         [Route("/CreatePost", Name = "CreatePost")]
-        public IActionResult CreatePost(Post post, int targetId, Destination dest)
+        public IActionResult CreatePost(Post post, string boardName, int? treadId, Destination dest)
         {
             if (post == null) throw new NullReferenceException("The received Post instance was null.");
-            if (post.IsOp) return StartNewTread(post, targetId, dest);
-            else return ReplyToTread(post, targetId, dest);
+            if (post.IsOp) return StartNewTread(post, boardName, dest);
+            else return ReplyToTread(post, boardName, treadId.Value, dest);
         }
 
         [HttpPost]
         [Route("/Delete", Name = "Delete")]
-        public IActionResult DeletePosts(Dictionary<int, int> ids, int boardId, string password)
+        public IActionResult DeletePosts(Dictionary<int, int> ids, string boardName, string password)
         {
-            if (ids == null) return RedirectToRoute("Board", new { boardId });
+            if (ids == null) return RedirectToRoute("Board", new { boardName });
 
             _repository.Delete(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
-            return RedirectToRoute("Board", new { boardId });
+            return RedirectToRoute("Board", new { boardName });
         }
 
         [NonAction]
-        public IActionResult ReplyToTread(int treadId)
+        public IActionResult ReplyToTread(string boardName, int treadId)
         {
-            var tread = _repository.LoadTread(treadId);
+            var tread = _repository.FindAndLoadTread(boardName, treadId);
             if (tread == null) return NotFound();
             else
             {
                 var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => new PostViewModel(p, ++i, false)).ToList(), treadId);
-                return View(new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, ReplyFormAction.ReplyToTread, tread.BoardId.Value, tread.Id));
+                return View(new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, ReplyFormAction.ReplyToTread, boardName, treadId));
             }
         }
 
         [NonAction]
-        public IActionResult ReplyToTread(Post post, int treadId, Destination dest)
+        public IActionResult ReplyToTread(Post post, string boardName, int treadId, Destination dest)
         {
             if (!ModelState.IsValid)
             {
-                var tread = _repository.LoadTread(treadId);
+                var tread = _repository.FindAndLoadTread(boardName, treadId);
                 if (tread == null) return NotFound();
                 var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => new PostViewModel(p, ++i, false)).ToList(), treadId);
-                return View(new CreatePostViewModel(new List<TreadViewModel>{ treadViewModel }, ReplyFormAction.ReplyToTread, post, tread.BoardId.Value, treadId));
+                return View(new CreatePostViewModel(new List<TreadViewModel>{ treadViewModel }, ReplyFormAction.ReplyToTread, post, boardName, treadId));
             }
 
-            post.Message = _parser.ToHtml(post.Message);
-            if (!_repository.TryAddNewPostToTread(post, treadId, out int boardId)) return NotFound();
+            post.Message = _parser.ToHtml(post.Message, boardName);
+            if (!_repository.TryAddNewPostToTread(post, boardName, treadId, out int postId)) return NotFound();
 
-            if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardId, treadId});
-            else return RedirectToRoute("Board", new { boardId });
+            if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardName, treadId});
+            else return RedirectToRoute("Board", new { boardName });
         }
 
         [NonAction]
-        public IActionResult StartNewTread(int boardId)
+        public IActionResult StartNewTread(string boardName)
         {
-            var board = _repository.LoadBoard(boardId);
+            var board = _repository.FindAndLoadBoard(boardName);
             if (board == null) return NotFound();
             else
             {
                 var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
-                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, board.Id));
+                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, boardName, null));
             }
         }
 
         [NonAction]
-        public IActionResult StartNewTread(Post post, int boardId, Destination dest)
+        public IActionResult StartNewTread(Post post, string boardName, Destination dest)
         {
             if (!ModelState.IsValid)
             {
-                var board = _repository.LoadBoard(boardId);
+                var board = _repository.FindAndLoadBoard(boardName);
                 if (board == null) return NotFound();
                 var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
-                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, post, boardId));
+                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, post, boardName, null));
             }
 
-            post.Message = _parser.ToHtml(post.Message);
+            post.Message = _parser.ToHtml(post.Message, boardName);
             var tread = new Tread(new List<Post> { post });
-            if (!_repository.TryAddNewTreadToBoard(tread, boardId, out int treadId)) return NotFound();
+            if (!_repository.TryAddNewTreadToBoard(tread, boardName, out int treadId)) return NotFound();
 
-            if (dest == Destination.Board) return RedirectToRoute("Board", new { boardId });
-            else return RedirectToRoute("Tread", new { boardId, treadId });
+            if (dest == Destination.Board) return RedirectToRoute("Board", new { boardName });
+            else return RedirectToRoute("Tread", new { boardName, treadId });
         }
     }
 }
