@@ -6,11 +6,11 @@ namespace Netaba.Web.ViewModels
 {
     public class CreatePostViewModel
     {
-        public List<TreadViewModel> TreadViewModels { get; private set; }
-        public ReplyFormAction Action { get; private set; }
-        public string BoardName { get; private set; }
-        public int? TreadId { get; private set; }
-        public Post Post { get; private set; }
+        public List<TreadViewModel> TreadViewModels { get; }
+        public ReplyFormAction Action { get; }
+        public string BoardName { get; }
+        public int? TreadId { get; }
+        public Post Post { get;  }
 
         public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, Post post, string boardName, int? treadId)
             : this(treadViewModels, action, boardName, treadId)

@@ -4,10 +4,10 @@ namespace Netaba.Web.ViewModels
 {
     public class TreadViewModel
     {
-        public int NumberOfOmittedPosts { get; set; }
-        public List<PostViewModel> PostViewModels { get; private set; }
-        public bool IsShortcut { get; private set; }
-        public int TreadId { get; private set; }
+        public int NumberOfOmittedPosts { get; }
+        public List<PostViewModel> PostViewModels { get; }
+        public bool IsShortcut { get; }
+        public int TreadId { get; }
 
         public TreadViewModel(List<PostViewModel> postViewModels, int treadId)
         {

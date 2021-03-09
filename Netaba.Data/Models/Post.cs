@@ -6,18 +6,18 @@ namespace Netaba.Data.Models
 {
     public class Post : IValidatableObject
     {
-        public int Id { get; private set; }
-        public string PosterName { get; private set; }
+        public int Id { get; }
+        public string PosterName { get; }
         [DisplayFormat(DataFormatString = "G")]
-        public DateTime Time { get; private set; }
+        public DateTime Time { get; }
         public string Message { get; set; }
-        public string Title { get; private set; }
-        public bool IsOp { get; private set; }
-        public bool IsSage { get; private set; }
-        public byte[] PassHash { get; private set; }
-        public Image Image { get; private set; }
-        public string BoardName { get; private set; }
-        public int? TreadId { get; private set; }
+        public string Title { get; }
+        public bool IsOp { get; }
+        public bool IsSage { get; }
+        public byte[] PassHash { get; }
+        public Image Image { get; }
+        public string BoardName { get; }
+        public int? TreadId { get; }
         
         public Post(int id, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, string boardName)
             : this(message, title, postTime, image, isOp, isSage, hash, treadId, boardName)

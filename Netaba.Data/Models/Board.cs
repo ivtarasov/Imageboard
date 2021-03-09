@@ -4,9 +4,9 @@ namespace Netaba.Data.Models
 {
     public class Board
     {
-        public string Name { get; private set; }
-        public string Description { get; private set; }
-        public List<Tread> Treads { get; private set; }
+        public string Name { get; }
+        public string Description { get; }
+        public List<Tread> Treads { get; }
 
         public Board(string name, string descrition, List<Tread> treads)
         {

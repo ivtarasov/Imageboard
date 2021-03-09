@@ -3,15 +3,15 @@ namespace Netaba.Data.Models
 {
     public class Image
     {
-        public int Id { get; private set; }
-        public string Path { get; private set; }
-        public string Format { get; private set; }
-        public string Name { get; private set; }
-        public string SizeDesc { get; private set; }
-        public int Height { get; private set; }
-        public int Width { get; private set; }
-        public int ViewHeight { get; private set; }
-        public int ViewWidth { get; private set; }
+        public int Id { get; }
+        public string Path { get; }
+        public string Format { get; }
+        public string Name { get; }
+        public string SizeDesc { get; }
+        public int Height { get; }
+        public int Width { get; }
+        public int ViewHeight { get; }
+        public int ViewWidth { get; }
 
         public Image(int id, string path, string name, string format, string sizeDesc, int height, int width, int vheight, int vwidth) 
             : this(path, name, format, sizeDesc, height, width, vheight, vwidth)
