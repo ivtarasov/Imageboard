@@ -9,3 +9,5 @@
     @foreach (var treadViewModel in Model.TreadViewModels) @await Html.PartialAsync("_Tread", treadViewModel)
     @await Html.PartialAsync("_DeleteForm")
 </form>
+
+@if (Model.IsBoardPage) @await Html.PartialAsync("_Pages", @Model.PageViewModel)

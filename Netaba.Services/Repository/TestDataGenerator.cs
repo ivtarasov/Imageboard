@@ -20,7 +20,7 @@ namespace Netaba.Services.Repository
             {
                 var treads = new List<Tread>();
                 var board = new Board { Name = Name, Description = Description };
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 50; i++)
                 {
                     var tread = new Tread { Posts = new List<Post>() };
                     var posts = new List<Post>();

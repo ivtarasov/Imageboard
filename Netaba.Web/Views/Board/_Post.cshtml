@@ -17,7 +17,8 @@
             {
                 if (Model.IsFromShortcutTread)
                 {
-                    @("[")<a asp-route="Tread" asp-route-boardName=@Model.Post.BoardName asp-route-treadId=@Model.Post.TreadId>Reply</a>@("]")
+                    @("[")<a asp-route="Tread" asp-route-boardName=@Model.Post.BoardName 
+                             asp-route-treadId=@Model.Post.TreadId>Reply</a>@("]")
                 }
                 else
                 {

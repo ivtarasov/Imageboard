@@ -272,3 +272,9 @@ a:hover {
 .error p {
 	margin: 0
 }
+
+.pages {
+	display: flex;
+	align-items: center;
+	justify-content: center
+}

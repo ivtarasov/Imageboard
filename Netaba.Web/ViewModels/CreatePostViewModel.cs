@@ -9,13 +9,30 @@ namespace Netaba.Web.ViewModels
         public List<TreadViewModel> TreadViewModels { get; }
         public ReplyFormAction Action { get; }
         public string BoardName { get; }
+        public bool IsBoardPage { get; }
         public int? TreadId { get; }
         public Post Post { get;  }
+        public PageViewModel PageViewModel { get; }
 
         public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, Post post, string boardName, int? treadId)
             : this(treadViewModels, action, boardName, treadId)
         {
             Post = post;
+        }
+
+        public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, Post post, string boardName, PageViewModel pageViewModel)
+            : this(treadViewModels, action, boardName, pageViewModel)
+        {
+            Post = post;
+        }
+
+        public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, string boardName, PageViewModel pageViewModel)
+        {
+            TreadViewModels = treadViewModels;
+            Action = action;
+            BoardName = boardName;
+            IsBoardPage = true;
+            PageViewModel = pageViewModel;
         }
 
         public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, string boardName, int? treadId)

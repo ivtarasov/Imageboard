@@ -25,9 +25,9 @@ namespace Netaba.Web.Controllers
         [HttpGet]
         [Route("/{boardName}", Name = "Board")]
         [Route("/{boardName}/{treadId}", Name = "Tread")]
-        public IActionResult CreatePost(string boardName, int? treadId)
+        public IActionResult CreatePost(string boardName, int? treadId, int? page = 1)
         {
-            if (treadId == null) return StartNewTread(boardName);
+            if (treadId == null) return StartNewTread(boardName, page.Value);
             else return ReplyToTread(boardName, treadId.Value);
         }
 
@@ -81,15 +81,16 @@ namespace Netaba.Web.Controllers
         }
 
         [NonAction]
-        public IActionResult StartNewTread(string boardName)
+        public IActionResult StartNewTread(string boardName, int page)
         {
-            var board = _repository.FindAndLoadBoard(boardName);
+            var pageSize = 10;
+            var board = _repository.FindAndLoadBoard(boardName, page, out int count);
             if (board == null) return NotFound();
-            else
-            {
-                var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
-                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, boardName, null));
-            }
+
+            var pageViewModel = new PageViewModel(count, page, pageSize, boardName);
+
+            var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
+            return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, boardName, pageViewModel));
         }
 
         [NonAction]
@@ -97,10 +98,15 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var board = _repository.FindAndLoadBoard(boardName);
+                var page = 1;
+                var pageSize = 10;
+                var board = _repository.FindAndLoadBoard(boardName, page, out int count);
                 if (board == null) return NotFound();
+
+                var pageViewModel = new PageViewModel(count, page, pageSize, boardName);
+
                 var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
-                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, post, boardName, null));
+                return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, post, boardName, pageViewModel));
             }
 
             post.Message = _parser.ToHtml(post.Message, boardName);

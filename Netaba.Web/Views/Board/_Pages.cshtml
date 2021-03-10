@@ -1,0 +1,15 @@
+﻿@model PageViewModel
+
+<div id="pages" class="pages">
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        if (i != Model.PageNumber) 
+        {
+            @("[")<a asp-route="Board" asp-route-boardName=@Model.BoardName asp-route-page="@i">@i</a>@("]")
+        }
+        else
+        {
+            <span>[@i]</span>
+        }
+    }
+</div>

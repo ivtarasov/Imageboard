@@ -75,20 +75,25 @@ namespace Netaba.Services.Repository
             return true;
         }
 
-        public Board FindAndLoadBoard(string boardName)
+        public Board FindAndLoadBoard(string boardName, int page, out int count)
         {
+            count = 0;
             var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
             if (board == null) return null;
-            else return LoadBoard(board);
+            else return LoadBoard(board, page, ref count);
         }
 
-        public Board LoadBoard(BoardEntety board)
+        public Board LoadBoard(BoardEntety board, int page, ref int count)
         {
             _context.Entry(board).Collection(b => b.Treads).Load();
             foreach (var tread in board.Treads) LoadTread(tread);
 
-            board.Treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.Single(p => p.IsOp).Time).ToList();
+            var pageSize = 10;
+            var treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.Single(p => p.IsOp).Time);
 
+            count = treads.Take(100).Count();
+
+            board.Treads = treads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
             return EntetyMapper.ToModel(board);
         }
 
