@@ -79,7 +79,7 @@ namespace Netaba.Services.Repository
             return EntetyMapper.ToModel(board);
         }
 
-        public void LoadBoard(BoardEntety board)
+        private void LoadBoard(BoardEntety board)
         {
             _context.Entry(board).Collection(b => b.Treads).Load();
 
@@ -101,7 +101,7 @@ namespace Netaba.Services.Repository
             return EntetyMapper.ToModel(tread);
         }
 
-        public void LoadTread(TreadEntety tread)
+        private void LoadTread(TreadEntety tread)
         {
             _context.Entry(tread).Collection(t => t.Posts).Load();
 
