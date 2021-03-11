@@ -21,7 +21,7 @@ namespace Netaba.Web.Infrastructure.Binders
             _appEnvironment = appEnvironment;
         }
 
-        public Task BindModelAsync(ModelBindingContext bindingContext)
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
             if (bindingContext == null)
             {
@@ -38,15 +38,15 @@ namespace Netaba.Web.Infrastructure.Binders
             string message = messageValue.FirstValue;
             string title = titleValue.FirstValue;
 
-            bool.TryParse(isOpValue.FirstValue, out bool isOp);
-            bool.TryParse(isSageValue.FirstValue, out bool isSage);
+            _ = bool.TryParse(isOpValue.FirstValue, out bool isOp);
+            _ = bool.TryParse(isSageValue.FirstValue, out bool isSage);
 
             byte[] passHash = HashGenerator.GetHash(bindingContext.HttpContext.Connection.RemoteIpAddress?.ToString(), passHashValue.FirstValue ?? "12345");
 
             ImageModel image = null;
             try
             {
-                image = _imageHandler.HandleImage(formFile, _appEnvironment.WebRootPath);
+                image = await _imageHandler.HandleImageAsync(formFile, _appEnvironment.WebRootPath);
             }
             catch(UnknownImageFormatException)
             {
@@ -54,11 +54,10 @@ namespace Netaba.Web.Infrastructure.Binders
             }
             catch
             {
-                bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, "Unable to upload this image.");
+                bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, "Unable to upload image.");
             }
 
             bindingContext.Result = ModelBindingResult.Success(new Post(message, title, DateTime.Now, image, isOp, isSage, passHash));
-            return Task.CompletedTask;
         }
     }
 }

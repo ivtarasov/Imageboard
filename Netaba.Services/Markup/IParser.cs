@@ -1,8 +1,9 @@
-﻿
+﻿using System.Threading.Tasks;
+
 namespace Netaba.Services.Markup
 {
     public interface IParser
     {
-        public string ToHtml(string sourse, string boardName);
+        public Task<string> ToHtmlAsync(string sourse, string boardName);
     }
 }

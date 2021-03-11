@@ -1,9 +1,9 @@
-﻿using ImageModel = Netaba.Data.Models.Image;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using System.IO;
 using System;
+using System.IO;
+using System.Threading.Tasks;
+using ImageModel = Netaba.Data.Models.Image;
 
 namespace Netaba.Services.ImageHandling
 {
@@ -12,33 +12,39 @@ namespace Netaba.Services.ImageHandling
         /* 
          * Supported formats: Jpeg, Png, Bmp, Gif, Tga
         */
-        public ImageModel HandleImage(IFormFile file, string webRootPath)
+        public async Task<ImageModel> HandleImageAsync(IFormFile file, string webRootPath)
         {
             if (file == null) return null;
 
-            string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            using var fileStream = file.OpenReadStream();
-            using var image = Image.Load(fileStream, out IImageFormat format);
+            using var formFileStream = file.OpenReadStream();
+            var (imageInfo, imageFormat) = await Image.IdentifyWithFormatAsync(formFileStream);
 
-            double h = image.Height;
-            double w = image.Width;
+            if (imageFormat == null || imageFormat == null) throw new UnknownImageFormatException("Inknown image format.");
+
+            double h = imageInfo.Height;
+            double w = imageInfo.Width;
             double tmp = 200.0;
-            if (image.Height > tmp || image.Width > tmp)
+            if (imageInfo.Height > tmp || imageInfo.Width > tmp)
             {
-                if (image.Height > image.Width)
+                if (imageInfo.Height > imageInfo.Width)
                 {
                     h = tmp;
-                    w = (tmp / image.Height) * image.Width;
+                    w = (tmp / imageInfo.Height) * imageInfo.Width;
                 }
                 else
                 {
                     w = tmp;
-                    h = (tmp / image.Width) * image.Height;
+                    h = (tmp / imageInfo.Width) * imageInfo.Height;
                 }
             }
 
-            image.Save(webRootPath + path);
-            return new ImageModel(path, file.FileName, format.Name, SizeReformer.ToReadableForm(file.Length), image.Height, image.Width, (int)h, (int)w);
+            string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            formFileStream.Seek(0, SeekOrigin.Begin);
+
+            using var fs = File.Create(webRootPath + path);
+            await formFileStream.CopyToAsync(fs);
+
+            return new ImageModel(path, file.FileName, imageFormat.Name, SizeReformer.ToReadableForm(file.Length), imageInfo.Height, imageInfo.Width, (int)h, (int)w);
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Netaba.Data.Models;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Netaba.Services.ImageHandling
 {
     public interface IImageHandler
     {
-        public Image HandleImage(IFormFile file, string webRootPath);
+        public Task<Image> HandleImageAsync(IFormFile file, string webRootPath);
     }
 }

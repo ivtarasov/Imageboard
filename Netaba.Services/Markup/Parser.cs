@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using Netaba.Services.Repository;
+using System.Threading.Tasks;
 
 namespace Netaba.Services.Markup
 {
@@ -12,7 +13,7 @@ namespace Netaba.Services.Markup
         private readonly IRepository _repository;
         public Parser(IRepository repository) => _repository = repository;
 
-        public string ToHtml(string value, string boardName)
+        public async Task<string> ToHtmlAsync(string value, string boardName)
         {
             if (value == null) return "";
 
@@ -47,7 +48,7 @@ namespace Netaba.Services.Markup
                         break;
                     case Mark.Link:
                         i++;
-                        HadleLink(result, value, ref i, boardName);
+                        i = await HadleLinkAsync(result, value, i, boardName);
                         break;
                     case not Mark.None:
                         HandleMark(result, mstack, mvalue);
@@ -110,7 +111,7 @@ namespace Netaba.Services.Markup
             }
         }
 
-        private void HadleLink(StringBuilder result, string sourse, ref int pos, string boardName)
+        private async Task<int> HadleLinkAsync(StringBuilder result, string sourse, int pos, string boardName)
         {
             var digits = new Stack<int>();
             int digit;
@@ -123,7 +124,7 @@ namespace Netaba.Services.Markup
             if (!digits.Any())
             {
                 result.Append(Mapper.BlankLink());
-                return;
+                return pos;
             }
 
             var postId = 0;
@@ -133,15 +134,16 @@ namespace Netaba.Services.Markup
                 postId += digit * (int) Math.Pow(10, i++);
             }
 
-            if (_repository.TryGetPostLocation(postId, boardName, out int treadId))
+            var (isFound, treadId) = await _repository.TryGetPostLocationAsync(postId, boardName);
+            if (isFound)
             {
                 result.Append($"{Mapper.HtmlForLink(boardName, treadId, postId)}");
-                return;
+                return pos;
             }
             else
             {
                 result.Append(Mapper.BlankLink() + postId);
-                return;
+                return pos;
             }
         }
 
@@ -191,19 +193,19 @@ namespace Netaba.Services.Markup
             }
         }
 
-        private void OpenMark(StringBuilder result, Stack<Mark> stack, Mark value)
+        private static void OpenMark(StringBuilder result, Stack<Mark> stack, Mark value)
         {
             result.Append(Mapper.ToOpeningHtml(value));
             stack.Push(value);
         }
 
-        private void CloseMark(StringBuilder result, Stack<Mark> stack, Mark value)
+        private static void CloseMark(StringBuilder result, Stack<Mark> stack, Mark value)
         {
             result.Append(Mapper.ToClosingHtml(value));
             stack.Push(value);
         }
 
-        private void CloseMark(StringBuilder result, Mark value)
+        private static void CloseMark(StringBuilder result, Mark value)
         {
             result.Append(Mapper.ToClosingHtml(value));
         }
