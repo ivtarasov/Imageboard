@@ -30,16 +30,18 @@ namespace Netaba.Web.Infrastructure.Binders
 
             var messageValue = bindingContext.ValueProvider.GetValue("message");
             var titleValue = bindingContext.ValueProvider.GetValue("title");
-            var isOpValue = bindingContext.ValueProvider.GetValue("isop");
             var isSageValue = bindingContext.ValueProvider.GetValue("issage");
             var passHashValue = bindingContext.ValueProvider.GetValue("pass");
+            var treadIdValue = bindingContext.ValueProvider.GetValue("treadId");
             var formFile = bindingContext.ActionContext.HttpContext.Request.Form.Files.GetFile("file");
 
             string message = messageValue.FirstValue;
             string title = titleValue.FirstValue;
 
-            _ = bool.TryParse(isOpValue.FirstValue, out bool isOp);
             _ = bool.TryParse(isSageValue.FirstValue, out bool isSage);
+
+            bool isOp = false;
+            if (treadIdValue == ValueProviderResult.None) isOp = true;
 
             byte[] passHash = HashGenerator.GetHash(bindingContext.HttpContext.Connection.RemoteIpAddress?.ToString(), passHashValue.FirstValue ?? "12345");
 
