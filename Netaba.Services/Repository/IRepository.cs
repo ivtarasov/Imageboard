@@ -11,7 +11,7 @@ namespace Netaba.Services.Repository
         public Task<(bool, int)> TryAddTreadToBoardAsync(Tread tread, string boardName);
         public Task<(bool, int)> TryAddPostToTreadAsync(Post post, string boardName, int treadId);
 
-        public Task<(Board, int)> FindAndLoadBoardAsync(string boardName, int page);
+        public Task<Board> FindAndLoadBoardAsync(string boardName);
         public Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId);
 
         public Task DeleteAsync(IEnumerable<int> postIds, string ip, string password);

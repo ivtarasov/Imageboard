@@ -32,16 +32,15 @@ namespace Netaba.Services.Repository
             var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
             if (board == null) return (false, 0);
 
-            var post = await _context.Posts.FindAsync(board.Id, postId);
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.BoardId == board.Id && p.Id == postId);
             if (post == null) return (false, 0);
 
-            _context.Entry(post).Reference(p => p.Tread);
             return (true, post.TreadId);
         }
 
         public async Task<(bool, int)> TryAddTreadToBoardAsync(Tread tread, string boardName)
         {
-            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
+            var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
             if (board == null) return (false, 0);
 
             TreadEntety treadEntety = ModelMapper.ToEntety(tread);
@@ -58,7 +57,7 @@ namespace Netaba.Services.Repository
             var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
             if (board == null) return (false, 0);
 
-            var tread = _context.Treads.Find(board.Id, treadId);
+            var tread = await _context.Treads.FirstOrDefaultAsync(t => t.BoardId == board.Id && t.Id == treadId);
             if (tread == null) return (false, 0);
 
             PostEntety postEntety = ModelMapper.ToEntety(post);
@@ -70,52 +69,43 @@ namespace Netaba.Services.Repository
             return (true, postEntety.Id);
         }
 
-        public async Task<(Board, int)> FindAndLoadBoardAsync(string boardName, int page)
+        public async Task<Board> FindAndLoadBoardAsync(string boardName)
         {
-            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
+            var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
+            if (board == null) return null;
 
-            if (board == null) return (null, 0);
+            LoadBoard(board);
 
-            var count = await LoadBoardAsync(board, page);
-
-            return (EntetyMapper.ToModel(board), count);
+            return EntetyMapper.ToModel(board);
         }
 
-        public async Task<int> LoadBoardAsync(BoardEntety board, int page)
+        public void LoadBoard(BoardEntety board)
         {
             _context.Entry(board).Collection(b => b.Treads).Load();
 
-            await Task.WhenAll(board.Treads.Select(t =>  LoadTreadAsync(t)));
+            foreach (var tread in board.Treads) LoadTread(tread);
 
-            var pageSize = 10;
-            var treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.FirstOrDefault(p => p.IsOp).Time)
-                                     .Take(100);
-
-            var count = treads.Count();
-
-            board.Treads = treads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            return count;
+            board.Treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.FirstOrDefault(p => p.IsOp).Time).Take(100).ToList();
         }
 
         public async Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId)
         {
             var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
             if (board == null) return null;
-            
-            var tread = await _context.Treads.FindAsync(board.Id, treadId);
+
+            var tread = await _context.Treads.FirstOrDefaultAsync(t => t.BoardId == board.Id && t.Id == treadId);
             if (tread == null) return null;
 
-            await LoadTreadAsync(tread);
+            LoadTread(tread);
 
             return EntetyMapper.ToModel(tread);
         }
 
-        public async Task LoadTreadAsync(TreadEntety tread)
+        public void LoadTread(TreadEntety tread)
         {
             _context.Entry(tread).Collection(t => t.Posts).Load();
 
-            await Task.WhenAll(tread.Posts.Select(p => _context.Entry(p).Reference(p => p.Image).LoadAsync()));
+            foreach (var post in tread.Posts) _context.Entry(post).Reference(p => p.Image).Load();
 
             tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
         }
