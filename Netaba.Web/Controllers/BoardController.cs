@@ -120,7 +120,10 @@ namespace Netaba.Web.Controllers
         private async Task<CreatePostViewModel> MapToCreatePostViewModelAsync(Tread tread, string boardName)
         {
             var boardDescription = await _repository.GetBoardDescriptionAsync(boardName);
-            var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => new PostViewModel(p, ++i, false)).ToList(), tread.Id);
+
+            var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => 
+                                    new PostViewModel(p, ++i, false)).ToList(), tread.Id);
+
             return new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, boardName, boardDescription, tread.Id);
         }
 
@@ -131,7 +134,11 @@ namespace Netaba.Web.Controllers
             var pageViewModel = new PageViewModel(count, page, PageSize, board.Name);
 
             var treads = board.Treads.Skip((page - 1) * PageSize).Take(PageSize).ToList();
-            var treadViewModels = treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), NumberOfDisplayedPostsInBoardPage, t.Id)).ToList();
+
+            var treadViewModels = treads.Select(t => 
+                                    new TreadViewModel(t.Posts.Select((p, i) => 
+                                        new PostViewModel(p, ++i, true)).ToList(), NumberOfDisplayedPostsInBoardPage, t.Id)).ToList();
+
             return new CreatePostViewModel(treadViewModels, board.Name, board.Description, pageViewModel);
         }
     }
