@@ -2,22 +2,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Diagnostics;
 using Netaba.Web.ViewModels;
+using System;
 
 namespace Netaba.Web.Controllers
 {
-    public class ErrorController : Controller
+    public class ErrorsController : Controller
     {
-        [Route("/Error")]
-        public IActionResult Error()
+        [Route("/Exeption", Name = "Exeption")]
+        public IActionResult Exeption()
         {
             var ExceptionMessage = HttpContext.Features.Get<IExceptionHandlerPathFeature>()?.Error?.Message;
             return View(new ErrorViewModel(ExceptionMessage));
         }
 
-        [Route("/StatusCode")]
-        public new IActionResult StatusCode(int code)
+        [Route("/StatusCode", Name = "StatusCode")]
+        public IActionResult StatusCode2(int code)
         {
-            if (code == 0) return NotFound();
             return View(new StatusCodeViewModel(code));
         }
     }

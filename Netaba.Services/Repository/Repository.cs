@@ -47,7 +47,14 @@ namespace Netaba.Services.Repository
             treadEntety.Board = board;
 
             await _context.Treads.AddAsync(treadEntety);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return (false, 0);
+            }
 
             return (true, treadEntety.Id);
         }
@@ -64,7 +71,14 @@ namespace Netaba.Services.Repository
             postEntety.Tread = tread;
 
             await _context.Posts.AddAsync(postEntety);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return (false, 0);
+            }
 
             return (true, postEntety.Id);
         }
@@ -110,7 +124,7 @@ namespace Netaba.Services.Repository
             tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
         }
 
-        public async Task DeleteAsync(IEnumerable<int> postIds, string ip, string password)
+        public async Task<bool> TryDeleteAsync(IEnumerable<int> postIds, string ip, string password)
         {
             var posts = _context.Posts.Where(p => postIds.Contains(p.Id));
             var oPosts = posts.Where(p => p.IsOp);
@@ -118,7 +132,16 @@ namespace Netaba.Services.Repository
             DeleteTreads(oPosts, ip, password);
             DeletePosts(posts.Except(oPosts), ip, password);
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void DeleteTreads(IEnumerable<PostEntety> oPosts, string ip, string password)

@@ -7,7 +7,6 @@ using Netaba.Services.Markup;
 using Netaba.Web.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Threading.Tasks;
 
 namespace Netaba.Web.Controllers
@@ -16,6 +15,7 @@ namespace Netaba.Web.Controllers
     {
         private readonly IRepository _repository;
         private readonly IParser _parser;
+        private readonly int PageSize = 10; // from config in future
 
         public BoardController(IRepository repository, IParser parser)
         {
@@ -36,7 +36,7 @@ namespace Netaba.Web.Controllers
         [Route("/CreatePost", Name = "CreatePost")]
         public async Task<IActionResult> CreatePostAsync(Post post, string boardName, int? treadId, Destination dest)
         {
-            if (post == null) throw new NullReferenceException("The received Post instance was null.");
+            if (post == null) return BadRequest(); // this mean that something like "Request body too large." happened
 
             if (post.IsOp) return await StartNewTreadAsync(post, boardName, dest);
             else return await ReplyToTreadAsync(post, boardName, treadId.Value, dest);
@@ -48,7 +48,9 @@ namespace Netaba.Web.Controllers
         {
             if (ids == null) return RedirectToRoute("Board", new { boardName });
             
-            await _repository.DeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+            bool isSuccess = await _repository.TryDeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+            if (!isSuccess) return BadRequest();
+
             return RedirectToRoute("Board", new { boardName });
         }
 
@@ -78,7 +80,7 @@ namespace Netaba.Web.Controllers
             post.Message = await _parser.ToHtmlAsync(post.Message, boardName);
             var (isSuccess, postId) = await _repository.TryAddPostToTreadAsync(post, boardName, treadId);
 
-            if (!isSuccess) return NotFound();
+            if (!isSuccess) return BadRequest();
 
             if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardName, treadId});
             else return RedirectToRoute("Board", new { boardName });
@@ -90,11 +92,10 @@ namespace Netaba.Web.Controllers
             var board = await _repository.FindAndLoadBoardAsync(boardName);
             if (board == null) return NotFound();
 
-            var pageSize = 10;
             var count = board.Treads.Count;
-            var pageViewModel = new PageViewModel(count, page, pageSize, boardName);
+            var pageViewModel = new PageViewModel(count, page, PageSize, boardName);
 
-            var treads = board.Treads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var treads = board.Treads.Skip((page - 1) * PageSize).Take(PageSize).ToList();
             var treadViewModels = treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
             return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, boardName, pageViewModel));
         }
@@ -104,15 +105,14 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var page = 1;
                 var board = await _repository.FindAndLoadBoardAsync(boardName);
                 if (board == null) return NotFound();
 
-                var pageSize = 10;
+                var page = 1;
                 var count = board.Treads.Count;
-                var pageViewModel = new PageViewModel(count, page, pageSize, boardName);
+                var pageViewModel = new PageViewModel(count, page, PageSize, boardName);
 
-                var treads = board.Treads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                var treads = board.Treads.Skip((page - 1) * PageSize).Take(PageSize).ToList();
                 var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
                 return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, post, boardName, pageViewModel));
             }
@@ -121,7 +121,7 @@ namespace Netaba.Web.Controllers
             var tread = new Tread(new List<Post> { post });
             var (isSuccess, treadId) = await _repository.TryAddTreadToBoardAsync(tread, boardName);
 
-            if (!isSuccess) return NotFound();
+            if (!isSuccess) return BadRequest();
 
             if (dest == Destination.Board) return RedirectToRoute("Board", new { boardName });
             else return RedirectToRoute("Tread", new { boardName, treadId });

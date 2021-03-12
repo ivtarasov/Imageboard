@@ -10,7 +10,7 @@ namespace Netaba.Services.ImageHandling
     public class ImageHandler: IImageHandler
     {
         /* 
-         * Supported formats: Jpeg, Png, Bmp, Gif, Tga
+         * Supported formats: Jpeg, Png, Bmp, Gif, Tga.
         */
         public async Task<ImageModel> HandleImageAsync(IFormFile file, string webRootPath)
         {

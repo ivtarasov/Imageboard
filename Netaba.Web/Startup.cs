@@ -45,11 +45,11 @@ namespace Netaba.Web
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Exeption");
                 app.UseHsts();
             }
 
-            app.UseStatusCodePagesWithReExecute("/StatusCode", "?code={0}");
+            app.UseStatusCodePagesWithRedirects("/StatusCode?code={0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
