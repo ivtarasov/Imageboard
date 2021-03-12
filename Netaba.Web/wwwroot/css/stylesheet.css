@@ -269,11 +269,15 @@ a:hover {
 	justify-content: center
 }
 
-.error p {
-	margin: 0
+.pages {
+	display: flex;
+	align-items: center;
+	justify-content: center
 }
 
-.pages {
+.board_description {
+	font-size: xx-large;
+	height: 2em;
 	display: flex;
 	align-items: center;
 	justify-content: center

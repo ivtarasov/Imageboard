@@ -36,7 +36,7 @@ namespace Netaba.Services.Repository
                             Tread = tread,
                             Image = null,
                             PassHash = HashGenerator.GetHash("127.0.0.1", "12345")
-                        }); ;
+                        });
 
                     tread.Posts.AddRange(posts);
                     treads.Add(tread);

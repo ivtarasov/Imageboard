@@ -7,6 +7,7 @@ namespace Netaba.Services.Repository
     public interface IRepository
     {
         public Task<(bool, int)> TryGetPostLocationAsync(int postId, string boardName);
+        public Task<string> GetBoardDescriptionAsync(string boardName);
 
         public Task<(bool, int)> TryAddTreadToBoardAsync(Tread tread, string boardName);
         public Task<(bool, int)> TryAddPostToTreadAsync(Post post, string boardName, int treadId);

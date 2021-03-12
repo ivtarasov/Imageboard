@@ -9,38 +9,32 @@ namespace Netaba.Web.ViewModels
         public List<TreadViewModel> TreadViewModels { get; }
         public ReplyFormAction Action { get; }
         public string BoardName { get; }
+        public string BoardDescription { get; }
         public bool IsBoardPage { get; }
         public int? TreadId { get; }
-        public Post Post { get;  }
+
         public PageViewModel PageViewModel { get; }
 
-        public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, Post post, string boardName, int? treadId)
-            : this(treadViewModels, action, boardName, treadId)
+        public CreatePostViewModel(List<TreadViewModel> treadViewModels, string boardName, string boardDescription, PageViewModel pageViewModel)
+            : this(treadViewModels, boardName, boardDescription)
         {
-            Post = post;
-        }
-
-        public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, Post post, string boardName, PageViewModel pageViewModel)
-            : this(treadViewModels, action, boardName, pageViewModel)
-        {
-            Post = post;
-        }
-
-        public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, string boardName, PageViewModel pageViewModel)
-        {
-            TreadViewModels = treadViewModels;
-            Action = action;
-            BoardName = boardName;
+            Action = ReplyFormAction.StartNewTread;
             IsBoardPage = true;
             PageViewModel = pageViewModel;
         }
 
-        public CreatePostViewModel(List<TreadViewModel> treadViewModels, ReplyFormAction action, string boardName, int? treadId)
+        public CreatePostViewModel(List<TreadViewModel> treadViewModels, string boardName, string boardDescription, int treadId)
+            : this(treadViewModels, boardName, boardDescription)
+        {
+            Action = ReplyFormAction.ReplyToTread;
+            TreadId = treadId;
+        }
+
+        private CreatePostViewModel(List<TreadViewModel> treadViewModels, string boardName, string boardDescription)
         {
             TreadViewModels = treadViewModels;
-            Action = action;
             BoardName = boardName;
-            TreadId = treadId;
+            BoardDescription = boardDescription;
         }
     }
 }

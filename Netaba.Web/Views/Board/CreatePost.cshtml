@@ -3,7 +3,9 @@
     ViewData["Title"] = "Board";
 }
 
-@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(Model.Action, Model.BoardName, Model.TreadId, Model.Post))
+@await Html.PartialAsync("_BoardDescription", "/" + Model.BoardName + "/ — " + Model.BoardDescription)
+
+@await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(Model.Action, Model.BoardName, Model.TreadId))
 
 <form id="del-form" class="delete_form" asp-route="Delete" asp-route-boardName=@Model.BoardName>
     @foreach (var treadViewModel in Model.TreadViewModels) @await Html.PartialAsync("_Tread", treadViewModel)

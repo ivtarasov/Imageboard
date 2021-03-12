@@ -38,6 +38,9 @@ namespace Netaba.Services.Repository
             return (true, post.TreadId);
         }
 
+        public async Task<string> GetBoardDescriptionAsync(string boardName) =>
+           (await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName))?.Description;
+
         public async Task<(bool, int)> TryAddTreadToBoardAsync(Tread tread, string boardName)
         {
             var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
@@ -47,6 +50,7 @@ namespace Netaba.Services.Repository
             treadEntety.Board = board;
 
             await _context.Treads.AddAsync(treadEntety);
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -71,6 +75,7 @@ namespace Netaba.Services.Repository
             postEntety.Tread = tread;
 
             await _context.Posts.AddAsync(postEntety);
+
             try
             {
                 await _context.SaveChangesAsync();

@@ -9,15 +9,13 @@ namespace Netaba.Web.ViewModels
         public string ActionNameInView { get; }
         public string BoardName { get; }
         public int? TreadId { get; }
-        public Post Post { get; }
 
-        public ReplyFormViewModel(ReplyFormAction act, string boardName, int? treadId, Post post)
+        public ReplyFormViewModel(ReplyFormAction action, string boardName, int? treadId)
         {
-            Action = act;
+            Action = action;
             ActionNameInView = Action == ReplyFormAction.ReplyToTread ? "Reply to the Tread " : "Start a New Tread";
             BoardName = boardName;
             TreadId = treadId;
-            Post = post;
         }
     }
 }
