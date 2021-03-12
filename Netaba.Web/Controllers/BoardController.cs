@@ -15,8 +15,10 @@ namespace Netaba.Web.Controllers
     {
         private readonly IRepository _repository;
         private readonly IParser _parser;
-        private readonly int PageSize = 10; // from config in future
 
+        private readonly int PageSize = 10; // from config in future
+        private readonly int NumberOfDisplayedPostsInBoardPage = 11; //
+        
         public BoardController(IRepository repository, IParser parser)
         {
             _repository = repository;
@@ -96,7 +98,7 @@ namespace Netaba.Web.Controllers
             var pageViewModel = new PageViewModel(count, page, PageSize, boardName);
 
             var treads = board.Treads.Skip((page - 1) * PageSize).Take(PageSize).ToList();
-            var treadViewModels = treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
+            var treadViewModels = treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), NumberOfDisplayedPostsInBoardPage, t.Id)).ToList();
             return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, boardName, pageViewModel));
         }
 
@@ -113,7 +115,7 @@ namespace Netaba.Web.Controllers
                 var pageViewModel = new PageViewModel(count, page, PageSize, boardName);
 
                 var treads = board.Treads.Skip((page - 1) * PageSize).Take(PageSize).ToList();
-                var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), 11, t.Id)).ToList();
+                var treadViewModels = board.Treads.Select(t => new TreadViewModel(t.Posts.Select((p, i) => new PostViewModel(p, ++i, true)).ToList(), NumberOfDisplayedPostsInBoardPage, t.Id)).ToList();
                 return View(new CreatePostViewModel(treadViewModels, ReplyFormAction.StartNewTread, post, boardName, pageViewModel));
             }
 

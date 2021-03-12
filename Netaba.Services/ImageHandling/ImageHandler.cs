@@ -9,9 +9,7 @@ namespace Netaba.Services.ImageHandling
 {
     public class ImageHandler: IImageHandler
     {
-        /* 
-         * Supported formats: Jpeg, Png, Bmp, Gif, Tga.
-        */
+         // Supported formats: Jpeg, Png, Bmp, Gif, Tga.
         public async Task<ImageModel> HandleImageAsync(IFormFile file, string webRootPath)
         {
             if (file == null) return null;
@@ -19,7 +17,7 @@ namespace Netaba.Services.ImageHandling
             using var formFileStream = file.OpenReadStream();
             var (imageInfo, imageFormat) = await Image.IdentifyWithFormatAsync(formFileStream);
 
-            if (imageFormat == null || imageFormat == null) throw new UnknownImageFormatException("Inknown image format.");
+            if (imageFormat == null || imageFormat == null) throw new UnknownImageFormatException("Unknown image format.");
 
             double h = imageInfo.Height;
             double w = imageInfo.Width;
@@ -38,13 +36,20 @@ namespace Netaba.Services.ImageHandling
                 }
             }
 
-            string path = "/src/Images/" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            formFileStream.Seek(0, SeekOrigin.Begin);
+            var dirForImages = "/images/";
+            var fullDirectoryPath = webRootPath + dirForImages;
+            Directory.CreateDirectory(fullDirectoryPath);
 
-            using var fs = File.Create(webRootPath + path);
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = dirForImages + fileName;
+            var fullFilePath = fullDirectoryPath + fileName;
+
+            using var fs = File.Create(fullFilePath);
+
+            formFileStream.Seek(0, SeekOrigin.Begin);
             await formFileStream.CopyToAsync(fs);
 
-            return new ImageModel(path, file.FileName, imageFormat.Name, SizeReformer.ToReadableForm(file.Length), imageInfo.Height, imageInfo.Width, (int)h, (int)w);
+            return new ImageModel(filePath, file.FileName, imageFormat.Name, SizeReformer.ToReadableForm(file.Length), imageInfo.Height, imageInfo.Width, (int)h, (int)w);
         }
     }
 }
