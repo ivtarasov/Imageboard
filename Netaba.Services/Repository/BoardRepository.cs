@@ -16,8 +16,8 @@ namespace Netaba.Services.Repository
 {
     public class BoardRepository: IBoardRepository
     {
-        private readonly ApplicationDbContext _context;
-        public BoardRepository(ApplicationDbContext context)
+        private readonly BoardContext _context;
+        public BoardRepository(BoardContext context)
         {
             _context = context;
 
