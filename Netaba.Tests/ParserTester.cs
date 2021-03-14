@@ -15,7 +15,7 @@ namespace Tests
         public ParserTester()
         {
             var testPosts = new [] { new { Id = 1, BoardName = "a" }, new { Id = 12, BoardName = "b" }, new { Id = 123, BoardName = "c" } };
-            var mock = new Mock<IRepository>();
+            var mock = new Mock<IBoardRepository>();
             var treadId = 11;
             mock.Setup(rep => rep.TryGetPostLocationAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns<int, string>((id, boardName) => Task.FromResult((testPosts.FirstOrDefault(p => p.Id == id && p.BoardName == boardName) != null, treadId)));

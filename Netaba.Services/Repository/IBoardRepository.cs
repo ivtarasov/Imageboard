@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Netaba.Services.Repository
 {
-    public interface IRepository
+    public interface IBoardRepository
     {
         public Task<(bool, int)> TryGetPostLocationAsync(int postId, string boardName);
         public Task<string> GetBoardDescriptionAsync(string boardName);

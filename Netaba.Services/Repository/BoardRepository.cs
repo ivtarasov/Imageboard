@@ -10,13 +10,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Netaba.Services.Repository
 {
-    public class Repository: IRepository
+    public class BoardRepository: IBoardRepository
     {
         private readonly ApplicationDbContext _context;
-        public Repository(ApplicationDbContext context)
+        public BoardRepository(ApplicationDbContext context)
         {
             _context = context;
 

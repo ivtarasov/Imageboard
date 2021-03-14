@@ -13,13 +13,13 @@ namespace Netaba.Web.Controllers
 {
     public class BoardController : Controller
     {
-        private readonly IRepository _repository;
+        private readonly IBoardRepository _repository;
         private readonly IParser _parser;
 
         private readonly int PageSize = 10; // from config in future
         private readonly int NumberOfDisplayedPostsInBoardPage = 11; //
         
-        public BoardController(IRepository repository, IParser parser)
+        public BoardController(IBoardRepository repository, IParser parser)
         {
             _repository = repository;
             _parser = parser;
@@ -28,7 +28,7 @@ namespace Netaba.Web.Controllers
         [HttpGet]
         [Route("/{boardName}", Name = "Board")]
         [Route("/{boardName}/{treadId}", Name = "Tread")]
-        public async Task<IActionResult> CreatePost(string boardName, int? treadId, int? page = 1)
+        public async Task<IActionResult> CreatePostAsync(string boardName, int? treadId, int? page = 1)
         {
             if (treadId == null) return await StartNewTreadAsync(boardName, page.Value);
             else return await ReplyToTreadAsync(boardName, treadId.Value);
