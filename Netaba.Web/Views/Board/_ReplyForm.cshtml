@@ -1,7 +1,9 @@
 ﻿@model ReplyFormViewModel
 
 <div id="post-area" class="post_area">
-    <form id="reply-form" class="reply_form"  enctype="multipart/form-data" asp-route="CreatePost" asp-route-boardName=@(Model.BoardName) asp-route-treadId=@(Model.TreadId)>
+    <form id="reply-form" class="reply_form"  enctype="multipart/form-data" 
+          asp-route="@(Model.Action == ReplyFormAction.ReplyToTread ? "Tread" : "Board")" 
+          asp-route-boardName=@(Model.BoardName) asp-route-treadId=@(Model.TreadId)>
         <div class="validation" asp-validation-summary="All"></div>
         <div id="action" class="action">
             <label>@Model.ActionNameInView</label>
