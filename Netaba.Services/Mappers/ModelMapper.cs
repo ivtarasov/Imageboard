@@ -3,6 +3,7 @@ using PostEntety = Netaba.Data.Enteties.Post;
 using TreadEntety = Netaba.Data.Enteties.Tread;
 using BoardEntety = Netaba.Data.Enteties.Board;
 using Netaba.Data.Models;
+using Netaba.Services.Pass;
 using System.Linq;
 
 namespace Netaba.Services.Mappers
@@ -32,7 +33,7 @@ namespace Netaba.Services.Mappers
                 IsOp = post.IsOp,
                 IsSage = post.IsSage,
                 Image = ToEntety(post.Image),
-                PassHash = post.PassHash
+                PassHash = HashGenerator.GetHash(post.Ip, post.Password)
             };
 
         public static ImageEntety ToEntety(Image image)

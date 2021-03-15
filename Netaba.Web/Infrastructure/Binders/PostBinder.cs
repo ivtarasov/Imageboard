@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Threading.Tasks;
 using Netaba.Data.Models;
-using Netaba.Services.Pass;
 using Netaba.Services.ImageHandling;
 using SixLabors.ImageSharp;
 
@@ -28,12 +27,12 @@ namespace Netaba.Web.Infrastructure.Binders
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var messageValue = bindingContext.ValueProvider.GetValue("message");
-            var titleValue = bindingContext.ValueProvider.GetValue("title");
-            var isSageValue = bindingContext.ValueProvider.GetValue("issage");
-            var passHashValue = bindingContext.ValueProvider.GetValue("pass");
-            var treadIdValue = bindingContext.ValueProvider.GetValue("treadId");
-            var formFile = bindingContext.ActionContext.HttpContext.Request.Form.Files.GetFile("file");
+            var messageValue = bindingContext.ValueProvider.GetValue("Post.Message");
+            var titleValue = bindingContext.ValueProvider.GetValue("Post.Title");
+            var isSageValue = bindingContext.ValueProvider.GetValue("Post.IsSage");
+            var passwordValue = bindingContext.ValueProvider.GetValue("Post.Password");
+            var formFile = bindingContext.ActionContext.HttpContext.Request.Form.Files.GetFile("Post.Image");
+            var treadIdValue = bindingContext.ValueProvider.GetValue("TreadId");
 
             string message = messageValue.FirstValue;
             string title = titleValue.FirstValue;
@@ -43,7 +42,8 @@ namespace Netaba.Web.Infrastructure.Binders
             bool isOp = false;
             if (treadIdValue == ValueProviderResult.None) isOp = true;
 
-            byte[] passHash = HashGenerator.GetHash(bindingContext.HttpContext.Connection.RemoteIpAddress?.ToString(), passHashValue.FirstValue ?? "12345");
+            string password = passwordValue.FirstValue;
+            string ip = bindingContext.HttpContext.Connection.RemoteIpAddress?.ToString();
 
             ImageModel image = null;
             try
@@ -59,7 +59,7 @@ namespace Netaba.Web.Infrastructure.Binders
                 bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, "Unable to upload image.");
             }
 
-            bindingContext.Result = ModelBindingResult.Success(new Post(message, title, DateTime.Now, image, isOp, isSage, passHash));
+            bindingContext.Result = ModelBindingResult.Success(new Post(message, title, DateTime.Now, ip, password, image, isOp, isSage));
         }
     }
 }

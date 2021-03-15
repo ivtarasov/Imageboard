@@ -7,6 +7,7 @@ namespace Netaba.Web.ViewModels
     {
         public ReplyFormAction Action { get; }
         public string ActionNameInView { get; }
+        public Post Post { get; }
         public string BoardName { get; }
         public int? TreadId { get; }
 

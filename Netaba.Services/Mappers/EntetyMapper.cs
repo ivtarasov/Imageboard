@@ -16,7 +16,7 @@ namespace Netaba.Services.Mappers
             new(tread.Id, tread.Posts.Select(p => ToModel(p)).ToList(), tread.BoardId);
 
         public static Post ToModel(PostEntety post) =>
-            new(post.Id, post.Message, post.Title, post.Time, post.Image != null ? ToModel(post.Image) : null, post.IsOp, post.IsSage, post.PassHash, post.TreadId, post.Tread?.Board?.Name);
+            new(post.Id, post.Message, post.Title, post.Time, post.Image != null ? ToModel(post.Image) : null, post.IsOp, post.IsSage, post.TreadId, post.Tread?.Board?.Name);
 
         public static Image ToModel(ImageEntety image) =>
             new(image.Id, image.Path, image.Name, image.Format, image.SizeDesc, image.Height, image.Width, image.ViewHeight, image.ViewWidth);

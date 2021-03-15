@@ -14,25 +14,28 @@ namespace Netaba.Data.Models
         public string Title { get; }
         public bool IsOp { get; }
         public bool IsSage { get; }
-        public byte[] PassHash { get; }
+        public string Password { get; }
+        public string Ip { get; }
         public Image Image { get; }
         public string BoardName { get; }
         public int? TreadId { get; }
         
-        public Post(int id, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, string boardName)
-            : this(message, title, postTime, image, isOp, isSage, hash, treadId, boardName)
+        public Post(int id, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, int treadId, string boardName)
+            : this(message, title, postTime, image, isOp, isSage)
         {
             Id = id;
-        }
-
-        public Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash, int treadId, string boardName)
-            : this(message, title, postTime, image, isOp, isSage, hash)
-        {
             TreadId = treadId;
             BoardName = boardName;
         }
 
-        public Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, byte[] hash)
+        public Post(string message, string title, DateTime postTime, string ip, string password, Image image, bool isOp, bool isSage)
+            : this(message, title, postTime, image, isOp, isSage)
+        {
+            Ip = ip;
+            Password = password;
+        }
+
+        private Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage)
         {
             Message = message;
             Title = title;
@@ -40,7 +43,6 @@ namespace Netaba.Data.Models
             Image = image;
             IsOp = isOp;
             IsSage = isSage;
-            PassHash = hash;
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

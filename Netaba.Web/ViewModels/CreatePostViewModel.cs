@@ -12,7 +12,6 @@ namespace Netaba.Web.ViewModels
         public string BoardDescription { get; }
         public bool IsBoardPage { get; }
         public int? TreadId { get; }
-
         public PageViewModel PageViewModel { get; }
 
         public CreatePostViewModel(List<TreadViewModel> treadViewModels, string boardName, string boardDescription, PageViewModel pageViewModel)

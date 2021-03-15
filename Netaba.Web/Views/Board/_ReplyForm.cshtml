@@ -7,22 +7,22 @@
             <label>@Model.ActionNameInView</label>
         </div>
         <div class="form_part form_part_flex">
-            <input id="title" type="text" class="reply_input" size="10" name="title" placeholder="Subject">
+            <input id="title" class="reply_input" size="10" placeholder="Subject" asp-for="Post.Title" type="text">
             <input id="submit" type="submit" class="reply_button" name="submit" value="Submit">
         </div>
         <div class="form_part">
-            <textarea id="message" class="reply_input" name="message" rows="10" placeholder="Message" spellcheck="false"></textarea>
+            <textarea id="message" class="reply_input" rows="10" placeholder="Message" spellcheck="false" asp-for="Post.Message"></textarea>
         </div>
         <div class="form_part">
-            <input id="password" type="password" class="reply_input" name="Pass" value="12345" placeholder="Password">
+            <input id="password" class="reply_input" value="12345" placeholder="Password" asp-for="Post.Password" type="password">
         </div>
         <div class="form_part">
             <div class="reply_options">
                 <label>Go to</label>
                 <select name="dest" asp-items="Html.GetEnumSelectList<Destination>()"></select>
-                <input type="checkbox" id="sage-check-box" name="issage" value="true">
+                <input id="sage-check-box" value="true" asp-for="Post.IsSage" type="checkbox">
                 <label>Sage</label>
-                <input id="file" class="reply_file" type="file" name="File">
+                <input id="file" class="reply_file" asp-for="Post.Image" type="file">
             </div>
         </div>
     </form>
