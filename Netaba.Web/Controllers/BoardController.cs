@@ -4,7 +4,7 @@ using Netaba.Data.Enums;
 using Netaba.Data.Models;
 using Netaba.Services.Repository;
 using Netaba.Services.Markup;
-using Netaba.Web.ViewModels;
+using Netaba.Data.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
