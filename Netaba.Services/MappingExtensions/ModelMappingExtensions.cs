@@ -52,7 +52,7 @@ namespace Netaba.Services.Mappers
                 ViewWidth = image.ViewWidth
             };
 
-        public static CreatePostViewModel MapToCreatePostViewModel(this Tread tread, string boardName, string boardDescription, Post post = null)
+        public static CreatePostViewModel ToCreatePostViewModel(this Tread tread, string boardName, string boardDescription, Post post = null)
         {
             var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) =>
                                     new PostViewModel(p, ++i, false)).ToList(), tread.Id);
@@ -60,7 +60,7 @@ namespace Netaba.Services.Mappers
             return new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, boardName, post, boardDescription, tread.Id);
         }
 
-        public static CreatePostViewModel MapToCreatePostViewModel(this Board board, int postsFromTreadOnBoardView, int pageSize, int page = 1, Post post = null)
+        public static CreatePostViewModel ToCreatePostViewModel(this Board board, int postsFromTreadOnBoardView, int pageSize, int page = 1, Post post = null)
         {
             var count = board.Treads.Count;
             var pageViewModel = new PageViewModel(count, page, pageSize, board.Name);

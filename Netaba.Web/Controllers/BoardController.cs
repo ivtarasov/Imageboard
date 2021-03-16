@@ -63,7 +63,7 @@ namespace Netaba.Web.Controllers
 
             if (tread == null) return NotFound();
 
-            return View(tread.MapToCreatePostViewModel(boardName, await _repository.GetBoardDescriptionAsync(boardName)));
+            return View(tread.ToCreatePostViewModel(boardName, await _repository.GetBoardDescriptionAsync(boardName)));
         }
 
         [NonAction]
@@ -74,7 +74,7 @@ namespace Netaba.Web.Controllers
                 var tread = await _repository.FindAndLoadTreadAsync(boardName, treadId);
                 if (tread == null) return NotFound();
 
-                return View(tread.MapToCreatePostViewModel(boardName, await _repository.GetBoardDescriptionAsync(boardName), post));
+                return View(tread.ToCreatePostViewModel(boardName, await _repository.GetBoardDescriptionAsync(boardName), post));
             }
 
             await post.ParseMessageAsync(_parser, boardName);
@@ -93,7 +93,7 @@ namespace Netaba.Web.Controllers
             var board = await _repository.FindAndLoadBoardAsync(boardName);
             if (board == null) return NotFound();
 
-            return View(board.MapToCreatePostViewModel(PostsFromTreadOnBoardView, PageSize, page: page));
+            return View(board.ToCreatePostViewModel(PostsFromTreadOnBoardView, PageSize, page: page));
         }
 
         [NonAction]
@@ -104,7 +104,7 @@ namespace Netaba.Web.Controllers
                 var board = await _repository.FindAndLoadBoardAsync(boardName);
                 if (board == null) return NotFound();
 
-                return View(board.MapToCreatePostViewModel(PostsFromTreadOnBoardView, PageSize, post: post));
+                return View(board.ToCreatePostViewModel(PostsFromTreadOnBoardView, PageSize, post: post));
             }
 
             await post.ParseMessageAsync(_parser, boardName);
