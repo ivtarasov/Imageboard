@@ -18,13 +18,13 @@ namespace Netaba.Services.Mappers
             {
                 Name = board.Name,
                 Description = board.Description,
-                Treads = board.Treads.Select(t => ToEntety(t)).ToList()
+                Treads = board.Treads.Select(t => t.ToEntety()).ToList()
             };
 
         public static TreadEntety ToEntety(this Tread tread) =>
             new()
             {
-                Posts = tread.Posts.Select(p => ToEntety(p)).ToList()
+                Posts = tread.Posts.Select(p => p.ToEntety()).ToList()
             };
 
         public static PostEntety ToEntety(this Post post) =>
@@ -35,15 +35,12 @@ namespace Netaba.Services.Mappers
                 Time = post.Time,
                 IsOp = post.IsOp,
                 IsSage = post.IsSage,
-                Image = ToEntety(post.Image),
+                Image = post.Image?.ToEntety(),
                 PassHash = HashGenerator.GetHash(post.Ip, post.Password)
             };
 
-        public static ImageEntety ToEntety(this Image image)
-        {
-            if (image == null) return null;
-
-            return new()
+        public static ImageEntety ToEntety(this Image image) =>
+            new()
             {
                 Name = image.Name,
                 SizeDesc = image.SizeDesc,
@@ -54,7 +51,6 @@ namespace Netaba.Services.Mappers
                 ViewHeight = image.ViewHeight,
                 ViewWidth = image.ViewWidth
             };
-        }
 
         public static CreatePostViewModel MapToCreatePostViewModel(this Tread tread, string boardName, string boardDescription, Post post = null)
         {

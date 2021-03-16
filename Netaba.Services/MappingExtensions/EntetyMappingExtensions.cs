@@ -10,13 +10,13 @@ namespace Netaba.Services.Mappers
     public static class EntetyMappingExtensions 
     {
         public static Board ToModel(this BoardEntety board) =>
-            new(board.Name, board.Description, board.Treads.Select(t => ToModel(t)).ToList());
+            new(board.Name, board.Description, board.Treads.Select(t => t.ToModel()).ToList());
 
         public static Tread ToModel(this TreadEntety tread) =>
-            new(tread.Id, tread.Posts.Select(p => ToModel(p)).ToList(), tread.BoardId);
+            new(tread.Id, tread.Posts.Select(p => p.ToModel()).ToList(), tread.BoardId);
 
         public static Post ToModel(this PostEntety post) =>
-            new(post.Id, post.Message, post.Title, post.Time, post.Image != null ? ToModel(post.Image) : null, post.IsOp, post.IsSage, post.TreadId, post.Tread?.Board?.Name);
+            new(post.Id, post.Message, post.Title, post.Time, post.Image?.ToModel(), post.IsOp, post.IsSage, post.TreadId, post.Tread?.Board?.Name);
 
         public static Image ToModel(this ImageEntety image) =>
             new(image.Id, image.Path, image.Name, image.Format, image.SizeDesc, image.Height, image.Width, image.ViewHeight, image.ViewWidth);
