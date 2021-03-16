@@ -7,18 +7,18 @@ using Netaba.Data.Models;
 
 namespace Netaba.Services.Mappers
 {
-    public static class EntetyMapper
+    public static class EntetyMappingExtensions 
     {
-        public static Board ToModel(BoardEntety board) =>
+        public static Board ToModel(this BoardEntety board) =>
             new(board.Name, board.Description, board.Treads.Select(t => ToModel(t)).ToList());
 
-        public static Tread ToModel(TreadEntety tread) =>
+        public static Tread ToModel(this TreadEntety tread) =>
             new(tread.Id, tread.Posts.Select(p => ToModel(p)).ToList(), tread.BoardId);
 
-        public static Post ToModel(PostEntety post) =>
+        public static Post ToModel(this PostEntety post) =>
             new(post.Id, post.Message, post.Title, post.Time, post.Image != null ? ToModel(post.Image) : null, post.IsOp, post.IsSage, post.TreadId, post.Tread?.Board?.Name);
 
-        public static Image ToModel(ImageEntety image) =>
+        public static Image ToModel(this ImageEntety image) =>
             new(image.Id, image.Path, image.Name, image.Format, image.SizeDesc, image.Height, image.Width, image.ViewHeight, image.ViewWidth);
     }
 }

@@ -11,9 +11,9 @@ using System.Collections.Generic;
 
 namespace Netaba.Services.Mappers
 {
-    public static class ModelMapper
+    public static class ModelMappingExtensions
     {
-        public static BoardEntety ToEntety(Board board) =>
+        public static BoardEntety ToEntety(this Board board) =>
             new()
             {
                 Name = board.Name,
@@ -21,13 +21,13 @@ namespace Netaba.Services.Mappers
                 Treads = board.Treads.Select(t => ToEntety(t)).ToList()
             };
 
-        public static TreadEntety ToEntety(Tread tread) =>
+        public static TreadEntety ToEntety(this Tread tread) =>
             new()
             {
                 Posts = tread.Posts.Select(p => ToEntety(p)).ToList()
             };
 
-        public static PostEntety ToEntety(Post post) =>
+        public static PostEntety ToEntety(this Post post) =>
             new()
             {
                 Message = post.Message,
@@ -39,7 +39,7 @@ namespace Netaba.Services.Mappers
                 PassHash = HashGenerator.GetHash(post.Ip, post.Password)
             };
 
-        public static ImageEntety ToEntety(Image image)
+        public static ImageEntety ToEntety(this Image image)
         {
             if (image == null) return null;
 
@@ -56,7 +56,7 @@ namespace Netaba.Services.Mappers
             };
         }
 
-        public static CreatePostViewModel MapToCreatePostViewModel(Tread tread, string boardName, string boardDescription, Post post = null)
+        public static CreatePostViewModel MapToCreatePostViewModel(this Tread tread, string boardName, string boardDescription, Post post = null)
         {
             var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) =>
                                     new PostViewModel(p, ++i, false)).ToList(), tread.Id);
@@ -64,7 +64,7 @@ namespace Netaba.Services.Mappers
             return new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, boardName, post, boardDescription, tread.Id);
         }
 
-        public static CreatePostViewModel MapToCreatePostViewModel(Board board, int postsFromTreadOnBoardView, int pageSize, int page = 1, Post post = null)
+        public static CreatePostViewModel MapToCreatePostViewModel(this Board board, int postsFromTreadOnBoardView, int pageSize, int page = 1, Post post = null)
         {
             var count = board.Treads.Count;
             var pageViewModel = new PageViewModel(count, page, pageSize, board.Name);

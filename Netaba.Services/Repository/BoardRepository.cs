@@ -46,7 +46,7 @@ namespace Netaba.Services.Repository
             var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
             if (board == null) return (false, 0);
 
-            TreadEntety treadEntety = ModelMapper.ToEntety(tread);
+            TreadEntety treadEntety = tread.ToEntety();
             treadEntety.Board = board;
 
             await _context.Treads.AddAsync(treadEntety);
@@ -71,7 +71,7 @@ namespace Netaba.Services.Repository
             var tread = await _context.Treads.FirstOrDefaultAsync(t => t.BoardId == board.Id && t.Id == treadId);
             if (tread == null) return (false, 0);
 
-            PostEntety postEntety = ModelMapper.ToEntety(post);
+            PostEntety postEntety = post.ToEntety();
             postEntety.Tread = tread;
 
             await _context.Posts.AddAsync(postEntety);
@@ -95,7 +95,7 @@ namespace Netaba.Services.Repository
 
             LoadBoard(board);
 
-            return EntetyMapper.ToModel(board);
+            return board.ToModel();
         }
 
         private void LoadBoard(BoardEntety board)
@@ -117,7 +117,7 @@ namespace Netaba.Services.Repository
 
             LoadTread(tread);
 
-            return EntetyMapper.ToModel(tread);
+            return tread.ToModel();
         }
 
         private void LoadTread(TreadEntety tread)
