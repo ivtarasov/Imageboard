@@ -4,9 +4,8 @@ using Netaba.Data.Enums;
 using Netaba.Data.Models;
 using Netaba.Services.Repository;
 using Netaba.Services.Markup;
-using Netaba.Data.ViewModels;
+using Netaba.Services.Mappers;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Netaba.Web.Controllers
@@ -17,7 +16,7 @@ namespace Netaba.Web.Controllers
         private readonly IParser _parser;
 
         private readonly int PageSize = 10; // from config in future
-        private readonly int NumberOfDisplayedPostsInBoardPage = 11; //
+        private readonly int PostsFromTreadOnBoardView = 11; //
         
         public BoardController(IBoardRepository repository, IParser parser)
         {
@@ -64,7 +63,7 @@ namespace Netaba.Web.Controllers
 
             if (tread == null) return NotFound();
 
-            return View(await MapToCreatePostViewModelAsync(tread, boardName));
+            return View(ModelMapper.MapToCreatePostViewModel(tread, boardName, await _repository.GetBoardDescriptionAsync(boardName)));
         }
 
         [NonAction]
@@ -75,10 +74,11 @@ namespace Netaba.Web.Controllers
                 var tread = await _repository.FindAndLoadTreadAsync(boardName, treadId);
                 if (tread == null) return NotFound();
 
-                return View(await MapToCreatePostViewModelAsync(tread, boardName, post));
+                return View(ModelMapper.MapToCreatePostViewModel(tread, boardName, await _repository.GetBoardDescriptionAsync(boardName), post));
             }
 
-            post.Message = await _parser.ToHtmlAsync(post.Message, boardName);
+            await post.ParseMessageAsync(_parser, boardName);
+
             var (isSuccess, _) = await _repository.TryAddPostToTreadAsync(post, boardName, treadId);
 
             if (!isSuccess) return BadRequest();
@@ -93,7 +93,7 @@ namespace Netaba.Web.Controllers
             var board = await _repository.FindAndLoadBoardAsync(boardName);
             if (board == null) return NotFound();
 
-            return View(MapToCreatePostViewModel(board, page));
+            return View(ModelMapper.MapToCreatePostViewModel(board, PostsFromTreadOnBoardView, PageSize, page: page));
         }
 
         [NonAction]
@@ -104,10 +104,11 @@ namespace Netaba.Web.Controllers
                 var board = await _repository.FindAndLoadBoardAsync(boardName);
                 if (board == null) return NotFound();
 
-                return View(MapToCreatePostViewModel(board, post: post));
+                return View(ModelMapper.MapToCreatePostViewModel(board, PostsFromTreadOnBoardView, PageSize, post: post));
             }
 
-            post.Message = await _parser.ToHtmlAsync(post.Message, boardName);
+            await post.ParseMessageAsync(_parser, boardName);
+
             var tread = new Tread(new List<Post> { post });
             var (isSuccess, treadId) = await _repository.TryAddTreadToBoardAsync(tread, boardName);
 
@@ -115,32 +116,6 @@ namespace Netaba.Web.Controllers
 
             if (dest == Destination.Board) return RedirectToRoute("Board", new { boardName });
             else return RedirectToRoute("Tread", new { boardName, treadId });
-        }
-
-        [NonAction]
-        private async Task<CreatePostViewModel> MapToCreatePostViewModelAsync(Tread tread, string boardName, Post post = null)
-        {
-            var boardDescription = await _repository.GetBoardDescriptionAsync(boardName);
-
-            var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) => 
-                                    new PostViewModel(p, ++i, false)).ToList(), tread.Id);
-
-            return new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, boardName, post, boardDescription, tread.Id);
-        }
-
-        [NonAction]
-        private CreatePostViewModel MapToCreatePostViewModel(Board board, int page = 1, Post post = null)
-        {
-            var count = board.Treads.Count;
-            var pageViewModel = new PageViewModel(count, page, PageSize, board.Name);
-
-            var treads = board.Treads.Skip((page - 1) * PageSize).Take(PageSize).ToList();
-
-            var treadViewModels = treads.Select(t => 
-                                    new TreadViewModel(t.Posts.Select((p, i) => 
-                                        new PostViewModel(p, ++i, true)).ToList(), NumberOfDisplayedPostsInBoardPage, t.Id)).ToList();
-
-            return new CreatePostViewModel(treadViewModels, board.Name, post, board.Description, pageViewModel);
         }
     }
 }

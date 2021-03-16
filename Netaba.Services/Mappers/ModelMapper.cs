@@ -3,12 +3,15 @@ using PostEntety = Netaba.Data.Enteties.Post;
 using TreadEntety = Netaba.Data.Enteties.Tread;
 using BoardEntety = Netaba.Data.Enteties.Board;
 using Netaba.Data.Models;
+using Netaba.Data.ViewModels;
 using Netaba.Services.Pass;
 using System.Linq;
+using System.Collections.Generic;
+
 
 namespace Netaba.Services.Mappers
 {
-    static class ModelMapper
+    public static class ModelMapper
     {
         public static BoardEntety ToEntety(Board board) =>
             new()
@@ -51,6 +54,28 @@ namespace Netaba.Services.Mappers
                 ViewHeight = image.ViewHeight,
                 ViewWidth = image.ViewWidth
             };
+        }
+
+        public static CreatePostViewModel MapToCreatePostViewModel(Tread tread, string boardName, string boardDescription, Post post = null)
+        {
+            var treadViewModel = new TreadViewModel(tread.Posts.Select((p, i) =>
+                                    new PostViewModel(p, ++i, false)).ToList(), tread.Id);
+
+            return new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, boardName, post, boardDescription, tread.Id);
+        }
+
+        public static CreatePostViewModel MapToCreatePostViewModel(Board board, int postsFromTreadOnBoardView, int pageSize, int page = 1, Post post = null)
+        {
+            var count = board.Treads.Count;
+            var pageViewModel = new PageViewModel(count, page, pageSize, board.Name);
+
+            var treads = board.Treads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var treadViewModels = treads.Select(t =>
+                                    new TreadViewModel(t.Posts.Select((p, i) =>
+                                        new PostViewModel(p, ++i, true)).ToList(), postsFromTreadOnBoardView, t.Id)).ToList();
+
+            return new CreatePostViewModel(treadViewModels, board.Name, post, board.Description, pageViewModel);
         }
     }
 }

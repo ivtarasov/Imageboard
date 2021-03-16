@@ -7,7 +7,7 @@ using Netaba.Data.Models;
 
 namespace Netaba.Services.Mappers
 {
-    static class EntetyMapper
+    public static class EntetyMapper
     {
         public static Board ToModel(BoardEntety board) =>
             new(board.Name, board.Description, board.Treads.Select(t => ToModel(t)).ToList());
