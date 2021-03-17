@@ -22,9 +22,6 @@ namespace Netaba.Data.Contexts
                 .ToTable("Boards");
 
             modelBuilder.Entity<Board>()
-                .HasKey(b => b.Id);
-
-            modelBuilder.Entity<Board>()
                 .HasIndex(b => b.Name)
                 .IsUnique();
 

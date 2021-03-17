@@ -1,9 +1,10 @@
 ﻿@model CreatePostViewModel
 @{
-    ViewData["Title"] = "Board";
+    var boardNameWithSlashes = "/" + Model.BoardName + "/";
+    ViewData["Title"] = $"{boardNameWithSlashes}{Model.TreadId}";
 }
 
-@await Html.PartialAsync("_BoardDescription", "/" + Model.BoardName + "/ — " + Model.BoardDescription)
+@await Html.PartialAsync("_BoardDescription", $"{boardNameWithSlashes} — {Model.BoardDescription}")
 
 @await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(Model.Action, Model.BoardName, Model.Post, Model.TreadId))
 
