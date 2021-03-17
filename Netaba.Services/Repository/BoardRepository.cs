@@ -29,10 +29,10 @@ namespace Netaba.Services.Repository
 
         public async Task<(bool, int)> TryGetPostLocationAsync(int postId, string boardName)
         {
-            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
-            if (board == null) return (false, 0);
+            var post = await _context.Posts.Include(p => p.Tread)
+                                           .ThenInclude(t => t.Board)
+                                           .FirstOrDefaultAsync(p => p.Tread.Board.Name == boardName && p.Id == postId);
 
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.BoardId == board.Id && p.Id == postId);
             if (post == null) return (false, 0);
 
             return (true, post.TreadId);
@@ -65,10 +65,9 @@ namespace Netaba.Services.Repository
 
         public async Task<(bool, int)> TryAddPostToTreadAsync(Post post, string boardName, int treadId)
         {
-            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
-            if (board == null) return (false, 0);
+            var tread = await _context.Treads.Include(t => t.Board)
+                                             .FirstOrDefaultAsync(t => t.Board.Name == boardName && t.Id == treadId);
 
-            var tread = await _context.Treads.FirstOrDefaultAsync(t => t.BoardId == board.Id && t.Id == treadId);
             if (tread == null) return (false, 0);
 
             PostEntety postEntety = post.ToEntety();
@@ -109,10 +108,9 @@ namespace Netaba.Services.Repository
 
         public async Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId)
         {
-            var board = _context.Boards.FirstOrDefault(b => b.Name == boardName);
-            if (board == null) return null;
+            var tread = await _context.Treads.Include(t => t.Board)
+                                             .FirstOrDefaultAsync(t => t.Board.Name == boardName && t.Id == treadId);
 
-            var tread = await _context.Treads.FirstOrDefaultAsync(t => t.BoardId == board.Id && t.Id == treadId);
             if (tread == null) return null;
 
             LoadTread(tread);
