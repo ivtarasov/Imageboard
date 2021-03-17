@@ -1,13 +1,13 @@
 ﻿@model PostViewModel
 
-<div id="post-@Model.Post.Id" class="post">
+<div id="@Model.Post.Id" class="post">
     <div id="post-body-@Model.Post.Id" class=@(Model.Post.IsOp ? "op_post_body" : "post_body")>
         <div id="post-details-@Model.Post.Id" class="post_details">
             <input id="delete-post-checkbox" type="checkbox" name="ids[@(Model.Post.Id)]" value=@Model.Post.Id>
             <span class="post_title">@(Model.Post.Title ?? "")</span>
             <span class="poster_name">@(Model.Post.PosterName ?? "Anonymous")</span>
             <span>@Model.Post.Time</span>
-            <span class="post_link"> <a href="/#@Model.Post.Id">№@Model.Post.Id</a> </span>
+            <span class="post_link"> <a href="@Model.Post.Id">№@Model.Post.Id</a> </span>
             <span class="sage">@(Model.Post.IsSage ? "▼" : "")</span>
             @if (!Model.IsFromShortcutTread)
             {

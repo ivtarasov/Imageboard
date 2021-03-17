@@ -60,7 +60,6 @@ namespace Netaba.Web.Controllers
         private async Task<IActionResult> ReplyToTreadAsync(string boardName, int treadId)
         {
             var tread = await _repository.FindAndLoadTreadAsync(boardName, treadId);
-
             if (tread == null) return NotFound();
 
             return View(tread.ToCreatePostViewModel(boardName, await _repository.GetBoardDescriptionAsync(boardName)));
