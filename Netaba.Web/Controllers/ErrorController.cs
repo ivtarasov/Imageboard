@@ -7,15 +7,15 @@ namespace Netaba.Web.Controllers
 {
     public class ErrorController : Controller
     {
-        [Route("/Exeption", Name = "Exeption")]
+        [Route("/exeption", Name = "Exeption")]
         public IActionResult Exeption()
         {
             var ExceptionMessage = HttpContext.Features.Get<IExceptionHandlerPathFeature>()?.Error?.Message;
             return View(new ErrorViewModel(ExceptionMessage));
         }
 
-        [Route("/StatusCode", Name = "StatusCode")]
-        public IActionResult StatusCode2(int code)
+        [Route("/code", Name = "StatusCode")]
+        public IActionResult Code(int code)
         {
             return View(new StatusCodeViewModel(code));
         }
