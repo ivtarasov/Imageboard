@@ -25,8 +25,8 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpPost]
-        [Route("/login", Name = "Login")]
         [ValidateAntiForgeryToken]
+        [Route("/login", Name = "Login")]
         public async Task<IActionResult> Login(Login login)
         {
             if (ModelState.IsValid)
@@ -52,8 +52,8 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpPost]
-        [Route("/register", Name = "Register")]
         [ValidateAntiForgeryToken]
+        [Route("/register", Name = "Register")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
         public async Task<IActionResult> RegisterNewAdmin(Register register)
         {
