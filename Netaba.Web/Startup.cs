@@ -34,12 +34,8 @@ namespace Netaba.Web
                     .AddCookie(options =>
                     {
                         options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/login");
+                        options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/login");
                     });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
-            });
 
             services.AddControllersWithViews(options =>
             {
@@ -47,7 +43,6 @@ namespace Netaba.Web
             });
 
             services.AddScoped<IUserRepository, UserRepository>();
-
             services.AddScoped<IBoardRepository, BoardRepository>();
             services.AddScoped<IParser, Parser>();
             services.AddScoped<IImageHandler, ImageHandler>();
