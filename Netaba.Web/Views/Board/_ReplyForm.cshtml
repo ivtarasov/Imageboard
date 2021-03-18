@@ -1,29 +1,27 @@
 ﻿@model ReplyFormViewModel
 
 <div id="post-area" class="post_area">
-    <form id="reply-form" class="reply_form"  enctype="multipart/form-data" 
-          asp-route="@(Model.Action == ReplyFormAction.ReplyToTread ? "Tread" : "Board")" 
+    <label id="action" class="action">@Model.ActionNameInView</label>
+    <form id="reply-form" class="reply_form" enctype="multipart/form-data"
+          asp-route="@(Model.Action == ReplyFormAction.ReplyToTread ? "Tread" : "Board")"
           asp-route-boardName=@(Model.BoardName) asp-route-treadId=@(Model.TreadId)>
         <div class="validation" asp-validation-summary="All"></div>
-        <div id="action" class="action">
-            <label>@Model.ActionNameInView</label>
-        </div>
         <div class="form_part form_part_flex">
-            <input id="title" class="reply_input" size="10" placeholder="Subject" asp-for="Post.Title" type="text">
+            <input id="title" class="reply_input" size="10" placeholder="Subject" asp-for="Post.Title">
             <input id="submit" type="submit" class="reply_button" name="submit" value="Submit">
         </div>
         <div class="form_part">
-            <textarea id="message" class="reply_input" rows="10" placeholder="Message" spellcheck="false" asp-for="Post.Message"></textarea>
+            <textarea id="message" class="reply_input" rows="10" placeholder="Message" asp-for="Post.Message"></textarea>
         </div>
         <div class="form_part">
-            <input id="password" class="reply_input" value="12345" placeholder="Password" asp-for="Post.Password" type="password">
+            <input id="password" class="reply_input" value="12345" placeholder="Password" asp-for="Post.Password">
         </div>
         <div class="form_part">
             <div class="reply_options">
                 <label>Go to</label>
                 <select name="dest" asp-items="Html.GetEnumSelectList<Destination>()"></select>
-                <input id="sage-check-box" value="true" asp-for="Post.IsSage" type="checkbox">
                 <label>Sage</label>
+                <input id="sage-check-box" asp-for="Post.IsSage">
                 <input id="file" class="reply_file" asp-for="Post.Image" type="file">
             </div>
         </div>

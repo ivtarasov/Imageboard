@@ -10,12 +10,18 @@ namespace Netaba.Data.Models
         public string PosterName { get; }
         [DisplayFormat(DataFormatString = "G")]
         public DateTime Time { get; }
+        [DataType(DataType.MultilineText)]
+        [StringLength(15_000, ErrorMessage = "Too long message. Limit: 15000 characters.")]
         public string Message { get; set; }
+        [StringLength(35, ErrorMessage = "Too long title. Limit: 35 characters.")]
         public string Title { get; }
         public bool IsOp { get; }
         public bool IsSage { get; }
+        [DataType(DataType.Password)]
+        [StringLength(20, ErrorMessage = "Too long password. Limit: 20 characters.")]
         public string Password { get; }
         public string Ip { get; }
+        [DataType(DataType.Upload)]
         public Image Image { get; }
         public string BoardName { get; }
         public int? TreadId { get; }
@@ -52,16 +58,6 @@ namespace Netaba.Data.Models
             if (string.IsNullOrEmpty(Message) && Image == null)
             {
                 errors.Add(new ValidationResult("Post must contain Message or Image."));
-            }
-
-            if ((Message?.Length ?? 0) > 15_000)
-            {
-                errors.Add(new ValidationResult("Too long Message. Limit: 15000 characters."));
-            }
-
-            if ((Title?.Length ?? 0) > 35)
-            {
-                errors.Add(new ValidationResult("Too long Title. Limit: 35 characters."));
             }
 
             return errors;
