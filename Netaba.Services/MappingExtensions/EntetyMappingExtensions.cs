@@ -1,9 +1,10 @@
-﻿using ImageEntety = Netaba.Data.Enteties.Image;
+﻿using Netaba.Data.Models;
+using System.Linq;
+using BoardEntety = Netaba.Data.Enteties.Board;
+using ImageEntety = Netaba.Data.Enteties.Image;
 using PostEntety = Netaba.Data.Enteties.Post;
 using TreadEntety = Netaba.Data.Enteties.Tread;
-using BoardEntety = Netaba.Data.Enteties.Board;
-using System.Linq;
-using Netaba.Data.Models;
+using UserEntety = Netaba.Data.Enteties.User;
 
 namespace Netaba.Services.Mappers
 {
@@ -20,5 +21,8 @@ namespace Netaba.Services.Mappers
 
         public static Image ToModel(this ImageEntety image) =>
             new(image.Id, image.Path, image.Name, image.Format, image.SizeDesc, image.Height, image.Width, image.ViewHeight, image.ViewWidth);
+
+        public static User ToModel(this UserEntety user) =>
+            new(user.Name, user.Role);
     }
 }

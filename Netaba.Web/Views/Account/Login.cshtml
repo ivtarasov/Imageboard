@@ -1,0 +1,21 @@
+﻿@model LoginViewModel
+
+@{ 
+    ViewData["Title"] = "Login";
+}
+
+<div class="centred">
+    <div id="login-area" class="login_area">
+        <label id="action" class="action">Login</label>
+        <form id="reply-form" class="reply_form" asp-route="Login">
+            <div class="validation" asp-validation-summary="All"></div>
+            <div class="form_part form_part_flex">
+                <input id="name" class="reply_input" size="10" placeholder="Name" asp-for="Login.Name">
+                <input id="submit" type="submit" class="reply_button" name="Submit" value="Submit">
+            </div>
+            <div class="form_part">
+                <input id="password" class="reply_input" placeholder="Password" asp-for="Login.Password">
+            </div>
+        </form>
+    </div>
+</div>

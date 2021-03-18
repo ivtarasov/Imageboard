@@ -1,7 +1,4 @@
-﻿using PostEntety = Netaba.Data.Enteties.Post;
-using TreadEntety = Netaba.Data.Enteties.Tread;
-using BoardEntety = Netaba.Data.Enteties.Board;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Netaba.Data.Contexts;
 using Netaba.Data.Models;
 using Netaba.Services.Mappers;
@@ -10,13 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BoardEntety = Netaba.Data.Enteties.Board;
+using PostEntety = Netaba.Data.Enteties.Post;
+using TreadEntety = Netaba.Data.Enteties.Tread;
 
 namespace Netaba.Services.Repository
 {
     public class BoardRepository: IBoardRepository
     {
-        private readonly BoardContext _context;
-        public BoardRepository(BoardContext context)
+        private readonly BoardDbContext _context;
+        public BoardRepository(BoardDbContext context)
         {
             _context = context;
 
@@ -93,7 +93,6 @@ namespace Netaba.Services.Repository
             if (board == null) return null;
 
             LoadBoard(board);
-
             return board.ToModel();
         }
 
@@ -103,7 +102,9 @@ namespace Netaba.Services.Repository
 
             foreach (var tread in board.Treads) LoadTread(tread);
 
-            board.Treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.FirstOrDefault(p => p.IsOp).Time).Take(100).ToList();
+            board.Treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.FirstOrDefault(p => p.IsOp).Time)
+                                       .Take(100)
+                                       .ToList();
         }
 
         public async Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId)
@@ -114,7 +115,6 @@ namespace Netaba.Services.Repository
             if (tread == null) return null;
 
             LoadTread(tread);
-
             return tread.ToModel();
         }
 
@@ -127,12 +127,12 @@ namespace Netaba.Services.Repository
             tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
         }
 
-        public async Task<bool> TryDeleteAsync(IEnumerable<int> postIds, string ip, string password)
+        public async Task<bool> TryDeleteAsync(IEnumerable<int> postIds, string ip, string password, bool isTreadDeletionAllowed)
         {
             var posts = _context.Posts.Where(p => postIds.Contains(p.Id));
             var oPosts = posts.Where(p => p.IsOp);
 
-            DeleteTreads(oPosts, ip, password);
+            if (isTreadDeletionAllowed) DeleteTreads(oPosts, ip, password);
             DeletePosts(posts.Except(oPosts), ip, password);
 
             try

@@ -261,24 +261,18 @@ a:hover {
 	color: red;
 }
 
-.error {
-	font-size: xx-large;
-	height: 5em;
+.centred {
 	display: flex;
 	align-items: center;
 	justify-content: center
 }
 
-.pages {
-	display: flex;
-	align-items: center;
-	justify-content: center
+.error {
+	font-size: xx-large;
+	height: 5em;
 }
 
 .board_description {
 	font-size: xx-large;
 	height: 2em;
-	display: flex;
-	align-items: center;
-	justify-content: center
 }

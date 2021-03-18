@@ -45,12 +45,13 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpPost]
-        [Route("/Delete", Name = "Delete")]
-        public async Task<IActionResult> DeletePostsAsync(Dictionary<int, int> ids, string boardName, string password)
+        [Route("/delete", Name = "Delete")]
+        public async Task<IActionResult> DeleteAsync(Dictionary<int, int> ids, string boardName, string password)
         {
             if (ids == null) return RedirectToRoute("Board", new { boardName });
-            
-            bool isSuccess = await _repository.TryDeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password);
+
+            bool isAdminRequest = User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.SuperAdmin));
+            bool isSuccess = await _repository.TryDeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password, isAdminRequest);
             if (!isSuccess) return BadRequest();
 
             return RedirectToRoute("Board", new { boardName });

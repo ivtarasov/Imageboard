@@ -1,12 +1,13 @@
-using Netaba.Data.Contexts;
-using Netaba.Services.Markup;
-using Netaba.Services.ImageHandling;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Netaba.Data.Contexts;
+using Netaba.Services.ImageHandling;
+using Netaba.Services.Markup;
 using Netaba.Services.Repository;
 using Netaba.Web.Infrastructure.Binders;
 
@@ -23,18 +24,33 @@ namespace Netaba.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connection));
+            services.AddDbContext<UserDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("UsersConnection")));
+
+            services.AddDbContext<BoardDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("BoardsConnection")));
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/login");
+                    });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+            });
 
             services.AddControllersWithViews(options =>
             {
                 options.ModelBinderProviders.Insert(0, new PostBinderProvider());
             });
 
-            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IBoardRepository, BoardRepository>();
             services.AddScoped<IParser, Parser>();
-            services.AddSingleton<IImageHandler, ImageHandler>();
+            services.AddScoped<IImageHandler, ImageHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -45,16 +61,20 @@ namespace Netaba.Web
             }
             else
             {
-                app.UseExceptionHandler("/Exeption");
+                app.UseExceptionHandler("/exeption");
                 app.UseHsts();
             }
 
-            app.UseStatusCodePagesWithRedirects("/StatusCode?code={0}");
+            app.UseStatusCodePagesWithRedirects("/code?code={0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }

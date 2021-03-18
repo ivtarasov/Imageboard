@@ -3,14 +3,14 @@ using Netaba.Data.Enteties;
 
 namespace Netaba.Data.Contexts
 {
-    public class BoardContext : DbContext
+    public class BoardDbContext : DbContext
     {
         public DbSet<Board> Boards { get; set; }
         public DbSet<Tread> Treads { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Image> Images { get; set; }
 
-        public BoardContext(DbContextOptions<BoardContext> options)
+        public BoardDbContext(DbContextOptions<BoardDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();

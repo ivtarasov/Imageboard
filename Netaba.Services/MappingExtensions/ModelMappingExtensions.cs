@@ -1,12 +1,13 @@
-﻿using ImageEntety = Netaba.Data.Enteties.Image;
-using PostEntety = Netaba.Data.Enteties.Post;
-using TreadEntety = Netaba.Data.Enteties.Tread;
-using BoardEntety = Netaba.Data.Enteties.Board;
-using Netaba.Data.Models;
+﻿using Netaba.Data.Models;
 using Netaba.Data.ViewModels;
 using Netaba.Services.Pass;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using BoardEntety = Netaba.Data.Enteties.Board;
+using ImageEntety = Netaba.Data.Enteties.Image;
+using PostEntety = Netaba.Data.Enteties.Post;
+using TreadEntety = Netaba.Data.Enteties.Tread;
+using UserEntety = Netaba.Data.Enteties.User;
 
 
 namespace Netaba.Services.Mappers
@@ -50,6 +51,14 @@ namespace Netaba.Services.Mappers
                 Width = image.Width,
                 ViewHeight = image.ViewHeight,
                 ViewWidth = image.ViewWidth
+            };
+
+        public static UserEntety ToEntety(this User user) =>
+            new()
+            {
+                Name = user.Name,
+                Role = user.Role,
+                PassHash = HashGenerator.GetHash(user.Password)
             };
 
         public static CreatePostViewModel ToCreatePostViewModel(this Tread tread, string boardName, string boardDescription, Post post = null)
