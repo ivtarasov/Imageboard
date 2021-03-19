@@ -8,6 +8,8 @@ namespace Netaba.Data.Models
         public string Password { get; set; }
         public Role Role { get; set; }
 
+        public User() { }
+
         public User(string name, Role role, string password)
         {
             Name = name;

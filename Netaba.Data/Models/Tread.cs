@@ -8,6 +8,8 @@ namespace Netaba.Data.Models
         public List<Post> Posts { get; set; }
         public int? BoardId { get; set; }
 
+        public Tread() { }
+
         public Tread(int id, List<Post> posts, int boardId) : this(posts)
         {
             Id = id;

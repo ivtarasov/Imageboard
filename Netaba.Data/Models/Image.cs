@@ -13,6 +13,8 @@ namespace Netaba.Data.Models
         public int ViewHeight { get; set; }
         public int ViewWidth { get; set; }
 
+        public Image() { }
+
         public Image(int id, string path, string name, string format, string sizeDesc, int height, int width, int vheight, int vwidth) 
             : this(path, name, format, sizeDesc, height, width, vheight, vwidth)
         {

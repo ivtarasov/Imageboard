@@ -17,10 +17,10 @@ namespace Netaba.Data.Models
             Treads = treads;
         }
 
-        public Board(string name, string descrition)
+        public Board(string name, string description)
         {
             Name = name;
-            Description = descrition;
+            Description = description;
         }
     }
 }
