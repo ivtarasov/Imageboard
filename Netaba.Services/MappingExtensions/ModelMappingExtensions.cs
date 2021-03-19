@@ -19,13 +19,13 @@ namespace Netaba.Services.Mappers
             {
                 Name = board.Name,
                 Description = board.Description,
-                Treads = board.Treads.Select(t => t.ToEntety()).ToList()
+                Treads = board.Treads?.Select(t => t.ToEntety())?.ToList()
             };
 
         public static TreadEntety ToEntety(this Tread tread) =>
             new()
             {
-                Posts = tread.Posts.Select(p => p.ToEntety()).ToList()
+                Posts = tread.Posts?.Select(p => p.ToEntety())?.ToList()
             };
 
         public static PostEntety ToEntety(this Post post) =>
