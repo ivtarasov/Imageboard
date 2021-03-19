@@ -132,7 +132,7 @@ namespace Netaba.Services.Repository
             var posts = _context.Posts.Where(p => postIds.Contains(p.Id));
             var oPosts = posts.Where(p => p.IsOp);
 
-            if (isTreadDeletionAllowed) DeleteTreads(oPosts, ip, password);
+            if (isTreadDeletionAllowed) DeleteTreads(oPosts);
             DeletePosts(posts.Except(oPosts), ip, password);
 
             try
@@ -147,10 +147,9 @@ namespace Netaba.Services.Repository
             return true;
         }
 
-        private void DeleteTreads(IEnumerable<PostEntety> oPosts, string ip, string password)
+        private void DeleteTreads(IEnumerable<PostEntety> oPosts)
         {
-            var treadIds = oPosts.Where(p => PassChecker.Check(p.PassHash, ip, password)).Select(p => p.TreadId);
-
+            var treadIds = oPosts.Select(p => p.TreadId);
             var treads = _context.Treads.Where(t => treadIds.Contains(t.Id));
 
             _context.Treads.RemoveRange(treads);
