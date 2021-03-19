@@ -9,6 +9,6 @@ namespace Netaba.Data.Enteties
         public int Id { get; set; }
         public string Name { get; set; }
         public byte[] PassHash { get; set; }
-        public Role? Role { get; set; }
+        public Role Role { get; set; }
     }
 }
