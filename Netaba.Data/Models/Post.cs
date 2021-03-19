@@ -6,8 +6,8 @@ namespace Netaba.Data.Models
 {
     public class Post : IValidatableObject
     {
-        public int Id { get; }
-        public string PosterName { get; }
+        public int Id { get; set; }
+        public string PosterName { get; set; }
         [DisplayFormat(DataFormatString = "G")]
         public DateTime Time { get; }
         [DataType(DataType.MultilineText)]
@@ -15,16 +15,16 @@ namespace Netaba.Data.Models
         public string Message { get; set; }
         [StringLength(35, ErrorMessage = "Too long title. Limit: 35 characters.")]
         public string Title { get; }
-        public bool IsOp { get; }
-        public bool IsSage { get; }
+        public bool IsOp { get; set; }
+        public bool IsSage { get; set; }
         [DataType(DataType.Password)]
         [StringLength(20, ErrorMessage = "Too long password. Limit: 20 characters.")]
         public string Password { get; }
-        public string Ip { get; }
+        public string Ip { get; set; }
         [DataType(DataType.Upload)]
         public Image Image { get; }
-        public string BoardName { get; }
-        public int? TreadId { get; }
+        public string BoardName { get; set; }
+        public int? TreadId { get; set; }
         
         public Post(int id, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, int treadId, string boardName)
             : this(message, title, postTime, image, isOp, isSage)
