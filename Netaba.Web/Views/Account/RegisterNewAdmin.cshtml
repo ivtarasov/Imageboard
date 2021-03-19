@@ -5,19 +5,19 @@
 }
 
 <div class="centred">
-    <div id="register-area" class="register_area">
+    <div id="register-area">
         <label id="action" class="action">Register new admin</label>
-        <form id="reply-form" class="reply_form" asp-route="Register">
+        <form id="register-form" class="form" asp-route="Register">
             <div class="validation" asp-validation-summary="All"></div>
             <div class="form_part form_part_flex">
-                <input id="name" class="reply_input" size="10" placeholder="Name" asp-for="Register.Name">
-                <input id="submit" type="submit" class="reply_button" name="Submit" value="Submit">
+                <input id="name" class="input" size="10" placeholder="Name" asp-for="Register.Name">
+                <input id="submit" type="submit" class="button" name="Submit" value="Submit">
             </div>
             <div class="form_part">
-                <input id="password" class="reply_input" placeholder="Password" asp-for="Register.Password">
+                <input id="password" class="input" placeholder="Password" asp-for="Register.Password">
             </div>
             <div class="form_part">
-                <input id="confirm-password" class="reply_input" placeholder="Confirm password" asp-for="Register.ConfirmPassword">
+                <input id="confirm-password" class="input" placeholder="Confirm password" asp-for="Register.ConfirmPassword">
             </div>
         </form>
     </div>

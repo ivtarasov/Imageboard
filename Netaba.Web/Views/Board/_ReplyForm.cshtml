@@ -2,22 +2,22 @@
 
 <div id="post-area" class="post_area">
     <label id="action" class="action">@Model.ActionNameInView</label>
-    <form id="reply-form" class="reply_form" enctype="multipart/form-data"
+    <form id="reply-form" class="form" enctype="multipart/form-data"
           asp-route="@(Model.Action == ReplyFormAction.ReplyToTread ? "Tread" : "Board")"
           asp-route-boardName=@(Model.BoardName) asp-route-treadId=@(Model.TreadId)>
         <div class="validation" asp-validation-summary="All"></div>
         <div class="form_part form_part_flex">
-            <input id="title" class="reply_input" size="10" placeholder="Subject" asp-for="Post.Title">
-            <input id="submit" type="submit" class="reply_button" name="submit" value="Submit">
+            <input id="title" class="input" size="10" placeholder="Subject" asp-for="Post.Title">
+            <input id="submit" type="submit" class="button" name="submit" value="Submit">
         </div>
         <div class="form_part">
-            <textarea id="message" class="reply_input" rows="10" placeholder="Message" asp-for="Post.Message"></textarea>
+            <textarea id="message" class="input" rows="10" placeholder="Message" asp-for="Post.Message"></textarea>
         </div>
         <div class="form_part">
-            <input id="password" class="reply_input" value="12345" placeholder="Password" asp-for="Post.Password">
+            <input id="password" class="input" value="12345" placeholder="Password" asp-for="Post.Password">
         </div>
         <div class="form_part">
-            <div class="reply_options">
+            <div class="options">
                 <label>Go to</label>
                 <select name="dest" asp-items="Html.GetEnumSelectList<Destination>()"></select>
                 <label>Sage</label>
