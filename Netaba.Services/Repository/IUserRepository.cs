@@ -7,7 +7,7 @@ namespace Netaba.Services.Repository
     {
         public Task<bool> TryAddUser(User user);
 
-        public Task<User> FindUser(string name, string password);
-        public Task<User> FindUser(string name);
+        public Task<User> FindUserAsync(string name, string password);
+        public Task<User> FindUseAsync(string name);
     }
 }
