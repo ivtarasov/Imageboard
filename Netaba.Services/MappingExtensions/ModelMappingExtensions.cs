@@ -31,6 +31,7 @@ namespace Netaba.Services.Mappers
         public static PostEntety ToEntety(this Post post) =>
             new()
             {
+                PosterName = post.PosterName,
                 Message = post.Message,
                 Title = post.Title,
                 Time = post.Time,

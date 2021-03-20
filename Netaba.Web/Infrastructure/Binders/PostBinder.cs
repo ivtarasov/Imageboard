@@ -59,7 +59,7 @@ namespace Netaba.Web.Infrastructure.Binders
                 bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, "Unable to upload image.");
             }
 
-            bindingContext.Result = ModelBindingResult.Success(new Post(message, title, DateTime.Now, ip, password, image, isOp, isSage));
+            bindingContext.Result = ModelBindingResult.Success(new Post(bindingContext.HttpContext.User.Identity?.Name, message, title, DateTime.Now, ip, password, image, isOp, isSage));
         }
     }
 }

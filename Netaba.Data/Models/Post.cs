@@ -26,23 +26,24 @@ namespace Netaba.Data.Models
         public string BoardName { get; set; }
         public int? TreadId { get; set; }
         
-        public Post(int id, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, int treadId, string boardName)
-            : this(message, title, postTime, image, isOp, isSage)
+        public Post(int id, string posterName, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage, int treadId, string boardName)
+            : this(posterName, message, title, postTime, image, isOp, isSage)
         {
             Id = id;
             TreadId = treadId;
             BoardName = boardName;
         }
 
-        public Post(string message, string title, DateTime postTime, string ip, string password, Image image, bool isOp, bool isSage)
-            : this(message, title, postTime, image, isOp, isSage)
+        public Post(string posterName, string message, string title, DateTime postTime, string ip, string password, Image image, bool isOp, bool isSage)
+            : this(posterName, message, title, postTime, image, isOp, isSage)
         {
             Ip = ip;
             Password = password;
         }
 
-        private Post(string message, string title, DateTime postTime, Image image, bool isOp, bool isSage)
+        private Post(string posterName, string message, string title, DateTime postTime, Image image, bool isOp, bool isSage)
         {
+            PosterName = posterName;
             Message = message;
             Title = title;
             Time = postTime;
