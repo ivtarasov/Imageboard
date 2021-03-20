@@ -67,8 +67,7 @@ namespace Netaba.Web.Controllers
 
                     return Content($"Success.");
                 }
-                else
-                    ModelState.AddModelError("", "Admin with this name already exists.");
+                else ModelState.AddModelError("", "Admin with this name already exists.");
             }
             return View(new RegisterViewModel(register));
         }
