@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Netaba.Services.Repository;
 using System.Threading.Tasks;
-using System;
 
-namespace Netaba.Web.Infrastructure
+namespace Netaba.Web.Infrastructure.Filters
 {
     public class NavBarFilter : IAsyncActionFilter
     {
