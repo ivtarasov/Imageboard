@@ -29,9 +29,9 @@ namespace Netaba.Services.Repository
 
         public async Task<(bool, int)> TryGetPostLocationAsync(int postId, string boardName)
         {
-            var post = await _context.Posts.Include(p => p.Tread)
-                                           .ThenInclude(t => t.Board)
-                                           .FirstOrDefaultAsync(p => p.Tread.Board.Name == boardName && p.Id == postId);
+            var post = await _context.Posts.AsNoTracking().Include(p => p.Tread)
+                                                              .ThenInclude(t => t.Board)
+                                                          .FirstOrDefaultAsync(p => p.Tread.Board.Name == boardName && p.Id == postId);
 
             if (post == null) return (false, 0);
 
@@ -39,17 +39,24 @@ namespace Netaba.Services.Repository
         }
 
         public async Task<string> GetBoardDescriptionAsync(string boardName) =>
-           (await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName))?.Description;
+           (await _context.Boards.AsNoTracking().FirstOrDefaultAsync(b => b.Name == boardName))?.Description;
 
         public async Task<Board> FindBoardAsync(string boardName) =>
-            (await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName))?.ToModel();
+            (await _context.Boards.AsNoTracking().FirstOrDefaultAsync(b => b.Name == boardName))?.ToModel();
 
         public async Task<List<string>> GetBoardNamesAsync() =>
-            await _context.Boards.Select(b => b.Name).OrderBy(n => n).ToListAsync();
+            await _context.Boards.AsNoTracking().Select(b => b.Name).OrderBy(n => n).ToListAsync();
+
+        public async Task<int> CountTreadsAsync(string boardName)
+        {
+            var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
+
+            return _context.Entry(board).Collection(b => b.Treads).Query().Take(100).Count();
+        }
 
         public async Task<bool> TryAddBoardAsync(Board board)
         {
-            await _context.Boards.AddAsync(board.ToEntety());
+            _context.Boards.Add(board.ToEntety());
 
             try
             {
@@ -71,7 +78,7 @@ namespace Netaba.Services.Repository
             TreadEntety treadEntety = tread.ToEntety();
             treadEntety.Board = board;
 
-            await _context.Treads.AddAsync(treadEntety);
+            _context.Treads.Add(treadEntety);
 
             try
             {
@@ -95,7 +102,7 @@ namespace Netaba.Services.Repository
             PostEntety postEntety = post.ToEntety();
             postEntety.Tread = tread;
 
-            await _context.Posts.AddAsync(postEntety);
+            _context.Posts.Add(postEntety);
 
             try
             {
@@ -109,31 +116,29 @@ namespace Netaba.Services.Repository
             return (true, postEntety.Id);
         }
 
-        public async Task<Board> FindAndLoadBoardAsync(string boardName)
+        public async Task<Board> FindAndLoadBoardAsync(string boardName, int page, int pageSize)
         {
             var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
             if (board == null) return null;
 
-            LoadBoard(board);
+            LoadBoard(board, page, pageSize);
             return board.ToModel();
         }
 
-        private void LoadBoard(BoardEntety board)
+        private void LoadBoard(BoardEntety board, int page, int pageSize)
         {
-            _context.Entry(board).Collection(b => b.Treads).Load();
-
-            foreach (var tread in board.Treads) LoadTread(tread);
-
-            board.Treads = board.Treads.OrderByDescending(t => t.Posts.Take(500).LastOrDefault(p => !p.IsSage)?.Time ?? t.Posts.FirstOrDefault(p => p.IsOp).Time)
-                                       .Take(100)
-                                       .ToList();
+            _context.Entry(board).Collection(b => b.Treads)
+                                 .Query()
+                                 .Include(t => t.Posts)
+                                    .ThenInclude(p => p.Image)
+                                 .OrderByDescending(t => t.Posts.OrderBy(p => p.Time).Take(500).LastOrDefault(p => !p.IsSage || p.IsOp).Time)
+                                 .Skip((page - 1) * pageSize).Take(pageSize)
+                                 .Load();
         }
 
         public async Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId)
         {
-            var tread = await _context.Treads.Include(t => t.Board)
-                                             .FirstOrDefaultAsync(t => t.Board.Name == boardName && t.Id == treadId);
-
+            var tread = await _context.Treads.FirstOrDefaultAsync(t => t.Board.Name == boardName && t.Id == treadId);
             if (tread == null) return null;
 
             LoadTread(tread);
@@ -142,11 +147,29 @@ namespace Netaba.Services.Repository
 
         private void LoadTread(TreadEntety tread)
         {
-            _context.Entry(tread).Collection(t => t.Posts).Load();
+            _context.Entry(tread).Collection(t => t.Posts)
+                                 .Query()
+                                 .Include(p => p.Image)
+                                 .OrderBy(p => p.Time)
+                                 .Load();
+        }
 
-            foreach (var post in tread.Posts) _context.Entry(post).Reference(p => p.Image).Load();
+        public async Task<bool> TryDeleteBoardAsync(Board board)
+        {
+            var boardEntety = board.ToEntety();
+            _context.Attach(boardEntety);
+            _context.Remove(boardEntety);
 
-            tread.Posts = tread.Posts.OrderBy(p => p.Time).ToList();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<bool> TryDeleteAsync(IEnumerable<int> postIds, string ip, string password, bool isTreadDeletionAllowed)

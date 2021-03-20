@@ -10,14 +10,16 @@ namespace Netaba.Services.Repository
         public Task<Board> FindBoardAsync(string boardName);
         public Task<string> GetBoardDescriptionAsync(string boardName);
         public Task<List<string>> GetBoardNamesAsync();
+        public Task<int> CountTreadsAsync(string boardName);
 
         public Task<bool> TryAddBoardAsync(Board board);
         public Task<(bool, int)> TryAddTreadToBoardAsync(Tread tread, string boardName);
         public Task<(bool, int)> TryAddPostToTreadAsync(Post post, string boardName, int treadId);
 
-        public Task<Board> FindAndLoadBoardAsync(string boardName);
+        public Task<Board> FindAndLoadBoardAsync(string boardName, int page, int pageSize);
         public Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId);
 
+        public Task<bool> TryDeleteBoardAsync(Board board);
         public Task<bool> TryDeleteAsync(IEnumerable<int> postIds, string ip, string password, bool isTreadDeletionAllowed);
     }
 }

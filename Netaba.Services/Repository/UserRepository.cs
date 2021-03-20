@@ -17,7 +17,7 @@ namespace Netaba.Services.Repository
 
         public async Task<bool> TryAddUser(User user)
         {
-            await _context.Users.AddAsync(user.ToEntety());
+            _context.Users.Add(user.ToEntety());
 
             try
             {
@@ -35,7 +35,7 @@ namespace Netaba.Services.Repository
         {
             // TODO: Write custom function mapping to use the Netaba.Services.Pass.PassChecker class here
             var passHash = MD5.HashData(Encoding.UTF8.GetBytes(password));
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == name && Enumerable.SequenceEqual(u.PassHash, passHash));
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Name == name && Enumerable.SequenceEqual(u.PassHash, passHash));
 
             if (user == null) return null;
             return user.ToModel();
@@ -43,7 +43,7 @@ namespace Netaba.Services.Repository
 
         public async Task<User> FindUseAsync(string name)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == name);
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Name == name);
 
             if (user == null) return null;
             return user.ToModel();
