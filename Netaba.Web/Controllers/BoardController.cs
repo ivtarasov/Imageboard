@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Netaba.Data.Enums;
 using Netaba.Data.Models;
+using Netaba.Data.ViewModels;
 using Netaba.Services.Repository;
 using Netaba.Services.Markup;
 using Netaba.Services.Mappers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using System.IO;
+using System;
 
 namespace Netaba.Web.Controllers
 {
@@ -14,39 +20,71 @@ namespace Netaba.Web.Controllers
     {
         private readonly IBoardRepository _repository;
         private readonly IParser _parser;
+        private readonly IWebHostEnvironment _appEnvironment;
 
         private readonly int PageSize = 10; // from config in future
         private readonly int PostsFromTreadOnBoardView = 11; //
         
-        public BoardController(IBoardRepository repository, IParser parser)
+        public BoardController(IBoardRepository repository, IParser parser, IWebHostEnvironment appEnvironment)
         {
             _repository = repository;
             _parser = parser;
+            _appEnvironment = appEnvironment;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = nameof(Role.SuperAdmin))]
+        [Route("/add_board", Name = "BoardAdding")]
+        public IActionResult AddBoard()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("/add_board", Name = "BoardAdding")]
+        [Authorize(Roles = nameof(Role.SuperAdmin))]
+        public async Task<IActionResult> AddBoard(Board board)
+        {
+            if (ModelState.IsValid)
+            {
+                var rboard = await _repository.FindBoardAsync(board.Name);
+                if (rboard == null)
+                {
+                    bool isSuccess = await _repository.TryAddBoardAsync(board);
+                    if (isSuccess)
+                    {
+                        return Content("Success.");
+                    }
+                    else return BadRequest();
+                }
+                else ModelState.AddModelError("", "Board with this name already exists.");
+            }
+            return View(new AddBoardViewModel(board));
         }
 
         [HttpGet]
         [Route("/{boardName}", Name = "Board")]
         [Route("/{boardName}/{treadId}", Name = "Tread")]
-        public async Task<IActionResult> CreatePostAsync(string boardName, int? treadId, int? page = 1)
+        public async Task<IActionResult> CreatePost(string boardName, int? treadId, int? page = 1)
         {
-            if (treadId == null) return await StartNewTreadAsync(boardName, page.Value);
-            else return await ReplyToTreadAsync(boardName, treadId.Value);
+            if (treadId == null) return await StartNewTread(boardName, page.Value);
+            else return await ReplyToTread(boardName, treadId.Value);
         }
 
         [HttpPost]
         [Route("/{boardName}", Name = "Board")]
         [Route("/{boardName}/{treadId}", Name = "Tread")]
-        public async Task<IActionResult> CreatePostAsync(Post post, string boardName, int? treadId, Destination dest)
+        public async Task<IActionResult> CreatePost(Post post, string boardName, int? treadId, Destination dest)
         {
             if (post == null) return BadRequest(); // it means that something like "Request body too large." happened
 
-            if (post.IsOp) return await StartNewTreadAsync(post, boardName, dest);
-            else return await ReplyToTreadAsync(post, boardName, treadId.Value, dest);
+            if (post.IsOp) return await StartNewTread(post, boardName, dest);
+            else return await ReplyToTread(post, boardName, treadId.Value, dest);
         }
 
         [HttpPost]
         [Route("/delete", Name = "Delete")]
-        public async Task<IActionResult> DeleteAsync(Dictionary<int, int> ids, string boardName, string password)
+        public async Task<IActionResult> Delete(Dictionary<int, int> ids, string boardName, string password)
         {
             if (ids == null) return RedirectToRoute("Board", new { boardName });
 
@@ -58,7 +96,7 @@ namespace Netaba.Web.Controllers
         }
 
         [NonAction]
-        private async Task<IActionResult> ReplyToTreadAsync(string boardName, int treadId)
+        private async Task<IActionResult> ReplyToTread(string boardName, int treadId)
         {
             var tread = await _repository.FindAndLoadTreadAsync(boardName, treadId);
             if (tread == null) return NotFound();
@@ -67,7 +105,7 @@ namespace Netaba.Web.Controllers
         }
 
         [NonAction]
-        private async Task<IActionResult> ReplyToTreadAsync(Post post, string boardName, int treadId, Destination dest)
+        private async Task<IActionResult> ReplyToTread(Post post, string boardName, int treadId, Destination dest)
         {
             if (!ModelState.IsValid)
             {
@@ -88,7 +126,7 @@ namespace Netaba.Web.Controllers
         }
 
         [NonAction]
-        private async Task<IActionResult> StartNewTreadAsync(string boardName, int page)
+        private async Task<IActionResult> StartNewTread(string boardName, int page)
         {
             var board = await _repository.FindAndLoadBoardAsync(boardName);
             if (board == null) return NotFound();
@@ -97,7 +135,7 @@ namespace Netaba.Web.Controllers
         }
 
         [NonAction]
-        private async Task<IActionResult> StartNewTreadAsync(Post post, string boardName, Destination dest)
+        private async Task<IActionResult> StartNewTread(Post post, string boardName, Destination dest)
         {
             if (!ModelState.IsValid)
             {

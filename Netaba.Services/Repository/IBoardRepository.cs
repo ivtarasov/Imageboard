@@ -7,8 +7,11 @@ namespace Netaba.Services.Repository
     public interface IBoardRepository
     {
         public Task<(bool, int)> TryGetPostLocationAsync(int postId, string boardName);
+        public Task<Board> FindBoardAsync(string boardName);
         public Task<string> GetBoardDescriptionAsync(string boardName);
+        public Task<List<string>> GetBoardNamesAsync();
 
+        public Task<bool> TryAddBoardAsync(Board board);
         public Task<(bool, int)> TryAddTreadToBoardAsync(Tread tread, string boardName);
         public Task<(bool, int)> TryAddPostToTreadAsync(Post post, string boardName, int treadId);
 

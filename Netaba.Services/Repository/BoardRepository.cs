@@ -41,6 +41,28 @@ namespace Netaba.Services.Repository
         public async Task<string> GetBoardDescriptionAsync(string boardName) =>
            (await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName))?.Description;
 
+        public async Task<Board> FindBoardAsync(string boardName) =>
+            (await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName))?.ToModel();
+
+        public async Task<List<string>> GetBoardNamesAsync() =>
+            await _context.Boards.Select(b => b.Name).OrderBy(n => n).ToListAsync();
+
+        public async Task<bool> TryAddBoardAsync(Board board)
+        {
+            await _context.Boards.AddAsync(board.ToEntety());
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public async Task<(bool, int)> TryAddTreadToBoardAsync(Tread tread, string boardName)
         {
             var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);

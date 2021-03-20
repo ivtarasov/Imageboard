@@ -1,0 +1,17 @@
+﻿@model AddBoardViewModel
+
+<div class="centred">
+    <div id="addboard-area">
+        <label id="action" class="action">Add new board</label>
+        <form id="addboard-form" class="form" asp-route="BoardAdding">
+            <div class="validation" asp-validation-summary="All"></div>
+            <div class="form_part form_part_flex">
+                <input id="name" class="input" size="10" placeholder="Name" asp-for="Board.Name">
+                <input id="submit" type="submit" class="button" name="Submit" value="Submit">
+            </div>
+            <div class="form_part">
+                <input id="description" class="input" placeholder="Description" asp-for="Board.Description">
+            </div>
+        </form>
+    </div>
+</div>
