@@ -117,7 +117,6 @@ ul, ol {
 }
 
 a, a:visited {
-	text-decoration: none;
 	color: #0000EE;
 }
 
@@ -267,4 +266,16 @@ a:hover {
 .board_description {
 	font-size: xx-large;
 	height: 2em;
+}
+
+.nav_bar {
+
+}
+
+.login_bar {
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
 }

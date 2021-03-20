@@ -10,6 +10,7 @@ using Netaba.Services.ImageHandling;
 using Netaba.Services.Markup;
 using Netaba.Services.Repository;
 using Netaba.Web.Infrastructure.Binders;
+using Netaba.Web.Infrastructure;
 
 namespace Netaba.Web
 {
@@ -39,6 +40,7 @@ namespace Netaba.Web
 
             services.AddControllersWithViews(options =>
             {
+                options.Filters.Add(typeof(NavBarFilter));
                 options.ModelBinderProviders.Insert(0, new PostBinderProvider());
             });
 

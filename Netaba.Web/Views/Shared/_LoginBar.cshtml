@@ -1,0 +1,19 @@
+﻿
+<div id="log-bar" class="login_bar">
+    @if (!User.Identity.IsAuthenticated)
+    {
+        @("[")<a asp-route="Login">Login</a>@("]")
+    }
+    else
+    {
+        <span>[Logged in as @User.Identity.Name]</span>
+        @("[")<a asp-route="Logout">Logout</a>@("]")
+        <div>
+            @if (User.IsInRole(nameof(Role.SuperAdmin)))
+            {
+                @("[")<a asp-route="AddBoard">Add board</a>@("]")
+                @("[")<a asp-route="Register">Add admin</a>@("]")
+            }
+        </div>
+    }
+</div>

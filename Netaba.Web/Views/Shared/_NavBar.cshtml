@@ -1,0 +1,26 @@
+﻿
+@{
+    List<string> boardNames = ViewBag.BoardNames;
+    int i = 0;
+    int step = 20;
+}
+
+<div id="nav-bar" class="nav_bar">
+    @while (true)
+    {
+        var names = boardNames.Skip(i * step).Take(step);
+        if (names.Count() == 0) break;
+
+        <div>
+            @("[/")
+            @foreach (var name in names)
+            {
+                <a asp-route="Board" asp-route-boardName=@name>@name</a>
+                @("/")
+            }
+            ]
+        </div>
+
+        i++;
+    }
+</div>

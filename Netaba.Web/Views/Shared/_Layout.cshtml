@@ -8,8 +8,12 @@
 </head>
 
 <body>
-    <header></header>
+    <header class="header">
+        @await Html.PartialAsync("_LoginBar")
+        @await Html.PartialAsync("_NavBar")
+    </header>
     @RenderBody()
-    <footer></footer>
+    <footer>
+    </footer>
 </body>
 </html>
