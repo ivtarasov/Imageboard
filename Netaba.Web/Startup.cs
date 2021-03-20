@@ -10,7 +10,7 @@ using Netaba.Services.ImageHandling;
 using Netaba.Services.Markup;
 using Netaba.Services.Repository;
 using Netaba.Web.Infrastructure.Binders;
-using Netaba.Web.Infrastructure;
+using Netaba.Web.Infrastructure.Filters;
 
 namespace Netaba.Web
 {
