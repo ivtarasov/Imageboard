@@ -15,9 +15,27 @@ namespace Netaba.Services.Repository
         private readonly UserDbContext _context;
         public UserRepository(UserDbContext context) => _context = context;
 
-        public async Task<bool> TryAddUser(User user)
+        public async Task<bool> TryAddUserAsync(User user)
         {
             _context.Users.Add(user.ToEntety());
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> TryDeleteUserAsync(User user)
+        {
+            var userEntety = user.ToEntety();
+            _context.Attach(userEntety);
+            _context.Remove(userEntety);
 
             try
             {

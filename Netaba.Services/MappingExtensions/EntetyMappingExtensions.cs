@@ -23,6 +23,6 @@ namespace Netaba.Services.Mappers
             new(image.Id, image.Path, image.Name, image.Format, image.SizeDesc, image.Height, image.Width, image.ViewHeight, image.ViewWidth);
 
         public static User ToModel(this UserEntety user) =>
-            new(user.Name, user.Role);
+            new(user.Id, user.Name, user.Role);
     }
 }

@@ -9,6 +9,7 @@ using Netaba.Services.Repository;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Netaba.Web.Controllers
 {
@@ -35,7 +36,7 @@ namespace Netaba.Web.Controllers
                 if (user != null)
                 {
                     await Authenticate(user);
-                    return Content($"Success.");
+                    return RedirectToRoute("Login");
                 }
                 ModelState.AddModelError("", "Invalid name and(or) password.");
             }
@@ -44,7 +45,7 @@ namespace Netaba.Web.Controllers
         }
         
         [HttpGet]
-        [Route("/register", Name = "Register")]
+        [Route("/add_admin", Name = "Register")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
         public IActionResult RegisterNewAdmin()
         {
@@ -53,7 +54,7 @@ namespace Netaba.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("/register", Name = "Register")]
+        [Route("/add_admin", Name = "Register")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
         public async Task<IActionResult> RegisterNewAdmin(Register register)
         {
@@ -62,16 +63,44 @@ namespace Netaba.Web.Controllers
                 if (await _repository.FindUseAsync(register.Name) == null)
                 {
                     var user = new User(register.Name, Role.Admin, register.Password);
-                    await _repository.TryAddUser(user);
-                    await Authenticate(user);
+                    await _repository.TryAddUserAsync(user);
 
-                    return Content($"Success.");
+                    return RedirectToRoute("Register");
                 }
                 else ModelState.AddModelError("", "Admin with this name already exists.");
             }
             return View(new RegisterViewModel(register));
         }
 
+        [HttpGet]
+        [Route("/del_admin", Name = "DeleteAdmin")]
+        [Authorize(Roles = nameof(Role.SuperAdmin))]
+        public IActionResult DeleteAdmin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("/del_admin", Name = "AdminDeleting")]
+        [Authorize(Roles = nameof(Role.SuperAdmin))]
+        public async Task<IActionResult> DeleteAdmin([Required(ErrorMessage = "Name is not specified.")] string adminName)
+        {
+            if (ModelState.IsValid)
+            {
+                var ruser = await _repository.FindUseAsync(adminName);
+                if (await _repository.FindUseAsync(adminName) != null)
+                {
+                    await _repository.TryDeleteUserAsync(ruser);
+
+                    return RedirectToRoute("AdminDeleting");
+                }
+                else ModelState.AddModelError("", "Admin with this name does not exist.");
+            }
+            return View(new DeleteAdminViewModel(adminName));
+        }
+
+        [HttpGet]
         [Route("/logout", Name = "Logout")]
         public async Task<IActionResult> Logout()
         {

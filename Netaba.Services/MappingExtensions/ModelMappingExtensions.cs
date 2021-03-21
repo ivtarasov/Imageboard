@@ -61,9 +61,10 @@ namespace Netaba.Services.Mappers
         public static UserEntety ToEntety(this User user) =>
             new()
             {
+                Id = user.Id,
                 Name = user.Name,
                 Role = user.Role,
-                PassHash = HashGenerator.GetHash(user.Password)
+                PassHash = HashGenerator.GetHash(user.Password ?? "")
             };
 
         public static CreatePostViewModel ToCreatePostViewModel(this Tread tread, string boardName, string boardDescription, Post post = null)
