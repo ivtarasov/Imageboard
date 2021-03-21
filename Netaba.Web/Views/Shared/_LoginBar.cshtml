@@ -12,7 +12,7 @@
             @if (User.IsInRole(nameof(Role.SuperAdmin)))
             {
                 @("[")<a asp-route="BoardAdding">Add board</a>@("]")
-                @("[")<a asp-route="Register">Add admin</a>@("]")
+                @("[")<a asp-route="AdminAdding">Add admin</a>@("]")
             }
         </div>
     }

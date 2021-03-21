@@ -5,9 +5,9 @@
 }
 
 <div class="centred">
-    <div id="register-area">
-        <label id="action" class="action">Register new admin</label>
-        <form id="register-form" class="form" asp-route="Register">
+    <div id="add-admin-area">
+        <label id="action" class="action">Add new admin</label>
+        <form id="register-form" class="form" asp-route="AdminAdding">
             <div class="validation" asp-validation-summary="All"></div>
             <div class="form_part form_part_flex">
                 <input id="name" class="input" size="10" placeholder="Name" asp-for="Register.Name">

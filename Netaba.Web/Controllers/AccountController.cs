@@ -45,18 +45,18 @@ namespace Netaba.Web.Controllers
         }
         
         [HttpGet]
-        [Route("/add_admin", Name = "Register")]
+        [Route("/add_admin", Name = "AdminAdding")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
-        public IActionResult RegisterNewAdmin()
+        public IActionResult AddAdmin()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("/add_admin", Name = "Register")]
+        [Route("/add_admin", Name = "AdminAdding")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
-        public async Task<IActionResult> RegisterNewAdmin(Register register)
+        public async Task<IActionResult> AddAdmin(Register register)
         {
             if (ModelState.IsValid)
             {
