@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Netaba.Data.Enums;
 using Netaba.Data.Models;
@@ -19,16 +18,14 @@ namespace Netaba.Web.Controllers
     {
         private readonly IBoardRepository _repository;
         private readonly IParser _parser;
-        private readonly IWebHostEnvironment _appEnvironment;
 
         private readonly int PageSize = 10; // from config in future
         private readonly int PostsFromTreadOnBoardView = 11; //
         
-        public BoardController(IBoardRepository repository, IParser parser, IWebHostEnvironment appEnvironment)
+        public BoardController(IBoardRepository repository, IParser parser)
         {
             _repository = repository;
             _parser = parser;
-            _appEnvironment = appEnvironment;
         }
 
         [HttpGet]
@@ -63,14 +60,14 @@ namespace Netaba.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
-        [Route("/delete_board", Name = "BoardDeleting")]
+        [Route("/del_board", Name = "BoardDeleting")]
         public IActionResult DeleteBoard()
         {
             return View();
         }
 
         [HttpPost]
-        [Route("/delete_board", Name = "BoardDeleting")]
+        [Route("/del_board", Name = "BoardDeleting")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
         public async Task<IActionResult> DeleteBoard([Required(ErrorMessage = "Name is not specified.")] string boardName)
         {
@@ -89,6 +86,23 @@ namespace Netaba.Web.Controllers
                 else ModelState.AddModelError("", "Board with this name does not exist.");
             }
             return View(new DeleteBoardViewModel(boardName));
+        }
+
+        [HttpPost]
+        [Route("/del_posts", Name = "PostDeleting")]
+        public async Task<IActionResult> Delete([Required] Dictionary<int, int> ids, [Required] string boardName, string password)
+        {
+            if (!ModelState.IsValid)
+            {
+                if (boardName != null) return RedirectToRoute("Board", new { boardName });
+                else return BadRequest();
+            }
+
+            bool isAdminRequest = User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.SuperAdmin));
+            bool isSuccess = await _repository.TryDeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password, isAdminRequest);
+            if (!isSuccess) return BadRequest();
+
+            return RedirectToRoute("Board", new { boardName });
         }
 
         [HttpGet]
@@ -111,19 +125,6 @@ namespace Netaba.Web.Controllers
             else return await ReplyToTread(post, boardName, treadId.Value, dest);
         }
 
-        [HttpPost]
-        [Route("/delete", Name = "Delete")]
-        public async Task<IActionResult> Delete(Dictionary<int, int> ids, string boardName, string password)
-        {
-            if (ids == null) return RedirectToRoute("Board", new { boardName });
-
-            bool isAdminRequest = User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.SuperAdmin));
-            bool isSuccess = await _repository.TryDeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password, isAdminRequest);
-            if (!isSuccess) return BadRequest();
-
-            return RedirectToRoute("Board", new { boardName });
-        }
-
         [NonAction]
         private async Task<IActionResult> ReplyToTread(string boardName, int treadId)
         {
@@ -138,6 +139,8 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                if (boardName == null) return BadRequest();
+
                 var tread = await _repository.FindAndLoadTreadAsync(boardName, treadId);
                 if (tread == null) return NotFound();
 
@@ -171,6 +174,8 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                if (boardName == null) return BadRequest();
+
                 var board = await _repository.FindAndLoadBoardAsync(boardName, 1, PageSize);
                 if (board == null) return NotFound();
 
