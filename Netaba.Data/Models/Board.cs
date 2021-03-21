@@ -5,6 +5,7 @@ namespace Netaba.Data.Models
 {
     public class Board
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Name is not specified.")]
         [StringLength(5, ErrorMessage = "Too long name. Limit: 5 characters.")]
         public string Name { get; set; }
@@ -15,17 +16,16 @@ namespace Netaba.Data.Models
 
         public Board() { }
 
-        public Board(string name, string descrition, List<Tread> treads)
+        public Board(int id, string name, string description, List<Tread> treads) : this(name, description, treads)
         {
-            Name = name;
-            Description = descrition;
-            Treads = treads;
+            Id = id;
         }
 
-        public Board(string name, string description)
+        public Board(string name, string description, List<Tread> treads)
         {
             Name = name;
             Description = description;
+            Treads = treads;
         }
     }
 }

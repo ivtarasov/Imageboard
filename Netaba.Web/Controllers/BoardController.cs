@@ -10,9 +10,8 @@ using Netaba.Services.Markup;
 using Netaba.Services.Mappers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
-using System.IO;
-using System;
 
 namespace Netaba.Web.Controllers
 {
@@ -60,6 +59,36 @@ namespace Netaba.Web.Controllers
                 else ModelState.AddModelError("", "Board with this name already exists.");
             }
             return View(new AddBoardViewModel(board));
+        }
+
+        [HttpGet]
+        [Authorize(Roles = nameof(Role.SuperAdmin))]
+        [Route("/delete_board", Name = "BoardDeleting")]
+        public IActionResult DeleteBoard()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("/delete_board", Name = "BoardDeleting")]
+        [Authorize(Roles = nameof(Role.SuperAdmin))]
+        public async Task<IActionResult> DeleteBoard([Required(ErrorMessage = "Name is not specified.")] string boardName)
+        {
+            if (ModelState.IsValid)
+            {
+                var rboard = await _repository.FindBoardAsync(boardName);
+                if (rboard != null)
+                {
+                    bool isSuccess = await _repository.TryDeleteBoardAsync(rboard);
+                    if (isSuccess)
+                    {
+                        return RedirectToRoute("BoardDeleting");
+                    }
+                    else return BadRequest();
+                }
+                else ModelState.AddModelError("", "Board with this name does not exist.");
+            }
+            return View(new DeleteBoardViewModel(boardName));
         }
 
         [HttpGet]
@@ -128,10 +157,13 @@ namespace Netaba.Web.Controllers
         [NonAction]
         private async Task<IActionResult> StartNewTread(string boardName, int page)
         {
-            var board = await _repository.FindAndLoadBoardAsync(boardName);
+            if (page <= 0) return BadRequest();
+
+            var board = await _repository.FindAndLoadBoardAsync(boardName, page, PageSize);
             if (board == null) return NotFound();
 
-            return View(board.ToCreatePostViewModel(PostsFromTreadOnBoardView, PageSize, page: page));
+            var count = await _repository.CountTreadsAsync(boardName);
+            return View(board.ToCreatePostViewModel(PostsFromTreadOnBoardView, count, PageSize, page: page));
         }
 
         [NonAction]
@@ -139,10 +171,11 @@ namespace Netaba.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var board = await _repository.FindAndLoadBoardAsync(boardName);
+                var board = await _repository.FindAndLoadBoardAsync(boardName, 1, PageSize);
                 if (board == null) return NotFound();
 
-                return View(board.ToCreatePostViewModel(PostsFromTreadOnBoardView, PageSize, post: post));
+                var count = await _repository.CountTreadsAsync(boardName);
+                return View(board.ToCreatePostViewModel(PostsFromTreadOnBoardView, count, PageSize, post: post));
             }
 
             await post.ParseMessageAsync(_parser, boardName);

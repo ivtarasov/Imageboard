@@ -1,0 +1,18 @@
+﻿@model DeleteBoardViewModel
+
+@{
+    ViewData["Title"] = "Delete board";
+}
+
+<div class="centred">
+    <div id="delete-board-area">
+        <label id="action" class="action">Delete board</label>
+        <form id="delete-board-form" class="form" asp-route="BoardDeleting">
+            <div class="validation" asp-validation-summary="All"></div>
+            <div class="form_part form_part_flex">
+                <input id="name" class="input" size="10" placeholder="Name" asp-for="BoardName">
+                <input id="submit" type="submit" class="button" name="Submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>

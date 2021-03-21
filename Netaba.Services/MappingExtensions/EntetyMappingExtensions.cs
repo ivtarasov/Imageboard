@@ -11,7 +11,7 @@ namespace Netaba.Services.Mappers
     public static class EntetyMappingExtensions 
     {
         public static Board ToModel(this BoardEntety board) =>
-            new(board.Name, board.Description, board.Treads?.Select(t => t.ToModel())?.ToList());
+            new(board.Id, board.Name, board.Description, board.Treads?.Select(t => t.ToModel())?.ToList());
 
         public static Tread ToModel(this TreadEntety tread) =>
             new(tread.Id, tread.Posts?.Select(p => p.ToModel())?.ToList(), tread.BoardId);

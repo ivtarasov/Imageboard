@@ -17,6 +17,7 @@ namespace Netaba.Services.Mappers
         public static BoardEntety ToEntety(this Board board) =>
             new()
             {
+                Id = board.Id,
                 Name = board.Name,
                 Description = board.Description,
                 Treads = board.Treads?.Select(t => t.ToEntety())?.ToList()
@@ -25,12 +26,14 @@ namespace Netaba.Services.Mappers
         public static TreadEntety ToEntety(this Tread tread) =>
             new()
             {
+                Id = tread.Id,
                 Posts = tread.Posts?.Select(p => p.ToEntety())?.ToList()
             };
 
         public static PostEntety ToEntety(this Post post) =>
             new()
             {
+                Id = post.Id,
                 PosterName = post.PosterName,
                 Message = post.Message,
                 Title = post.Title,
@@ -44,6 +47,7 @@ namespace Netaba.Services.Mappers
         public static ImageEntety ToEntety(this Image image) =>
             new()
             {
+                Id = image.Id,
                 Name = image.Name,
                 SizeDesc = image.SizeDesc,
                 Format = image.Format,
@@ -70,14 +74,11 @@ namespace Netaba.Services.Mappers
             return new CreatePostViewModel(new List<TreadViewModel> { treadViewModel }, boardName, post, boardDescription, tread.Id);
         }
 
-        public static CreatePostViewModel ToCreatePostViewModel(this Board board, int postsFromTreadOnBoardView, int pageSize, int page = 1, Post post = null)
+        public static CreatePostViewModel ToCreatePostViewModel(this Board board, int postsFromTreadOnBoardView, int count, int pageSize, int page = 1, Post post = null)
         {
-            var count = board.Treads.Count;
             var pageViewModel = new PageViewModel(count, page, pageSize, board.Name);
 
-            var treads = board.Treads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            var treadViewModels = treads.Select(t =>
+            var treadViewModels = board.Treads.Select(t =>
                                     new TreadViewModel(t.Posts.Select((p, i) =>
                                         new PostViewModel(p, ++i, true)).ToList(), postsFromTreadOnBoardView, t.Id)).ToList();
 
