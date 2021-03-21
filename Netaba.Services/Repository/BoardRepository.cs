@@ -51,7 +51,7 @@ namespace Netaba.Services.Repository
         {
             var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
 
-            return _context.Entry(board).Collection(b => b.Treads).Query().Take(100).Count();
+            return _context.Entry(board).Collection(b => b.Treads).Query().AsNoTracking().Take(100).Count();
         }
 
         public async Task<bool> TryAddBoardAsync(Board board)
@@ -129,7 +129,7 @@ namespace Netaba.Services.Repository
         {
             _context.Entry(board).Collection(b => b.Treads)
                                  .Query()
-                                 .Include(t => t.Posts)
+                                 .Include(t => t.Posts.OrderBy(p => p.Time))
                                     .ThenInclude(p => p.Image)
                                  .OrderByDescending(t => t.Posts.OrderBy(p => p.Time).Take(500).LastOrDefault(p => !p.IsSage || p.IsOp).Time)
                                  .Skip((page - 1) * pageSize).Take(pageSize)
@@ -138,7 +138,8 @@ namespace Netaba.Services.Repository
 
         public async Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId)
         {
-            var tread = await _context.Treads.FirstOrDefaultAsync(t => t.Board.Name == boardName && t.Id == treadId);
+            var tread = await _context.Treads.Include(t => t.Board)
+                                             .FirstOrDefaultAsync(t => t.Board.Name == boardName && t.Id == treadId);
             if (tread == null) return null;
 
             LoadTread(tread);
