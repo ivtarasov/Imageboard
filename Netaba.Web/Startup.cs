@@ -26,10 +26,10 @@ namespace Netaba.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<UserDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("UsersConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("UsersDbConnection")));
 
             services.AddDbContext<BoardDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("BoardsConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("BoardsDbConnection")));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options =>

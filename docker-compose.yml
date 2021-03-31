@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  netaba.web:
+    image: ${DOCKER_REGISTRY-}netabaweb
+    build:
+      context: .
+      dockerfile: Netaba.Web/Dockerfile
+    container_name: netaba.web.dev.local
+    domainname: netaba.web.dev.local
+    hostname: netaba.web.dev.local
+    ports:
+      - "8080:80"
+      - "35443:443"
+    depends_on:
+      - db
+
+  db:
+    container_name: netaba.db.dev.local
+    domainname: netaba.db.dev.local
+    hostname: netaba.db.dev.local
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    user: root
+    environment:
+      MSSQL_SA_PASSWORD: "dev_passworD@456987123"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_IP_ADDRESS: "0.0.0.0"
+    ports:
+      - 31433:1433
+    volumes:
+      - "netaba_mssql:/var/opt/mssql"
+      - "C:/docker-linux/netaba/db_backups:/var/db_backups"
+
+volumes:
+  netaba_mssql:

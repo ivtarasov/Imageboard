@@ -1,27 +1,20 @@
-﻿{
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:57695",
-      "sslPort": 44398
-    }
-  },
+{
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "Imageboard.Web": {
+    "Hikkaba.Web": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__BoardsDbConnection": "Server=(localdb)\\mssqllocaldb;Initial Catalog=Netaba.Boards;Integrated Security=true;",
+        "ConnectionStrings__UsersDbConnection": "Server=(localdb)\\mssqllocaldb;Initial Catalog=Netaba.Users;Integrated Security=true;",
+        "Logging__IncludeScopes": "false",
+        "Logging__LogLevel__Default": "Trace",
+        "Logging__LogLevel__System": "Warning",
+        "Logging__LogLevel__Microsoft": "Warning",
+        "Logging__LogLevel__Microsoft.Hosting.Lifetime": "Information",
+        "AllowedHosts": "*"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }
   }
 }
