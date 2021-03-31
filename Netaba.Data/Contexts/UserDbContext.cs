@@ -4,6 +4,8 @@ using Netaba.Data.Enums;
 using System.Security.Cryptography;
 using System.Text;
 
+using System;
+
 namespace Netaba.Data.Contexts
 {
     public class HashGenerator
@@ -24,16 +26,16 @@ namespace Netaba.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            Console.WriteLine("OnModelCreating: Users.");
+
             User Admin = new() {
                                  Id = 1,
                                  Name = nameof(Role.SuperAdmin), 
                                  PassHash = HashGenerator.GetHash("123"), 
                                  Role = Role.SuperAdmin
-            };
+                               };
 
             modelBuilder.Entity<User>().HasData(new User[] { Admin });
-
-            base.OnModelCreating(modelBuilder);
         }
     }
 }
