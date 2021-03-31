@@ -65,7 +65,7 @@ namespace Netaba.Web.Controllers
                     var user = new User(register.Name, Role.Admin, register.Password);
                     await _repository.TryAddUserAsync(user);
 
-                    return RedirectToRoute("Register");
+                    return RedirectToRoute("AdminAdding");
                 }
                 else ModelState.AddModelError("", "Admin with this name already exists.");
             }
