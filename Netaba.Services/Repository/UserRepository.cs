@@ -59,7 +59,7 @@ namespace Netaba.Services.Repository
             return user.ToModel();
         }
 
-        public async Task<User> FindUseAsync(string name)
+        public async Task<User> FindUserAsync(string name)
         {
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Name == name);
 

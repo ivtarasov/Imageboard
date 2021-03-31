@@ -60,7 +60,7 @@ namespace Netaba.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await _repository.FindUseAsync(register.Name) == null)
+                if (await _repository.FindUserAsync(register.Name) == null)
                 {
                     var user = new User(register.Name, Role.Admin, register.Password);
                     await _repository.TryAddUserAsync(user);
@@ -88,8 +88,8 @@ namespace Netaba.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ruser = await _repository.FindUseAsync(adminName);
-                if (await _repository.FindUseAsync(adminName) != null)
+                var ruser = await _repository.FindUserAsync(adminName);
+                if (await _repository.FindUserAsync(adminName) != null)
                 {
                     await _repository.TryDeleteUserAsync(ruser);
 
