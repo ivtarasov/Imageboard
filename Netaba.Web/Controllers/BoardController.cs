@@ -49,7 +49,7 @@ namespace Netaba.Web.Controllers
                     bool isSuccess = await _repository.TryAddBoardAsync(board);
                     if (isSuccess)
                     {
-                        return Content("Success.");
+                        return RedirectToRoute("BoardAdding");
                     }
                     else return BadRequest();
                 }
