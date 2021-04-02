@@ -26,7 +26,6 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Route("/login", Name = "Login")]
         public async Task<IActionResult> Login(Login login)
         {
@@ -53,7 +52,6 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Route("/add_admin", Name = "AdminAdding")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
         public async Task<IActionResult> AddAdmin(Register register)
@@ -63,7 +61,13 @@ namespace Netaba.Web.Controllers
                 if (await _repository.FindUserAsync(register.Name) == null)
                 {
                     var user = new User(register.Name, Role.Admin, register.Password);
-                    await _repository.TryAddUserAsync(user);
+
+                    var isSuccess = await _repository.TryAddUserAsync(user);
+                    if (!isSuccess)
+                    {
+                        ModelState.AddModelError("", "Unable to add admin.");
+                        return View(new RegisterViewModel(register));
+                    }
 
                     return RedirectToRoute("AdminAdding");
                 }
@@ -81,7 +85,6 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Route("/del_admin", Name = "AdminDeleting")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
         public async Task<IActionResult> DeleteAdmin([Required(ErrorMessage = "Name is not specified.")] string adminName)
@@ -91,7 +94,12 @@ namespace Netaba.Web.Controllers
                 var ruser = await _repository.FindUserAsync(adminName);
                 if (await _repository.FindUserAsync(adminName) != null)
                 {
-                    await _repository.TryDeleteUserAsync(ruser);
+                    var isSuccess = await _repository.TryDeleteUserAsync(ruser);
+                    if (!isSuccess)
+                    {
+                        ModelState.AddModelError("", "Unable to delete admin.");
+                        View(new DeleteAdminViewModel(adminName));
+                    }
 
                     return RedirectToRoute("AdminDeleting");
                 }

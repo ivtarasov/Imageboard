@@ -47,11 +47,13 @@ namespace Netaba.Web.Controllers
                 if (rboard == null)
                 {
                     bool isSuccess = await _repository.TryAddBoardAsync(board);
-                    if (isSuccess)
+                    if (!isSuccess)
                     {
-                        return RedirectToRoute("BoardAdding");
+                        ModelState.AddModelError("", "Unable to add board.");
+                        return View(new AddBoardViewModel(board));
                     }
-                    else return BadRequest();
+
+                    return RedirectToRoute("BoardAdding");
                 }
                 else ModelState.AddModelError("", "Board with this name already exists.");
             }
@@ -77,11 +79,13 @@ namespace Netaba.Web.Controllers
                 if (rboard != null)
                 {
                     bool isSuccess = await _repository.TryDeleteBoardAsync(rboard);
-                    if (isSuccess)
+                    if (!isSuccess)
                     {
-                        return RedirectToRoute("BoardDeleting");
+                        ModelState.AddModelError("", "Unable to delete board.");
+                        return View(new DeleteBoardViewModel(boardName));
                     }
-                    else return BadRequest();
+
+                    return RedirectToRoute("BoardAdding");
                 }
                 else ModelState.AddModelError("", "Board with this name does not exist.");
             }
@@ -98,9 +102,9 @@ namespace Netaba.Web.Controllers
                 else return BadRequest();
             }
 
+            //
             bool isAdminRequest = User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.SuperAdmin));
-            bool isSuccess = await _repository.TryDeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password, isAdminRequest);
-            if (!isSuccess) return BadRequest();
+            await _repository.TryDeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password, isAdminRequest);
 
             return RedirectToRoute("Board", new { boardName });
         }
@@ -117,11 +121,9 @@ namespace Netaba.Web.Controllers
         [HttpPost]
         [Route("/{boardName}", Name = "Board")]
         [Route("/{boardName}/{treadId}", Name = "Tread")]
-        public async Task<IActionResult> CreatePost(Post post, string boardName, int? treadId, Destination dest)
+        public async Task<IActionResult> CreatePost([Required] Post post, [Required] string boardName, int? treadId, [Required] Destination dest)
         {
-            if (post == null) return BadRequest(); // it means that something like "Request body too large." happened
-
-            if (post.IsOp) return await StartNewTread(post, boardName, dest);
+            if (post?.IsOp ?? true) return await StartNewTread(post, boardName, dest);
             else return await ReplyToTread(post, boardName, treadId.Value, dest);
         }
 
@@ -151,7 +153,15 @@ namespace Netaba.Web.Controllers
 
             var (isSuccess, _) = await _repository.TryAddPostToTreadAsync(post, boardName, treadId);
 
-            if (!isSuccess) return BadRequest();
+            if (!isSuccess)
+            {
+                ModelState.AddModelError("", "Unable to create post.");
+
+                var tread = await _repository.FindAndLoadTreadAsync(boardName, treadId);
+                if (tread == null) return NotFound();
+
+                return View(tread.ToCreatePostViewModel(boardName, await _repository.GetBoardDescriptionAsync(boardName), post));
+            }
 
             if (dest == Destination.Tread) return RedirectToRoute("Tread", new { boardName, treadId});
             else return RedirectToRoute("Board", new { boardName });
@@ -188,7 +198,16 @@ namespace Netaba.Web.Controllers
             var tread = new Tread(new List<Post> { post });
             var (isSuccess, treadId) = await _repository.TryAddTreadToBoardAsync(tread, boardName);
 
-            if (!isSuccess) return BadRequest();
+            if (!isSuccess)
+            {
+                ModelState.AddModelError("", "Unable to create tread.");
+
+                var board = await _repository.FindAndLoadBoardAsync(boardName, 1, PageSize);
+                if (board == null) return NotFound();
+
+                var count = await _repository.CountTreadsAsync(boardName);
+                return View(board.ToCreatePostViewModel(PostsFromTreadOnBoardView, count, PageSize, post: post));
+            }
 
             if (dest == Destination.Board) return RedirectToRoute("Board", new { boardName });
             else return RedirectToRoute("Tread", new { boardName, treadId });
