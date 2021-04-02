@@ -12,8 +12,10 @@
         @await Html.PartialAsync("_LoginBar")
         @await Html.PartialAsync("_NavBar")
     </header>
+
     @RenderBody()
-    <footer>
-    </footer>
+
+    <script src="~/scripts/dist/jquery.min.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 </body>
 </html>

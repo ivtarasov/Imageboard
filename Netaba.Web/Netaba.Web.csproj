@@ -18,9 +18,4 @@
     <ProjectReference Include="..\Netaba.Tests\Netaba.Tests.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\js\" />
-    <Folder Include="wwwroot\lib\" />
-  </ItemGroup>
-
 </Project>
