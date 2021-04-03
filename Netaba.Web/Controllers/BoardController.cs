@@ -110,6 +110,13 @@ namespace Netaba.Web.Controllers
         }
 
         [HttpGet]
+        [Route("/", Name = "MainPage")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
         [Route("/{boardName}", Name = "Board")]
         [Route("/{boardName}/{treadId}", Name = "Tread")]
         public async Task<IActionResult> CreatePost(string boardName, int? treadId, int? page = 1)
