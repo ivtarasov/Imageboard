@@ -16,16 +16,7 @@ namespace Netaba.Services.Repository
     public class BoardRepository: IBoardRepository
     {
         private readonly BoardDbContext _context;
-        public BoardRepository(BoardDbContext context)
-        {
-            _context = context;
-
-            if (!_context.Boards.Any())
-            {
-                _context.Boards.AddRange(TestDataGenerator.GenerateData());
-                _context.SaveChanges();
-            }
-        }
+        public BoardRepository(BoardDbContext context) => _context = context;
 
         public async Task<(bool, int)> TryGetPostLocationAsync(int postId, string boardName)
         {
@@ -77,6 +68,7 @@ namespace Netaba.Services.Repository
 
             TreadEntety treadEntety = tread.ToEntety();
             treadEntety.Board = board;
+            treadEntety.TimeOfLastPost = treadEntety.Posts.First().Time;
 
             _context.Treads.Add(treadEntety);
 
@@ -101,6 +93,12 @@ namespace Netaba.Services.Repository
 
             PostEntety postEntety = post.ToEntety();
             postEntety.Tread = tread;
+            
+            if (!postEntety.IsSage)
+            {
+                int count = _context.Entry(tread).Collection(t => t.Posts).Query().Count();
+                if (count < 500) tread.TimeOfLastPost = postEntety.Time;
+            }
 
             _context.Posts.Add(postEntety);
 
@@ -119,6 +117,7 @@ namespace Netaba.Services.Repository
         public async Task<Board> FindAndLoadBoardAsync(string boardName, int page, int pageSize)
         {
             var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
+
             if (board == null) return null;
 
             LoadBoard(board, page, pageSize);
@@ -129,11 +128,12 @@ namespace Netaba.Services.Repository
         {
             _context.Entry(board).Collection(b => b.Treads)
                                  .Query()
-                                 .Include(t => t.Posts.OrderBy(p => p.Time))
-                                    .ThenInclude(p => p.Image)
-                                 .OrderByDescending(t => t.Posts.OrderBy(p => p.Time).Take(500).LastOrDefault(p => !p.IsSage || p.IsOp).Time)
-                                 .Skip((page - 1) * pageSize).Take(pageSize)
+                                 .OrderByDescending(t => t.TimeOfLastPost)
+                                 .Skip((page - 1) * pageSize)
+                                 .Take(pageSize)
                                  .Load();
+
+            foreach (var tread in board.Treads) LoadTread(tread);
         }
 
         public async Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId)
