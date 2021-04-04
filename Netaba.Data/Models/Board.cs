@@ -10,7 +10,7 @@ namespace Netaba.Data.Models
         [StringLength(5, ErrorMessage = "Too long name. Limit: 5 characters.")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Description is not specified.")]
-        [StringLength(15, ErrorMessage = "Too long description. Limit: 15 characters.")]
+        [StringLength(20, ErrorMessage = "Too long description. Limit: 20 characters.")]
         public string Description { get; set; }
         public List<Tread> Treads { get; set; }
 
