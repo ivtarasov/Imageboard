@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Netaba.Data.Contexts;
 using Netaba.Data.Models;
+using Netaba.Data.Services.Hashing;
 using Netaba.Services.Mappers;
-using Netaba.Services.Pass;
 using System;
 using System.Collections.Generic;
 using System.Linq;

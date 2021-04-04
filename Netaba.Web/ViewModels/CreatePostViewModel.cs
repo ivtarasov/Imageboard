@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Netaba.Data.Models;
-using Netaba.Data.Enums;
+using Netaba.Web.Enums;
 
-namespace Netaba.Data.ViewModels
+namespace Netaba.Web.ViewModels
 {
     public class CreatePostViewModel
     {

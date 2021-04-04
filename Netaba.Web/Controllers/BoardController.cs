@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Netaba.Data.Enums;
 using Netaba.Data.Models;
-using Netaba.Data.ViewModels;
-using Netaba.Services.Repository;
 using Netaba.Services.Markup;
-using Netaba.Services.Mappers;
+using Netaba.Services.Repository;
+using Netaba.Web.Enums;
+using Netaba.Web.Services.Mappers;
+using Netaba.Web.ViewModels;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 
 namespace Netaba.Web.Controllers

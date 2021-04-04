@@ -1,5 +1,5 @@
 ﻿
-namespace Netaba.Data.ViewModels
+namespace Netaba.Web.ViewModels
 {
     public class StatusCodeViewModel
     {

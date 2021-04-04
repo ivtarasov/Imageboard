@@ -1,7 +1,7 @@
-﻿using Netaba.Data.Enums;
+﻿using Netaba.Web.Enums;
 using Netaba.Data.Models;
 
-namespace Netaba.Data.ViewModels
+namespace Netaba.Web.ViewModels
 {
     public class ReplyFormViewModel
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace Netaba.Data.Enums
+namespace Netaba.Web.Enums
 {
     public enum ReplyFormAction
     {

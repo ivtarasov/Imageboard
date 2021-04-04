@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Netaba.Services.Pass
+namespace Netaba.Data.Services.Hashing
 {
     public class HashGenerator
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Netaba.Data.ViewModels
+namespace Netaba.Web.ViewModels
 {
     public class DeleteBoardViewModel
     {

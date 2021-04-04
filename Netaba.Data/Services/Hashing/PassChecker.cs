@@ -2,7 +2,7 @@
 using System.Text;
 using System.Linq;
 
-namespace Netaba.Services.Pass
+namespace Netaba.Data.Services.Hashing
 {
     public class PassChecker
     {

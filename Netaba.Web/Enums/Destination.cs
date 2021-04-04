@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Netaba.Data.Enums
+namespace Netaba.Web.Enums
 {
     public enum Destination
     {
