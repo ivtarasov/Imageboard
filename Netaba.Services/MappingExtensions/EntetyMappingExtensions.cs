@@ -10,19 +10,29 @@ namespace Netaba.Services.Mappers
 {
     public static class EntetyMappingExtensions 
     {
-        public static Board ToModel(this BoardEntety board) =>
-            new(board.Id, board.Name, board.Description, board.Treads?.Select(t => t.ToModel())?.ToList());
+        public static Board ToModel(this BoardEntety board)
+        {
+            return new(board.Id, board.Name, board.Description, board.Treads?.Select(t => t.ToModel())?.ToList());
+        }
 
-        public static Tread ToModel(this TreadEntety tread) =>
-            new(tread.Id, tread.Posts?.Select(p => p.ToModel())?.ToList(), tread.BoardId);
+        public static Tread ToModel(this TreadEntety tread)
+        {
+            return new(tread.Id, tread.Posts?.Select(p => p.ToModel())?.ToList(), tread.BoardId);
+        }
 
-        public static Post ToModel(this PostEntety post) =>
-            new(post.Id, post.PosterName, post.Message, post.Title, post.Time, post.Image?.ToModel(), post.IsOp, post.IsSage, post.TreadId, post.Tread?.Board?.Name);
+        public static Post ToModel(this PostEntety post)
+        {
+            return new(post.Id, post.PosterName, post.Message, post.Title, post.Time, post.Image?.ToModel(), post.IsOp, post.IsSage, post.TreadId, post.Tread?.Board?.Name);
+        }
 
-        public static Image ToModel(this ImageEntety image) =>
-            new(image.Id, image.Path, image.Name, image.Format, image.SizeDesc, image.Height, image.Width, image.ViewHeight, image.ViewWidth);
+        public static Image ToModel(this ImageEntety image) 
+        {
+            return new(image.Id, image.Path, image.Name, image.Format, image.SizeDesc, image.Height, image.Width, image.ViewHeight, image.ViewWidth);
+        }
 
-        public static User ToModel(this UserEntety user) =>
-            new(user.Id, user.Name, user.Role);
+        public static User ToModel(this UserEntety user) 
+        {
+            return new(user.Id, user.Name, user.Role);
+        }
     }
 }

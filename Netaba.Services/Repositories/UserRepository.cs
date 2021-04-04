@@ -51,7 +51,7 @@ namespace Netaba.Services.Repository
 
         public async Task<User> FindUserAsync(string name, string password)
         {
-            // TODO: Write custom function mapping to use the Netaba.Services.Pass.PassChecker class here
+            // TODO: 
             var passHash = MD5.HashData(Encoding.UTF8.GetBytes(password));
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Name == name && Enumerable.SequenceEqual(u.PassHash, passHash));
 

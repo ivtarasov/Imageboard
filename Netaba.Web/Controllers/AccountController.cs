@@ -16,7 +16,10 @@ namespace Netaba.Web.Controllers
     public class AccountController : Controller
     {
         private readonly IUserRepository _repository;
-        public AccountController(IUserRepository repository) => _repository = repository;
+        public AccountController(IUserRepository repository)
+        {
+            _repository = repository;
+        }
 
         [HttpGet]
         [Route("/login", Name = "Login")]

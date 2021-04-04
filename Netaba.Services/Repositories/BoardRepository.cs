@@ -29,14 +29,22 @@ namespace Netaba.Services.Repository
             return (true, post.TreadId);
         }
 
-        public async Task<string> GetBoardDescriptionAsync(string boardName) =>
-           (await _context.Boards.AsNoTracking().FirstOrDefaultAsync(b => b.Name == boardName))?.Description;
+        public async Task<string> GetBoardDescriptionAsync(string boardName)
+        {
+            var board = await _context.Boards.AsNoTracking().FirstOrDefaultAsync(b => b.Name == boardName);
+            return board?.Description;
+        }
 
-        public async Task<Board> FindBoardAsync(string boardName) =>
-            (await _context.Boards.AsNoTracking().FirstOrDefaultAsync(b => b.Name == boardName))?.ToModel();
+        public async Task<Board> FindBoardAsync(string boardName)
+        {
+            var board = await _context.Boards.AsNoTracking().FirstOrDefaultAsync(b => b.Name == boardName);
+            return board?.ToModel();
+        }
 
-        public async Task<List<string>> GetBoardNamesAsync() =>
-            await _context.Boards.AsNoTracking().Select(b => b.Name).OrderBy(n => n).ToListAsync();
+        public async Task<List<string>> GetBoardNamesAsync()
+        {
+            return await _context.Boards.AsNoTracking().Select(b => b.Name).OrderBy(n => n).ToListAsync();
+        }
 
         public async Task<int> CountTreadsAsync(string boardName)
         {
@@ -201,7 +209,9 @@ namespace Netaba.Services.Repository
             _context.Treads.RemoveRange(treads);
         }
 
-        private void DeletePosts(IEnumerable<PostEntety> posts, string ip, string password) =>
+        private void DeletePosts(IEnumerable<PostEntety> posts, string ip, string password)
+        {
             _context.Posts.RemoveRange(posts.Where(p => PassChecker.Check(p.PassHash, ip, password)));
+        }
     }
 }

@@ -12,24 +12,29 @@ namespace Netaba.Services.Mappers
 {
     public static class ModelMappingExtensions
     {
-        public static BoardEntety ToEntety(this Board board) =>
-            new()
+        public static BoardEntety ToEntety(this Board board)
+        {
+            return new()
             {
                 Id = board.Id,
                 Name = board.Name,
                 Description = board.Description,
                 Treads = board.Treads?.Select(t => t.ToEntety())?.ToList()
             };
+        }
 
-        public static TreadEntety ToEntety(this Tread tread) =>
-            new()
+        public static TreadEntety ToEntety(this Tread tread)
+        {
+            return new()
             {
                 Id = tread.Id,
                 Posts = tread.Posts?.Select(p => p.ToEntety())?.ToList()
             };
+        }
 
-        public static PostEntety ToEntety(this Post post) =>
-            new()
+        public static PostEntety ToEntety(this Post post) 
+        {
+            return new()
             {
                 Id = post.Id,
                 PosterName = post.PosterName,
@@ -41,9 +46,11 @@ namespace Netaba.Services.Mappers
                 Image = post.Image?.ToEntety(),
                 PassHash = HashGenerator.GetHash(post.Ip, post.Password)
             };
+        }
 
-        public static ImageEntety ToEntety(this Image image) =>
-            new()
+        public static ImageEntety ToEntety(this Image image)
+        {
+            return new()
             {
                 Id = image.Id,
                 Name = image.Name,
@@ -55,14 +62,17 @@ namespace Netaba.Services.Mappers
                 ViewHeight = image.ViewHeight,
                 ViewWidth = image.ViewWidth
             };
+        }
 
-        public static UserEntety ToEntety(this User user) =>
-            new()
+        public static UserEntety ToEntety(this User user)
+        {
+            return new()
             {
                 Id = user.Id,
                 Name = user.Name,
                 Role = user.Role,
                 PassHash = HashGenerator.GetHash(user.Password ?? "")
             };
+        }
     }
 }

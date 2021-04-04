@@ -16,6 +16,9 @@ namespace Netaba.Data.Models
             BoardId = boardId;
         }
 
-        public Tread(List<Post> posts) => Posts = posts;
+        public Tread(List<Post> posts)
+        {
+            Posts = posts;
+        }
     }
 }
