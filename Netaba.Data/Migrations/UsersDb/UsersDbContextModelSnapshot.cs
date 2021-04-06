@@ -9,7 +9,7 @@ using Netaba.Data.Contexts;
 namespace Netaba.Data.Migrations.UsersDb
 {
     [DbContext(typeof(UsersDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
+    partial class UsersDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

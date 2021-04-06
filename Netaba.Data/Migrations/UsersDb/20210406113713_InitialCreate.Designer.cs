@@ -10,7 +10,7 @@ using Netaba.Data.Contexts;
 namespace Netaba.Data.Migrations.UsersDb
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20210405083644_InitialCreate")]
+    [Migration("20210406113713_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
