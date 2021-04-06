@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Netaba.Data.Services.Hashing
 {
@@ -8,12 +6,12 @@ namespace Netaba.Data.Services.Hashing
     {
         public static bool Check(byte[] passHash, string ip, string password)
         {
-            Enumerable.SequenceEqual(MD5.HashData(Encoding.UTF8.GetBytes(ip + password)), passHash);
+            return Enumerable.SequenceEqual(HashGenerator.GetHash(ip, password), passHash);
         }
 
         public static bool Check(byte[] passHash, string password)
         {
-            Enumerable.SequenceEqual(MD5.HashData(Encoding.UTF8.GetBytes(password)), passHash);
+            return Enumerable.SequenceEqual(HashGenerator.GetHash(password), passHash);
         }
     }
 }
