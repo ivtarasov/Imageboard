@@ -16,7 +16,10 @@ namespace Netaba.Services.Repository
     public class BoardRepository: IBoardRepository
     {
         private readonly BoardDbContext _context;
-        public BoardRepository(BoardDbContext context) => _context = context;
+        public BoardRepository(BoardDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<(bool, int)> TryGetPostLocationAsync(int postId, string boardName)
         {
