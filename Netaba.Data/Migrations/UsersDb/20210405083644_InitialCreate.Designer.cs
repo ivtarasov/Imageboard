@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Netaba.Data.Contexts;
 
-namespace Netaba.Data.Migrations
+namespace Netaba.Data.Migrations.UsersDb
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20210404200013_InitialCreate")]
+    [Migration("20210405083644_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,7 @@ namespace Netaba.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<byte[]>("PassHash")
                         .HasColumnType("varbinary(max)");
@@ -38,6 +38,10 @@ namespace Netaba.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Users");
                 });

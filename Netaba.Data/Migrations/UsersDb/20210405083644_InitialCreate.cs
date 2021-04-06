@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Netaba.Data.Migrations
+namespace Netaba.Data.Migrations.UsersDb
 {
     public partial class InitialCreate : Migration
     {
@@ -13,7 +13,7 @@ namespace Netaba.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PassHash = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Role = table.Column<int>(type: "int", nullable: false)
                 },
@@ -21,6 +21,13 @@ namespace Netaba.Data.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Name",
+                table: "Users",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
