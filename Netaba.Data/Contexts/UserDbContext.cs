@@ -10,7 +10,13 @@ namespace Netaba.Data.Contexts
         public UserDbContext(DbContextOptions<UserDbContext> options)
             : base(options)
         {
-            //Database.EnsureCreated();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Name)
+                .IsUnique();
         }
     }
 }
