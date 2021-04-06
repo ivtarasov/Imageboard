@@ -105,7 +105,7 @@ namespace Netaba.Web.Controllers
 
             //
             bool isAdminRequest = User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.SuperAdmin));
-            await _repository.TryDeleteAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password, isAdminRequest);
+            await _repository.TryDeletePostsAndTreadsAsync(ids.Values, HttpContext.Connection.RemoteIpAddress.ToString(), password, isAdminRequest);
 
             return RedirectToRoute("Board", new { boardName });
         }

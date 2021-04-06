@@ -20,6 +20,6 @@ namespace Netaba.Services.Repository
         public Task<Tread> FindAndLoadTreadAsync(string boardName, int treadId);
 
         public Task<bool> TryDeleteBoardAsync(Board board);
-        public Task<bool> TryDeleteAsync(IEnumerable<int> postIds, string ip, string password, bool isTreadDeletionAllowed);
+        public Task<bool> TryDeletePostsAndTreadsAsync(IEnumerable<int> postIds, string ip, string password, bool isTreadDeletionAllowed);
     }
 }

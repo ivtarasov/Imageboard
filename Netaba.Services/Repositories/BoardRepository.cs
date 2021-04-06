@@ -191,7 +191,7 @@ namespace Netaba.Services.Repository
             return true;
         }
 
-        public async Task<bool> TryDeleteAsync(IEnumerable<int> postIds, string ip, string password, bool isTreadDeletionAllowed)
+        public async Task<bool> TryDeletePostsAndTreadsAsync(IEnumerable<int> postIds, string ip, string password, bool isTreadDeletionAllowed)
         {
             var posts = _context.Posts.Where(p => postIds.Contains(p.Id));
             var oPosts = posts.Where(p => p.IsOp);
