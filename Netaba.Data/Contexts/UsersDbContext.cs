@@ -3,11 +3,11 @@ using Netaba.Data.Enteties;
 
 namespace Netaba.Data.Contexts
 {
-    public class UserDbContext : DbContext
+    public class UsersDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
 
-        public UserDbContext(DbContextOptions<UserDbContext> options)
+        public UsersDbContext(DbContextOptions<UsersDbContext> options)
             : base(options)
         {
         }

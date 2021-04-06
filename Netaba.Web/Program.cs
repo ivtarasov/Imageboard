@@ -19,7 +19,7 @@ namespace Netaba.Web
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<UserDbContext>();
+                var context = services.GetRequiredService<UsersDbContext>();
                 var seedingOptions = services.GetRequiredService<IOptions<SeedingConfiguration>>();
                 try
                 {

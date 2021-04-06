@@ -26,10 +26,10 @@ namespace Netaba.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<UserDbContext>(options =>
+            services.AddDbContext<UsersDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("UsersDbConnection")));
 
-            services.AddDbContext<BoardDbContext>(options =>
+            services.AddDbContext<BoardsDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("BoardsDbConnection")));
 
             services.Configure<SeedingConfiguration>(Configuration.GetSection(nameof(SeedingConfiguration)));

@@ -12,9 +12,9 @@ namespace Netaba.Services.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserDbContext _context;
+        private readonly UsersDbContext _context;
         private readonly ILogger _logger;
-        public UserRepository(UserDbContext context, ILogger<UserRepository> logger)
+        public UserRepository(UsersDbContext context, ILogger<UserRepository> logger)
         {
             _context = context;
             _logger = logger;
@@ -62,16 +62,14 @@ namespace Netaba.Services.Repository
             // TODO: 
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Name == name && Enumerable.SequenceEqual(u.PassHash, passHash));
 
-            if (user == null) return null;
-            return user.ToModel();
+            return user?.ToModel();
         }
 
         public async Task<User> FindUserAsync(string name)
         {
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Name == name);
 
-            if (user == null) return null;
-            return user.ToModel();
+            return user?.ToModel();
         }
     }
 }

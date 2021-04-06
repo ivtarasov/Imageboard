@@ -10,7 +10,7 @@ namespace Netaba.Data.Services.Seeding
 {
     public static class DataSeeder
     {
-        public static async Task SeedAsync(UserDbContext context, IOptions<SeedingConfiguration> options)
+        public static async Task SeedUsersDbAsync(UsersDbContext context, IOptions<SeedingConfiguration> options)
         {
             if (context.Users.Any()) return;
 

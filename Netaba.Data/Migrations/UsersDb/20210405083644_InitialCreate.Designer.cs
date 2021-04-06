@@ -9,7 +9,7 @@ using Netaba.Data.Contexts;
 
 namespace Netaba.Data.Migrations.UsersDb
 {
-    [DbContext(typeof(UserDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20210405083644_InitialCreate")]
     partial class InitialCreate
     {
