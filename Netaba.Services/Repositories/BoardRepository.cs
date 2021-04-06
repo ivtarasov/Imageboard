@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Netaba.Data.Contexts;
 using Netaba.Data.Models;
 using Netaba.Data.Services.Hashing;
@@ -16,9 +17,11 @@ namespace Netaba.Services.Repository
     public class BoardRepository: IBoardRepository
     {
         private readonly BoardDbContext _context;
-        public BoardRepository(BoardDbContext context)
+        private readonly ILogger _logger;
+        public BoardRepository(BoardDbContext context, ILogger<BoardRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<(bool, int)> TryGetPostLocationAsync(int postId, string boardName)
@@ -64,8 +67,9 @@ namespace Netaba.Services.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while saving changes in the TryAddBoardAsync method.");
                 return false;
             }
 
@@ -87,8 +91,9 @@ namespace Netaba.Services.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while saving changes in the TryAddTreadToBoardAsync method.");
                 return (false, 0);
             }
 
@@ -117,8 +122,9 @@ namespace Netaba.Services.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while saving changes in the TryAddPostToTreadAsync method.");
                 return (false, 0);
             }
 
@@ -176,8 +182,9 @@ namespace Netaba.Services.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while saving changes in the TryDeleteBoardAsync method.");
                 return false;
             }
 
@@ -196,8 +203,9 @@ namespace Netaba.Services.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while saving changes in the TryDeleteAsync method.");
                 return false;
             }
 

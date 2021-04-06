@@ -1,19 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Netaba.Data.Contexts;
 using Netaba.Data.Models;
 using Netaba.Data.Services.Hashing;
 using Netaba.Services.Mappers;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace Netaba.Services.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly UserDbContext _context;
-        public UserRepository(UserDbContext context)
+        private readonly ILogger _logger;
+        public UserRepository(UserDbContext context, ILogger<UserRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<bool> TryAddUserAsync(User user)
@@ -24,8 +28,9 @@ namespace Netaba.Services.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while saving changes in the TryAddUserAsync method.");
                 return false;
             }
 
@@ -42,8 +47,9 @@ namespace Netaba.Services.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while saving changes in the TryDeleteUserAsync method.");
                 return false;
             }
 
