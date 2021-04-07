@@ -11,7 +11,10 @@ namespace Netaba.Services.Markup
     public class Parser: IParser
     {
         private readonly IBoardRepository _repository;
-        public Parser(IBoardRepository repository) => _repository = repository;
+        public Parser(IBoardRepository repository)
+        {
+            _repository = repository;
+        }
 
         public async Task<string> ToHtmlAsync(string value, string boardName)
         {
