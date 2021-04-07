@@ -7,12 +7,12 @@ namespace Netaba.Data.Services.Hashing
     {
         public static byte[] GetHash(string ip, string password)
         {
-            return MD5.HashData(Encoding.UTF8.GetBytes(ip + password));
+            return SHA512.HashData(Encoding.UTF8.GetBytes(ip + password));
         }
 
         public static byte[] GetHash(string password)
         {
-            return MD5.HashData(Encoding.UTF8.GetBytes(password));
+            return SHA512.HashData(Encoding.UTF8.GetBytes(password));
         }
     }
 }
