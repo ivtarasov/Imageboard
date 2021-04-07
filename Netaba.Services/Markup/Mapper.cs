@@ -9,7 +9,7 @@ namespace Netaba.Services.Markup
                 ('`', _) => Mark.Monospace,
                 ('*', _) => Mark.Bold,
                 ('_', _) => Mark.Italic,
-                ('#', _) => Mark.Spoler,
+                ('#', _) => Mark.Spoiler,
                 ('\n', _) => Mark.NewLine,
                 ('>', '>') => Mark.Link,
                 ('№', _) when isNewLine => Mark.OList,
@@ -24,7 +24,7 @@ namespace Netaba.Services.Markup
                 Mark.Monospace => "<code>",
                 Mark.Bold => "<b>",
                 Mark.Italic => "<i>",
-                Mark.Spoler => "<span class=\"spoler\">",
+                Mark.Spoiler => "<span class=\"spoler\">",
 
                 Mark.UnList => "<ul>",
                 Mark.OList => "<ol>",
@@ -41,7 +41,7 @@ namespace Netaba.Services.Markup
                 Mark.Monospace => "</code>",
                 Mark.Bold => "</b>",
                 Mark.Italic => "</i>",
-                Mark.Spoler => "</span>",
+                Mark.Spoiler => "</span>",
 
                 Mark.UnList => "</ul>",
                 Mark.OList => "</ol>",
