@@ -14,13 +14,17 @@ Netaba is yet another imageboard written in ASP.NET Core and Entity Framework С
     * Italic — `_example3_`
     * Spoiler — `#example4#`
     * Ordered list —
+    ```
                       №Item1
                       №Item2
                       №Item3
+    ```
     * Unordered list —
+    ```
                         +Item1
                         +Item2
                         +Item3
+    ```
     * Quote (must be at the beginning of a line) — `>example5`
     * Link to post (must be at the beginning of a line and post must be on the same board)  — `>>example6`
 * Administrative functionality:
