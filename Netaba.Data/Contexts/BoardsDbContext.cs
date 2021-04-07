@@ -10,11 +10,7 @@ namespace Netaba.Data.Contexts
         public DbSet<Post> Posts { get; set; }
         public DbSet<Image> Images { get; set; }
 
-        public BoardsDbContext(DbContextOptions<BoardsDbContext> options)
-            : base(options)
-        {
-            Database.EnsureCreated();
-        }
+        public BoardsDbContext(DbContextOptions<BoardsDbContext> options) : base(options) {}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

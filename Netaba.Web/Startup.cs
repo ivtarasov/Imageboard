@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Netaba.Data.Contexts;
+using Netaba.Data.Enteties;
 using Netaba.Data.Services.Seeding;
 using Netaba.Services.ImageHandling;
 using Netaba.Services.Markup;
@@ -32,7 +33,10 @@ namespace Netaba.Web
             services.AddDbContext<BoardsDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("BoardsDbConnection")));
 
-            services.Configure<SeedingConfiguration>(Configuration.GetSection(nameof(SeedingConfiguration)));
+            services.Configure<UsersDbSeedingConfiguration>(Configuration.GetSection(nameof(UsersDbSeedingConfiguration)));
+
+            Board[] boards = Configuration.GetSection(nameof(BoardsDbSeedingConfiguration)).Get<Board[]>();
+            services.Configure<BoardsDbSeedingConfiguration>(bc => bc.Boards = boards);
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options =>

@@ -7,10 +7,7 @@ namespace Netaba.Data.Contexts
     {
         public DbSet<User> Users { get; set; }
 
-        public UsersDbContext(DbContextOptions<UsersDbContext> options)
-            : base(options)
-        {
-        }
+        public UsersDbContext(DbContextOptions<UsersDbContext> options): base(options) {}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

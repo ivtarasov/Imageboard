@@ -22,4 +22,6 @@
     <ProjectReference Include="..\Netaba.Tests\Netaba.Tests.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>

@@ -19,12 +19,20 @@ namespace Netaba.Web
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<UsersDbContext>();
-                var seedingOptions = services.GetRequiredService<IOptions<SeedingConfiguration>>();
+
+                var usersDbContext = services.GetRequiredService<UsersDbContext>();
+                var usersDbSeedingOptions = services.GetRequiredService<IOptions<UsersDbSeedingConfiguration>>();
+
+                var boardsDbContext = services.GetRequiredService<BoardsDbContext>();
+                var boardsDbSeedingOptions = services.GetRequiredService<IOptions<BoardsDbSeedingConfiguration>>();
+
                 try
                 {
-                    await context.Database.MigrateAsync();
-                    await DataSeeder.SeedAsync(context, seedingOptions);
+                    await usersDbContext.Database.MigrateAsync();
+                    await boardsDbContext.Database.MigrateAsync();
+
+                    await DataSeeder.SeedUsersDbAsync(usersDbContext, usersDbSeedingOptions);
+                    await DataSeeder.SeedBoardsDbAsync(boardsDbContext, boardsDbSeedingOptions);
                 }
                 catch (Exception ex)
                 {
