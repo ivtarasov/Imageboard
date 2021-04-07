@@ -7,7 +7,7 @@ namespace Netaba.Services.Markup
         Monospace,
         Bold,
         Italic,
-        Spoler,
+        Spoiler,
 
         // Marks that must be at the beginning of a line to be recognized 
         Link,
