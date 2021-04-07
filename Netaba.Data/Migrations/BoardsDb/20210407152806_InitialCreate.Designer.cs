@@ -10,7 +10,7 @@ using Netaba.Data.Contexts;
 namespace Netaba.Data.Migrations.BoardsDb
 {
     [DbContext(typeof(BoardsDbContext))]
-    [Migration("20210407071403_InitialCreate")]
+    [Migration("20210407152806_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace Netaba.Data.Migrations.BoardsDb
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Netaba.Data.Enteties.Board", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.Board", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +43,7 @@ namespace Netaba.Data.Migrations.BoardsDb
                     b.ToTable("Boards");
                 });
 
-            modelBuilder.Entity("Netaba.Data.Enteties.Image", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,7 +79,7 @@ namespace Netaba.Data.Migrations.BoardsDb
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("Netaba.Data.Enteties.Post", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.Post", b =>
                 {
                     b.Property<int>("BoardId")
                         .HasColumnType("int");
@@ -128,7 +128,7 @@ namespace Netaba.Data.Migrations.BoardsDb
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("Netaba.Data.Enteties.Tread", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.Tread", b =>
                 {
                     b.Property<int>("BoardId")
                         .HasColumnType("int");
@@ -146,13 +146,13 @@ namespace Netaba.Data.Migrations.BoardsDb
                     b.ToTable("Treads");
                 });
 
-            modelBuilder.Entity("Netaba.Data.Enteties.Post", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.Post", b =>
                 {
-                    b.HasOne("Netaba.Data.Enteties.Image", "Image")
+                    b.HasOne("Netaba.Data.Entities.Image", "Image")
                         .WithMany()
                         .HasForeignKey("ImageId");
 
-                    b.HasOne("Netaba.Data.Enteties.Tread", "Tread")
+                    b.HasOne("Netaba.Data.Entities.Tread", "Tread")
                         .WithMany("Posts")
                         .HasForeignKey("BoardId", "TreadId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -163,9 +163,9 @@ namespace Netaba.Data.Migrations.BoardsDb
                     b.Navigation("Tread");
                 });
 
-            modelBuilder.Entity("Netaba.Data.Enteties.Tread", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.Tread", b =>
                 {
-                    b.HasOne("Netaba.Data.Enteties.Board", "Board")
+                    b.HasOne("Netaba.Data.Entities.Board", "Board")
                         .WithMany("Treads")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -174,12 +174,12 @@ namespace Netaba.Data.Migrations.BoardsDb
                     b.Navigation("Board");
                 });
 
-            modelBuilder.Entity("Netaba.Data.Enteties.Board", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.Board", b =>
                 {
                     b.Navigation("Treads");
                 });
 
-            modelBuilder.Entity("Netaba.Data.Enteties.Tread", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.Tread", b =>
                 {
                     b.Navigation("Posts");
                 });

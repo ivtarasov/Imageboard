@@ -22,7 +22,7 @@ namespace Netaba.Services.Repository
 
         public async Task<bool> TryAddUserAsync(User user)
         {
-            _context.Users.Add(user.ToEntety());
+            _context.Users.Add(user.ToEntity());
 
             try
             {
@@ -39,9 +39,9 @@ namespace Netaba.Services.Repository
 
         public async Task<bool> TryDeleteUserAsync(User user)
         {
-            var userEntety = user.ToEntety();
-            _context.Attach(userEntety);
-            _context.Remove(userEntety);
+            var userEntity = user.ToEntity();
+            _context.Attach(userEntity);
+            _context.Remove(userEntity);
 
             try
             {

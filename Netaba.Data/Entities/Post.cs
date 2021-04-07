@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Netaba.Data.Enteties
+namespace Netaba.Data.Entities
 {
     public class Post
     {

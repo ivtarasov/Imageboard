@@ -1,38 +1,38 @@
 ﻿using Netaba.Data.Models;
 using Netaba.Data.Services.Hashing;
 using System.Linq;
-using BoardEntety = Netaba.Data.Enteties.Board;
-using ImageEntety = Netaba.Data.Enteties.Image;
-using PostEntety = Netaba.Data.Enteties.Post;
-using TreadEntety = Netaba.Data.Enteties.Tread;
-using UserEntety = Netaba.Data.Enteties.User;
+using BoardEntity = Netaba.Data.Entities.Board;
+using ImageEntity = Netaba.Data.Entities.Image;
+using PostEntity = Netaba.Data.Entities.Post;
+using TreadEntity = Netaba.Data.Entities.Tread;
+using UserEntity = Netaba.Data.Entities.User;
 
 
 namespace Netaba.Services.Mappers
 {
     public static class ModelMappingExtensions
     {
-        public static BoardEntety ToEntety(this Board board)
+        public static BoardEntity ToEntity(this Board board)
         {
             return new()
             {
                 Id = board.Id,
                 Name = board.Name,
                 Description = board.Description,
-                Treads = board.Treads?.Select(t => t.ToEntety())?.ToList()
+                Treads = board.Treads?.Select(t => t.ToEntity())?.ToList()
             };
         }
 
-        public static TreadEntety ToEntety(this Tread tread)
+        public static TreadEntity ToEntity(this Tread tread)
         {
             return new()
             {
                 Id = tread.Id,
-                Posts = tread.Posts?.Select(p => p.ToEntety())?.ToList()
+                Posts = tread.Posts?.Select(p => p.ToEntity())?.ToList()
             };
         }
 
-        public static PostEntety ToEntety(this Post post) 
+        public static PostEntity ToEntity(this Post post) 
         {
             return new()
             {
@@ -43,12 +43,12 @@ namespace Netaba.Services.Mappers
                 Time = post.Time,
                 IsOp = post.IsOp,
                 IsSage = post.IsSage,
-                Image = post.Image?.ToEntety(),
+                Image = post.Image?.ToEntity(),
                 PassHash = HashGenerator.GetHash(post.Ip, post.Password)
             };
         }
 
-        public static ImageEntety ToEntety(this Image image)
+        public static ImageEntity ToEntity(this Image image)
         {
             return new()
             {
@@ -64,7 +64,7 @@ namespace Netaba.Services.Mappers
             };
         }
 
-        public static UserEntety ToEntety(this User user)
+        public static UserEntity ToEntity(this User user)
         {
             return new()
             {

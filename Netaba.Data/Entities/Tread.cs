@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace Netaba.Data.Enteties
+namespace Netaba.Data.Entities
 {
     public class Tread
     {

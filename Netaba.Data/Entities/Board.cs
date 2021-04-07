@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Netaba.Data.Enteties
+namespace Netaba.Data.Entities
 {
     public class Board
     {

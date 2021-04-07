@@ -1,7 +1,7 @@
 ﻿using Netaba.Data.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Netaba.Data.Enteties
+namespace Netaba.Data.Entities
 {
     [Table("Users")]
     public class User

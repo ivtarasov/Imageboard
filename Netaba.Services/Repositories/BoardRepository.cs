@@ -8,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BoardEntety = Netaba.Data.Enteties.Board;
-using PostEntety = Netaba.Data.Enteties.Post;
-using TreadEntety = Netaba.Data.Enteties.Tread;
+using BoardEntity = Netaba.Data.Entities.Board;
+using PostEntity = Netaba.Data.Entities.Post;
+using TreadEntity = Netaba.Data.Entities.Tread;
 
 namespace Netaba.Services.Repository
 {
@@ -61,7 +61,7 @@ namespace Netaba.Services.Repository
 
         public async Task<bool> TryAddBoardAsync(Board board)
         {
-            _context.Boards.Add(board.ToEntety());
+            _context.Boards.Add(board.ToEntity());
 
             try
             {
@@ -81,11 +81,11 @@ namespace Netaba.Services.Repository
             var board = await _context.Boards.FirstOrDefaultAsync(b => b.Name == boardName);
             if (board == null) return (false, 0);
 
-            TreadEntety treadEntety = tread.ToEntety();
-            treadEntety.Board = board;
-            treadEntety.TimeOfLastPost = treadEntety.Posts.First().Time;
+            TreadEntity treadEntity = tread.ToEntity();
+            treadEntity.Board = board;
+            treadEntity.TimeOfLastPost = treadEntity.Posts.First().Time;
 
-            _context.Treads.Add(treadEntety);
+            _context.Treads.Add(treadEntity);
 
             try
             {
@@ -97,7 +97,7 @@ namespace Netaba.Services.Repository
                 return (false, 0);
             }
 
-            return (true, treadEntety.Id);
+            return (true, treadEntity.Id);
         }
 
         public async Task<(bool, int)> TryAddPostToTreadAsync(Post post, string boardName, int treadId)
@@ -107,16 +107,16 @@ namespace Netaba.Services.Repository
 
             if (tread == null) return (false, 0);
 
-            PostEntety postEntety = post.ToEntety();
-            postEntety.Tread = tread;
+            PostEntity postEntity = post.ToEntity();
+            postEntity.Tread = tread;
             
-            if (!postEntety.IsSage)
+            if (!postEntity.IsSage)
             {
                 int count = _context.Entry(tread).Collection(t => t.Posts).Query().Count();
-                if (count < 500) tread.TimeOfLastPost = postEntety.Time;
+                if (count < 500) tread.TimeOfLastPost = postEntity.Time;
             }
 
-            _context.Posts.Add(postEntety);
+            _context.Posts.Add(postEntity);
 
             try
             {
@@ -128,7 +128,7 @@ namespace Netaba.Services.Repository
                 return (false, 0);
             }
 
-            return (true, postEntety.Id);
+            return (true, postEntity.Id);
         }
 
         public async Task<Board> FindAndLoadBoardAsync(string boardName, int page, int pageSize)
@@ -141,7 +141,7 @@ namespace Netaba.Services.Repository
             return board.ToModel();
         }
 
-        private void LoadBoard(BoardEntety board, int page, int pageSize)
+        private void LoadBoard(BoardEntity board, int page, int pageSize)
         {
             _context.Entry(board).Collection(b => b.Treads)
                                  .Query()
@@ -163,7 +163,7 @@ namespace Netaba.Services.Repository
             return tread.ToModel();
         }
 
-        private void LoadTread(TreadEntety tread)
+        private void LoadTread(TreadEntity tread)
         {
             _context.Entry(tread).Collection(t => t.Posts)
                                  .Query()
@@ -174,9 +174,9 @@ namespace Netaba.Services.Repository
 
         public async Task<bool> TryDeleteBoardAsync(Board board)
         {
-            var boardEntety = board.ToEntety();
-            _context.Attach(boardEntety);
-            _context.Remove(boardEntety);
+            var boardEntity = board.ToEntity();
+            _context.Attach(boardEntity);
+            _context.Remove(boardEntity);
 
             try
             {
@@ -212,7 +212,7 @@ namespace Netaba.Services.Repository
             return true;
         }
 
-        private void DeleteTreads(IEnumerable<PostEntety> oPosts)
+        private void DeleteTreads(IEnumerable<PostEntity> oPosts)
         {
             var treadIds = oPosts.Select(p => p.TreadId);
             var treads = _context.Treads.Where(t => treadIds.Contains(t.Id));
@@ -220,7 +220,7 @@ namespace Netaba.Services.Repository
             _context.Treads.RemoveRange(treads);
         }
 
-        private void DeletePosts(IEnumerable<PostEntety> posts, string ip, string password)
+        private void DeletePosts(IEnumerable<PostEntity> posts, string ip, string password)
         {
             _context.Posts.RemoveRange(posts.Where(p => PassChecker.Check(p.PassHash, ip, password)));
         }

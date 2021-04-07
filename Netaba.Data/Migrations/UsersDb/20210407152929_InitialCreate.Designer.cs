@@ -10,7 +10,7 @@ using Netaba.Data.Contexts;
 namespace Netaba.Data.Migrations.UsersDb
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20210407071051_InitialCreate")]
+    [Migration("20210407152929_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace Netaba.Data.Migrations.UsersDb
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Netaba.Data.Enteties.User", b =>
+            modelBuilder.Entity("Netaba.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

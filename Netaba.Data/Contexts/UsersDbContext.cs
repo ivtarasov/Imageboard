@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Netaba.Data.Enteties;
+using Netaba.Data.Entities;
 
 namespace Netaba.Data.Contexts
 {

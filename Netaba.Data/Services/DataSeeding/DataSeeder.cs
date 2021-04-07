@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Netaba.Data.Contexts;
-using Netaba.Data.Enteties;
+using Netaba.Data.Entities;
 using Netaba.Data.Enums;
 using Netaba.Data.Services.Hashing;
 using System.Linq;

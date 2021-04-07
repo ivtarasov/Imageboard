@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Netaba.Data.Contexts;
-using Netaba.Data.Enteties;
+using Netaba.Data.Entities;
 using Netaba.Data.Services.Seeding;
 using Netaba.Services.ImageHandling;
 using Netaba.Services.Markup;
