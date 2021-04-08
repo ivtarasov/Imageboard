@@ -33,9 +33,9 @@ Netaba is yet another imageboard written in ASP.NET Core and Entity Framework С
     * Adding/deleting admins
 * Docker
 
-#Screenshots
+# Screenshots
 
-![Reply form](https://imgur.com/1ENg6Ll)
+![Reply form](https://i.imgur.com/1ENg6Ll.png)
 
-![Tread](https://imgur.com/NpLBPcB)
+![Tread](https://i.imgur.com/NpLBPcB.png)
 
