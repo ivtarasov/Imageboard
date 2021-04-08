@@ -1,4 +1,4 @@
-﻿using Netaba.Data.Models;
+﻿using Netaba.Models;
 using Netaba.Web.ViewModels;
 using System.Collections.Generic;
 using System.Linq;

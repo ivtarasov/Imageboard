@@ -1,4 +1,4 @@
-﻿using Netaba.Data.Models;
+﻿using Netaba.Models;
 using System.Threading.Tasks;
 
 namespace Netaba.Services.Markup

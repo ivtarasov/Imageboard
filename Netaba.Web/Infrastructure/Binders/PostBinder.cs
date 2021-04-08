@@ -1,9 +1,9 @@
-﻿using ImageModel = Netaba.Data.Models.Image;
+﻿using ImageModel = Netaba.Models.Image;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Threading.Tasks;
-using Netaba.Data.Models;
+using Netaba.Models;
 using Netaba.Services.ImageHandling;
 using SixLabors.ImageSharp;
 

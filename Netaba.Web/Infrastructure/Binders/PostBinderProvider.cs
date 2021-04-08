@@ -1,4 +1,4 @@
-﻿using Netaba.Data.Models;
+﻿using Netaba.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using System;

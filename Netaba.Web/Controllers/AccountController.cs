@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Netaba.Data.Enums;
-using Netaba.Data.Models;
+using Netaba.Models;
 using Netaba.Web.ViewModels;
 using Netaba.Services.Repository;
 using System.Collections.Generic;

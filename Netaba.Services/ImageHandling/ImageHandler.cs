@@ -3,7 +3,7 @@ using SixLabors.ImageSharp;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using ImageModel = Netaba.Data.Models.Image;
+using ImageModel = Netaba.Models.Image;
 
 namespace Netaba.Services.ImageHandling
 {

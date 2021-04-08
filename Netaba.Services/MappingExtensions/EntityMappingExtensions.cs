@@ -1,4 +1,4 @@
-﻿using Netaba.Data.Models;
+﻿using Netaba.Models;
 using System.Linq;
 using BoardEntity = Netaba.Data.Entities.Board;
 using ImageEntity = Netaba.Data.Entities.Image;

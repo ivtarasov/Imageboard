@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Netaba.Data.Models;
+using Netaba.Models;
 using Netaba.Web.Enums;
 
 namespace Netaba.Web.ViewModels

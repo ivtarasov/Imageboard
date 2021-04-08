@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Netaba.Data.Enums;
-using Netaba.Data.Models;
+using Netaba.Models;
 using Netaba.Services.Markup;
 using Netaba.Services.Repository;
 using Netaba.Web.Enums;

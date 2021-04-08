@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Netaba.Data.Contexts;
-using Netaba.Data.Models;
+using Netaba.Models;
 using Netaba.Data.Services.Hashing;
 using Netaba.Services.Mappers;
 using System;

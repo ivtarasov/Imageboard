@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Users\Иван\source\repos\Netaba.Models\Netaba.Models.csproj" />
     <ProjectReference Include="..\Netaba.Data\Netaba.Data.csproj" />
   </ItemGroup>
 

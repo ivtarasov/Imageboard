@@ -1,4 +1,4 @@
-﻿using Netaba.Data.Models;
+﻿using Netaba.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 

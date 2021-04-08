@@ -1,4 +1,4 @@
-﻿using Netaba.Data.Models;
+﻿using Netaba.Models;
 using Netaba.Data.Services.Hashing;
 using System.Linq;
 using BoardEntity = Netaba.Data.Entities.Board;
