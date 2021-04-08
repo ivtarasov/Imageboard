@@ -17,9 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Users\Иван\source\repos\Netaba.Models\Netaba.Models.csproj" />
+    <ProjectReference Include="..\Netaba.Models\Netaba.Models.csproj" />
     <ProjectReference Include="..\Netaba.Services\Netaba.Services.csproj" />
-    <ProjectReference Include="..\Netaba.Tests\Netaba.Tests.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
