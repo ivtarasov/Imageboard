@@ -9,8 +9,12 @@
 @await Html.PartialAsync("_ReplyForm", new ReplyFormViewModel(Model.Action, Model.BoardName, Model.Post, Model.TreadId))
 
 <form id="del-form" class="delete_form" asp-route="PostDeleting" asp-route-boardName=@Model.BoardName>
-    @foreach (var treadViewModel in Model.TreadViewModels) @await Html.PartialAsync("_Tread", treadViewModel)
+    @foreach (var treadViewModel in Model.TreadViewModels)@await Html.PartialAsync("_Tread", treadViewModel)
     @await Html.PartialAsync("_DeleteForm")
 </form>
 
-@if (Model.IsBoardPage) @await Html.PartialAsync("_Pages", @Model.PageViewModel)
+@if (Model.IsBoardPage)@await Html.PartialAsync("_Pages", @Model.PageViewModel)
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
