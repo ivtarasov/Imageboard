@@ -90,7 +90,7 @@ namespace Netaba.Web.Controllers
         [HttpPost]
         [Route("/del_admin", Name = "AdminDeleting")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
-        public async Task<IActionResult> DeleteAdmin([Required(ErrorMessage = "Name is not specified.")] string adminName)
+        public async Task<IActionResult> DeleteAdmin(string adminName)
         {
             if (ModelState.IsValid)
             {

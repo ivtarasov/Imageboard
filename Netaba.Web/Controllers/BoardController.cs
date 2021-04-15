@@ -72,7 +72,7 @@ namespace Netaba.Web.Controllers
         [HttpPost]
         [Route("/del_board", Name = "BoardDeleting")]
         [Authorize(Roles = nameof(Role.SuperAdmin))]
-        public async Task<IActionResult> DeleteBoard([Required(ErrorMessage = "Name is not specified.")] string boardName)
+        public async Task<IActionResult> DeleteBoard(string boardName)
         {
             if (ModelState.IsValid)
             {
