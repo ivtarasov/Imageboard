@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Hikkaba.Web": {
+    "Netaba.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
